@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "net.kuratkoo.locusaddon.gsakdatabase"
-        minSdkVersion 11
-        targetSdkVersion 11
+        minSdkVersion 21
+        targetSdkVersion 21
     }
 
     buildTypes {
@@ -15,6 +15,11 @@ android {
             minifyEnabled true
             proguardFiles 'proguard.cfg'
         }
+    }
+
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 
