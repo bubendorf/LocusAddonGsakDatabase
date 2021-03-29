@@ -35,7 +35,6 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
     private EditTextPreference radius;
     private EditTextPreference limit;
     private CheckBoxPreference own;
-    private Preference donate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,10 +42,6 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
 
         addPreferencesFromResource(R.xml.prefs);
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
-        donate = (Preference) getPreferenceScreen().findPreference("donate");
-        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kuratkoo%40gmail%2ecom&lc=CZ&item_name=Locus%20-%20addon%20GSAK%20Database&currency_code=USD"));
-        donate.setIntent(i);
 
         own = (CheckBoxPreference) getPreferenceScreen().findPreference("own");
 
@@ -88,35 +83,6 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
 
         if (!own.isEnabled()) {
             own.setSummary(Html.fromHtml(getString(R.string.pref_own_sum) + " <b>" + getString(R.string.pref_own_fill) + "</b>"));
-        }
-
-        if (PreferenceManager.getDefaultSharedPreferences(this).getInt("count", 0) == 3) {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            View dialog = inflater.inflate(R.layout.dialog_rate, null);
-
-            Builder d = new AlertDialog.Builder(this);
-            d.setTitle(R.string.support_app);
-            d.setIcon(R.drawable.ic_launcher);
-            d.setPositiveButton(android.R.string.ok, new OnClickListener() {
-
-                public void onClick(DialogInterface di, int arg1) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getClass().getPackage().getName())));
-                }
-
-            });
-            d.setNegativeButton(android.R.string.cancel, new OnClickListener() {
-
-                public void onClick(DialogInterface di, int arg1) {
-                    di.dismiss();
-                }
-            });
-            d.setView(dialog);
-            d.show();
-            
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt("count", 4);
-            editor.commit();
         }
 
         if (PreferenceManager.getDefaultSharedPreferences(this).getInt("count", 0) < 3) {

@@ -190,11 +190,5 @@
             android:maxLength="2"
             />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_about">
-         <Preference
-            android:key="donate"
-            android:title="@string/pref_donate_title"
-            android:summary="@string/pref_donate_sum"
-            />
-    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -46,11 +46,5 @@
     <string name="no_db_file">GSAK Datenbank nicht gefunden! Bitte eingeben!</string>
     <string name="unable_to_load_geocaches">Laden der Geocaches nicht möglich!</string>
     <string name="unable_to_load_detail">Laden der Geocachedetails nicht möglich!</string>
-    <string name="pref_about">Über</string>
-    <string name="pref_donate_title">Spende für die Entwicklung!</string>
-    <string name="pref_donate_sum">Gefällt dir dieses Addon? Möchtest du die Entwicklung unterstützen? Dann klicke hier und spende etwas!</string>
-    <string name="support_app">Unterstütze GSAK Datenbank für Locus</string>
-    <string name="support_like_it">Gefällt dir die  GSAK Datenbank für Locus App?</string>
-    <string name="support_rate">Bitte würdige die Arbeit der Entwickler mit einer 5 Sterne-Bewertung im Google Play.</string>
     <string name="canceled">Läd stornieren!</string>
 </resources>
