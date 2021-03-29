@@ -63,14 +63,11 @@ public class PointLoader {
                 if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("livemap", false)
                         && !PreferenceManager.getDefaultSharedPreferences(context).getString("db", "").equals("")) {
                     if ((update.newMapCenter || update.newZoomLevel) && update.mapVisible) {
-                        if (mapLoadAsyncTask == null || mapLoadAsyncTask.getStatus() == AsyncTask.Status.FINISHED) {
-                            mapLoadAsyncTask = new MapLoadAsyncTask();
-                            mapLoadAsyncTask.execute(update);
-                        } else {
+                        if (mapLoadAsyncTask != null && mapLoadAsyncTask.getStatus() != AsyncTask.Status.FINISHED) {
                             mapLoadAsyncTask.cancel(true);
-                            mapLoadAsyncTask = new MapLoadAsyncTask();
-                            mapLoadAsyncTask.execute(update);
                         }
+                        mapLoadAsyncTask = new MapLoadAsyncTask();
+                        mapLoadAsyncTask.execute(update);
                     }
                 }
             }
@@ -110,15 +107,15 @@ public class PointLoader {
                     String.valueOf(update.mapBottomRight.getLongitude())
                 };
 
-                String sql = "SELECT Code, Name, Latitude, Longitude, CacheType, HasCorrected, PlacedBy, Status, Found FROM Caches WHERE (status = \"A\"";
+                String sql = "SELECT Code, Name, Latitude, Longitude, CacheType, HasCorrected, PlacedBy, Status, Found FROM Caches WHERE (status = 'A'";
                 // Disable geocaches
                 if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("disable", false)) {
-                    sql = sql + " OR status = \"T\"";
+                    sql = sql + " OR status = 'T'";
                 }
 
                 // Archived geocaches
                 if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("archive", false)) {
-                    sql = sql + " OR status = \"X\"";
+                    sql = sql + " OR status = 'X'";
                 }
 
                 sql = sql + ") ";
@@ -128,7 +125,7 @@ public class PointLoader {
                 }
 
                 if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("own", false)) {
-                    sql = sql + " AND PlacedBy != \"" + PreferenceManager.getDefaultSharedPreferences(context).getString("nick", "") + "\"";
+                    sql = sql + " AND PlacedBy != '" + PreferenceManager.getDefaultSharedPreferences(context).getString("nick", "") + "'";
                 }
 
                 List<String> geocacheTypes = Gsak.geocacheTypesFromFilter(PreferenceManager.getDefaultSharedPreferences(context));
@@ -198,7 +195,7 @@ public class PointLoader {
 
             try {
                 File fd = new File(PreferenceManager.getDefaultSharedPreferences(context).getString("db", ""));
-                String filePath = fd.getParent() + "livemap.locus";
+                String filePath = fd.getParent() + File.separator + "livemap.locus";
 
                 ArrayList<PointsData> data = new ArrayList<>();
                 data.add(pd);

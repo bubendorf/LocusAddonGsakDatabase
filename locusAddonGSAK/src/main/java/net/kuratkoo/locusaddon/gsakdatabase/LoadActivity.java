@@ -85,16 +85,16 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                     String.valueOf(curr.getLongitude() + radius)
                 };
                 Cursor c;
-                String sql = "SELECT Latitude, Longitude, Code, PlacedBy FROM Caches WHERE (status = \"A\"";
+                String sql = "SELECT Latitude, Longitude, Code, PlacedBy FROM Caches WHERE (status = 'A'";
 
                 // Disable geocaches
                 if (PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getBoolean("disable", false)) {
-                    sql = sql + " OR status = \"T\"";
+                    sql = sql + " OR status = 'T'";
                 }
 
                 // Archived geocaches
                 if (PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getBoolean("archive", false)) {
-                    sql = sql + " OR status = \"X\"";
+                    sql = sql + " OR status = 'X'";
                 }
 
                 sql = sql + ") ";
@@ -104,7 +104,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                 }
 
                 if (!PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getBoolean("own", false)) {
-                    sql = sql + " AND PlacedBy != \"" + PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("nick", "") + "\"";
+                    sql = sql + " AND PlacedBy != '" + PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("nick", "") + "'";
                 }
 
                 List<String> geocacheTypes = Gsak.geocacheTypesFromFilter(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this));
@@ -253,7 +253,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                 return;
             }
 
-            String filePath = fd.getParent() + "data.locus";
+            String filePath = fd.getParent() + File.separator + "data.locus";
 
             try {
                 DisplayData.sendDataFile(LoadActivity.this,

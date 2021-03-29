@@ -16,7 +16,7 @@
     <string name="pref_found_sum">Load my found geocaches to Locus</string>
     <string name="pref_own_title">My own geocaches</string>
     <string name="pref_own_sum">Load my own geocaches to Locus.</string>
-    <string name="pref_own_fill"> Fill Geocaching.com nick to enable.</string>
+    <string name="pref_own_fill">Fill Geocaching.com nick to enable.</string>
     <string name="pref_archive_title">Archived geocaches</string>
     <string name="pref_archive_sum">Load archived geocaches to Locus</string>
     <string name="pref_logs_title">Logs count</string>
@@ -32,7 +32,7 @@
     <string name="pref_locus">Locus settings</string>
     <string name="pref_import_title">Show import dialog in Locus</string>
     <string name="pref_import_sum">Allow import geocaches to Locus</string>
-    <string name="pref_livemap_title">Live map</string>
+    <string name="pref_livemap_title">Live map (Broken - Do not use it)</string>
     <string name="pref_livemap_sum">Live loading caches to map (enable in Locus: Settings → Other → Enable periodic updates)</string>
     <string name="loading">Loading</string>
     <string name="geocaches">geocaches</string>

@@ -64,6 +64,7 @@ public class LocusConst {
 	 * Basic intent used for display data. Use API for creating intent and not directly
 	 */
 	public static final String INTENT_DISPLAY_DATA = "android.intent.action.LOCUS_PUBLIC_LIB_DATA";
+//	public static final String INTENT_DISPLAY_DATA = "locus.api.android.ACTION_DISPLAY_DATA";
 
 	/* one PointData object, send over intent */
 	public static final String EXTRA_POINTS_DATA = "EXTRA_POINTS_DATA";
@@ -139,4 +140,5 @@ public class LocusConst {
 	 * displayed on map without possibility for import! Also after display, map will not be centered.  
 	 */
 	public static final String ACTION_DISPLAY_DATA_SILENTLY = "android.intent.action.DISPLAY_DATA_SILENTLY";
+//	public static final String ACTION_DISPLAY_DATA_SILENTLY = "locus.api.android.ACTION_DISPLAY_DATA_SILENTLY";
 }

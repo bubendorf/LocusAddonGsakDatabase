@@ -32,8 +32,8 @@
     <string name="pref_locus">Locus Einstellungen</string>
     <string name="pref_import_title">Import Dialog in Locus anzeigen</string>
     <string name="pref_import_sum">Erlaubt Import von Geocaches in Locus.</string>
-    <string name="pref_livemap_title">Live Karte</string>
-    <string name="pref_livemap_sum">Direktes laden der Caches auf die Karte (aktiviere in Locus: Einstellungen → Verschiedenes → Aktiviere periodische Updates)</string>
+    <string name="pref_livemap_title">Live Karte (Kaputt - Nicht verwenden)</string>
+    <string name="pref_livemap_sum">Direktes laden der Caches auf die Karte (aktiviere in Locus: Einstellungen → Verschiedenes → Verbinde mit AddOns)</string>
     <string name="loading">Läd</string>
     <string name="geocaches">Geocaches</string>
     <string name="loading_dots">Läd…</string>

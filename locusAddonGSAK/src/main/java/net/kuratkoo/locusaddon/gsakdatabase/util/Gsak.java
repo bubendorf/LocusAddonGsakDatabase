@@ -85,7 +85,7 @@ public class Gsak {
             case "F":
                 return PointGeocachingData.CACHE_TYPE_LF_EVENT;
             case "D":
-                return PointGeocachingData.CACHE_TYPE_LF_CELEBRATION;
+                return PointGeocachingData.CACHE_TYPE_GC_HQ_BLOCK_PARTY;
             default:
                 return PointGeocachingData.CACHE_TYPE_TRADITIONAL;
         }
@@ -191,57 +191,58 @@ public class Gsak {
         List<String> geocacheTypes = new ArrayList<>();
 
         if (sharedPref.getBoolean("gc_type_tradi", false)) {
-            geocacheTypes.add("CacheType = \"T\"");
+            geocacheTypes.add("CacheType = 'T'");
         }
         if (sharedPref.getBoolean("gc_type_multi", false)) {
-            geocacheTypes.add("CacheType = \"M\"");
+            geocacheTypes.add("CacheType = 'M'");
         }
         if (sharedPref.getBoolean("gc_type_mystery", false)) {
-            geocacheTypes.add("CacheType = \"U\"");
+            geocacheTypes.add("CacheType = 'U'");
         }
         if (sharedPref.getBoolean("gc_type_earth", false)) {
-            geocacheTypes.add("CacheType = \"R\"");
+            geocacheTypes.add("CacheType = 'R'");
         }
         if (sharedPref.getBoolean("gc_type_letter", false)) {
-            geocacheTypes.add("CacheType = \"B\"");
+            geocacheTypes.add("CacheType = 'B'");
         }
         if (sharedPref.getBoolean("gc_type_event", false)) {
-            geocacheTypes.add("CacheType = \"E\""); // Event
-            geocacheTypes.add("CacheType = \"Z\""); // Mega Event
-            geocacheTypes.add("CacheType = \"J\""); // Giga Event
+            geocacheTypes.add("CacheType = 'E'"); // Event
+            geocacheTypes.add("CacheType = 'Z'"); // Mega Event
+            geocacheTypes.add("CacheType = 'J'"); // Giga Event
+            geocacheTypes.add("CacheType = 'P'"); // Block Party
         }
         if (sharedPref.getBoolean("gc_type_cito", false)) {
-            geocacheTypes.add("CacheType = \"C\"");
+            geocacheTypes.add("CacheType = 'C'");
         }
         if (sharedPref.getBoolean("gc_type_lab", false)) {
-            geocacheTypes.add("CacheType = \"Q\"");
+            geocacheTypes.add("CacheType = 'Q'");
         }
         if (sharedPref.getBoolean("gc_type_wig", false)) {
-            geocacheTypes.add("CacheType = \"I\"");
+            geocacheTypes.add("CacheType = 'I'");
         }
         if (sharedPref.getBoolean("gc_type_virtual", false)) {
-            geocacheTypes.add("CacheType = \"V\"");
+            geocacheTypes.add("CacheType = 'V'");
         }
         if (sharedPref.getBoolean("gc_type_webcam", false)) {
-            geocacheTypes.add("CacheType = \"W\"");
+            geocacheTypes.add("CacheType = 'W'");
         }
         if (sharedPref.getBoolean("gc_type_loc", false)) {
-            geocacheTypes.add("CacheType = \"L\"");
+            geocacheTypes.add("CacheType = 'L'");
         }
         if (sharedPref.getBoolean("gc_type_hq", false)) {
-            geocacheTypes.add("CacheType = \"H\"");
+            geocacheTypes.add("CacheType = 'H'");
         }
         if (sharedPref.getBoolean("gc_type_gps", false)) {
-            geocacheTypes.add("CacheType = \"X\"");
+            geocacheTypes.add("CacheType = 'X'");
         }
         if (sharedPref.getBoolean("gc_type_10years", false)) {
-            geocacheTypes.add("CacheType = \"F\"");
+            geocacheTypes.add("CacheType = 'F'");
         }
         if (sharedPref.getBoolean("gc_type_benchmark", false)) {
-            geocacheTypes.add("CacheType = \"G\"");
+            geocacheTypes.add("CacheType = 'G'");
         }
         if (sharedPref.getBoolean("gc_type_ape", false)) {
-            geocacheTypes.add("CacheType = \"A\"");
+            geocacheTypes.add("CacheType = 'A'");
         }
         if (sharedPref.getBoolean("gc_type_corrected", false)) {
             geocacheTypes.add("HasCorrected = 1");

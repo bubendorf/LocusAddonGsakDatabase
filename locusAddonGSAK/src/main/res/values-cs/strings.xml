@@ -32,7 +32,7 @@
     <string name="pref_locus">Nastavení Locusu</string>
     <string name="pref_import_title">Importovat</string>
     <string name="pref_import_sum">Importovat keše do Locusu po načtení z databáze</string>
-    <string name="pref_livemap_title">Live mapa</string>
+    <string name="pref_livemap_title">Live mapa (Broken - Do not use it)</string>
     <string name="pref_livemap_sum">Živé načítání keší do mapy (povolte v Locusu: Nastavení → Různé → Povolit periodické aktualizace)</string>
     <string name="loading">Načítám</string>
     <string name="geocaches">keší</string>
