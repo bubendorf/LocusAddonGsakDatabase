@@ -9,7 +9,6 @@ import android.app.backup.SharedPreferencesBackupHelper;
  */
 public class PreferencesBackupAgent extends BackupAgentHelper {
 
-    private static final String TAG = "LocusAddonGsakDatabase|PreferencesBackupAgent";
     private static final String PREFS_BACKUP_KEY = "PREFERENCES";
 
     @Override

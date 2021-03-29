@@ -71,7 +71,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                 Point pp = pointSet[0];
                 Location curr = pp.getLocation();
                 PointsData pd = new PointsData("GSAK data");
-                Float radius = Float.valueOf(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("radius", "1")) / 70;
+                float radius = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("radius", "1")) / 70;
 
                 String[] cond = new String[]{
                     String.valueOf(curr.getLatitude() - radius),
@@ -121,8 +121,8 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
 
                 c = db.rawQuery(sql, cond);
 
-                /** Load GC codes **/
-                List<Pair> gcCodes = new ArrayList<Pair>();
+                /* Load GC codes */
+                List<Pair> gcCodes = new ArrayList<>();
                 while (c.moveToNext()) {
                     if (this.isCancelled()) {
                         c.close();
@@ -131,7 +131,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                     Location loc = new Location(TAG);
                     loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
                     loc.setLongitude(c.getDouble(c.getColumnIndex("Longitude")));
-                    if (loc.distanceTo(curr) < Float.valueOf(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("radius", "1")) * 1000) {
+                    if (loc.distanceTo(curr) < Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("radius", "1")) * 1000) {
                         gcCodes.add(new Pair(loc.distanceTo(curr), c.getString(c.getColumnIndex("Code"))));
                     }
                 }
@@ -182,11 +182,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                     gcData.archived = Gsak.isArchived(c.getString(c.getColumnIndex("Status")));
                     gcData.found = Gsak.isFound(c.getInt(c.getColumnIndex("Found")));
                     gcData.premiumOnly = Gsak.isPremium(c.getInt(c.getColumnIndex("Found")));
-                    if (Gsak.isCorrected(c.getInt(c.getColumnIndex("HasCorrected")))) {
-                        gcData.computed = true;
-                    } else {
-                        gcData.computed = false;
-                    }
+                    gcData.computed = Gsak.isCorrected(c.getInt(c.getColumnIndex("HasCorrected")));
 
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
                     Date date = new Date();
@@ -200,8 +196,8 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
 
                     c.close();
 
-                    /** Add waypoints to Geocache **/
-                    ArrayList<PointGeocachingDataWaypoint> pgdws = new ArrayList<PointGeocachingDataWaypoint>();
+                    /* Add waypoints to Geocache */
+                    ArrayList<PointGeocachingDataWaypoint> pgdws = new ArrayList<>();
 
                     Cursor wp = db.rawQuery("SELECT * FROM WayAll WHERE cParent = ?", new String[]{gcData.cacheID});
                     while (wp.moveToNext()) {
@@ -226,7 +222,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                     pd.addPoint(p);
                 }
 
-                data = new ArrayList<PointsData>();
+                data = new ArrayList<>();
                 data.add(pd);
 
                 if (this.isCancelled()) {
@@ -328,10 +324,10 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
         loadAsyncTask.execute(point);
     }
 
-    private class Pair {
+    private static class Pair {
 
-        private String gcCode;
-        private Float distance;
+        private final String gcCode;
+        private final Float distance;
 
         public Pair(Float f, String s) {
             this.distance = f;

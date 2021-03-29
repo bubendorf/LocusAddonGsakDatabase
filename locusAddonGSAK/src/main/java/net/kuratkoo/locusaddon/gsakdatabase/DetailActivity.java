@@ -69,11 +69,7 @@ public class DetailActivity extends Activity {
                 gcData.archived = Gsak.isArchived(c.getString(c.getColumnIndex("Status")));
                 gcData.found = Gsak.isFound(c.getInt(c.getColumnIndex("Found")));
                 gcData.premiumOnly = Gsak.isPremium(c.getInt(c.getColumnIndex("Found")));
-                if (Gsak.isCorrected(c.getInt(c.getColumnIndex("HasCorrected")))) {
-                    gcData.computed = true;
-                } else {
-                    gcData.computed = false;
-                }
+                gcData.computed = Gsak.isCorrected(c.getInt(c.getColumnIndex("HasCorrected")));
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
                 Date date = new Date();
@@ -92,12 +88,12 @@ public class DetailActivity extends Activity {
                 gcData.shortDescription = c.getString(c.getColumnIndex("ShortDescription"));
                 gcData.longDescription = c.getString(c.getColumnIndex("LongDescription"));
 
-                /** TB & GC **/
+                /* TB & GC */
                 gcData.travelBugs = Gsak.parseTravelBug(c.getString(c.getColumnIndex("TravelBugs")));
                 c.close();
 
-                /** Add waypoints to Geocache **/
-                ArrayList<PointGeocachingDataWaypoint> pgdws = new ArrayList<PointGeocachingDataWaypoint>();
+                /* Add waypoints to Geocache */
+                ArrayList<PointGeocachingDataWaypoint> pgdws = new ArrayList<>();
 
                 Cursor wp = database.rawQuery("SELECT * FROM WayAll WHERE cParent = ?", new String[]{gcData.cacheID});
                 while (wp.moveToNext()) {
@@ -114,10 +110,10 @@ public class DetailActivity extends Activity {
 
                 gcData.waypoints = pgdws;
 
-                /** Add logs to Geocache **/
+                /* Add logs to Geocache */
                 String limit = PreferenceManager.getDefaultSharedPreferences(this).getString("logs_count", "20");
                 Cursor logs = database.rawQuery("SELECT * FROM LogsAll WHERE lParent = ? ORDER BY lDate DESC LIMIT ?", new String[]{gcData.cacheID, limit});
-                ArrayList<PointGeocachingDataLog> pgdls = new ArrayList<PointGeocachingDataLog>();
+                ArrayList<PointGeocachingDataLog> pgdls = new ArrayList<>();
 
                 while (logs.moveToNext()) {
                     PointGeocachingDataLog pgdl = new PointGeocachingDataLog();
@@ -130,17 +126,12 @@ public class DetailActivity extends Activity {
                 logs.close();
                 gcData.logs = pgdls;
 
-                /** Add attributes to Geocache **/
+                /* Add attributes to Geocache */
                 Cursor at = database.rawQuery("SELECT * FROM Attributes WHERE aCode = ?", new String[]{gcData.cacheID});
-                ArrayList<PointGeocachingAttributes> pgas = new ArrayList<PointGeocachingAttributes>();
+                ArrayList<PointGeocachingAttributes> pgas = new ArrayList<>();
 
                 while (at.moveToNext()) {
-                    Boolean isPositive = false;
-                    if (at.getInt(at.getColumnIndex("aInc")) == 1) {
-                        isPositive = true;
-                    } else {
-                        isPositive = false;
-                    }
+                    boolean isPositive = at.getInt(at.getColumnIndex("aInc")) == 1;
                     PointGeocachingAttributes pga = new PointGeocachingAttributes(at.getInt(at.getColumnIndex("aId")), isPositive);
                     pgas.add(pga);
                 }

@@ -28,7 +28,6 @@ import menion.android.locus.addon.publiclib.LocusUtils;
  */
 public class MainActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "LocusAddonGsakDatabase|MainActivity";
     private Preference dbPick;
     private EditTextPreference nick;
     private EditTextPreference logsCount;
@@ -45,7 +44,7 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
 
         own = (CheckBoxPreference) getPreferenceScreen().findPreference("own");
 
-        dbPick = (Preference) getPreferenceScreen().findPreference("db_pick");
+        dbPick = getPreferenceScreen().findPreference("db_pick");
         dbPick.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             public boolean onPreferenceClick(Preference pref) {
@@ -62,11 +61,7 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
 
         nick = (EditTextPreference) getPreferenceScreen().findPreference("nick");
         nick.setSummary(editPreferenceSummary(nick.getText(), getText(R.string.pref_nick_sum)));
-        if (nick.getText().trim().length() == 0) {
-            own.setEnabled(false);
-        } else {
-            own.setEnabled(true);
-        }
+        own.setEnabled(nick.getText().trim().length() != 0);
 
         radius = (EditTextPreference) getPreferenceScreen().findPreference("radius");
         radius.setSummary(editPreferenceSummary(radius.getText() + " km", getText(R.string.pref_radius_sum)));

@@ -28,7 +28,7 @@ import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
  */
 public class PointLoader {
 
-    private static final String TAG = "LocusAddonGsakDatabase|PointLoader";
+    private static final String TAG = "PointLoader";
     private static PointLoader mInstance;
     private Context context;
     private Intent intent;
@@ -61,8 +61,6 @@ public class PointLoader {
                 if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("livemap", false)
                         && !PreferenceManager.getDefaultSharedPreferences(context).getString("db", "").equals("")) {
                     if ((update.newMapCenter || update.newZoomLevel) && update.mapVisible) {
-                        if (mapLoadAsyncTask instanceof AsyncTask) {
-                        }
                         if (mapLoadAsyncTask == null || mapLoadAsyncTask.getStatus() == AsyncTask.Status.FINISHED) {
                             mapLoadAsyncTask = new MapLoadAsyncTask();
                             mapLoadAsyncTask.execute(update);
@@ -201,7 +199,7 @@ public class PointLoader {
                 }
                 filePath += "/Android/data/net.kuratkoo.locusaddon.gsakdatabase/livemap.locus";
 
-                ArrayList<PointsData> data = new ArrayList<PointsData>();
+                ArrayList<PointsData> data = new ArrayList<>();
                 data.add(pd);
                 DisplayData.sendDataFileSilent(context, data, filePath);
             } catch (RequiredVersionMissingException rvme) {
