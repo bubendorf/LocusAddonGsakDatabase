@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GSAK Database for Locus</string>
+    <string name="app_name">GSAK for Locus</string>
     <string name="pref_path">Nastavení cest</string>
     <string name="pref_db_title">Databáze GSAKu</string>
     <string name="pref_db_sum">Cesta k databázi GSAKu (soubor *.db3)</string>

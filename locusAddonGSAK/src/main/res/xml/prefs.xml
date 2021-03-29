@@ -75,10 +75,10 @@
                 android:icon="@drawable/gc_type_cito"
                 />
             <CheckBoxPreference
-                android:title="@string/pref_type_mega"
+                android:title="@string/pref_type_lab"
                 android:defaultValue="true"
-                android:key="gc_type_mega"
-                android:icon="@drawable/gc_type_mega"
+                android:key="gc_type_lab"
+                android:icon="@drawable/gc_type_gps"
                 />
             <CheckBoxPreference
                 android:title="@string/pref_type_wig"

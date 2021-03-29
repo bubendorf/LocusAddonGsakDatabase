@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GSAK Database for Locus</string>
+    <string name="app_name">GSAK for Locus</string>
     <string name="pref_path">Path settings</string>
     <string name="pref_db_title">GSAK database path</string>
     <string name="pref_db_sum">Path to database GSAK file (*.db3 file)</string>
@@ -50,12 +50,11 @@
 
     <string name="pref_type_corrected" translatable="false">Corrected coordinates</string>
     <string name="pref_type_traditional" translatable="false">Traditional Cache</string>
-    <string name="pref_type_multi" translatable="false">Multi-Cache (Offset Cache)</string>
-    <string name="pref_type_mystery" translatable="false">Mystery or Puzzle Caches</string>
-    <string name="pref_type_earth" translatable="false">EarthCache</string>
+    <string name="pref_type_multi" translatable="false">Multi-Cache</string>
+    <string name="pref_type_mystery" translatable="false">Mystery Cache</string>
+    <string name="pref_type_earth" translatable="false">Earth Cache</string>
     <string name="pref_type_letter" translatable="false">Letterbox Hybrid</string>
     <string name="pref_type_event" translatable="false">Event Cache</string>
-    <string name="pref_type_mega" translatable="false">Mega-Event Cache</string>
     <string name="pref_type_cito" translatable="false">Cache In Trash Out Event</string>
     <string name="pref_type_wig" translatable="false">Wherigo™ Cache</string>
     <string name="pref_type_virtual" translatable="false">Virtual Cache</string>
@@ -66,4 +65,5 @@
     <string name="pref_type_10years" translatable="false">10 Years! Event Cache</string>
     <string name="pref_type_benchmark" translatable="false">Benchmark Hunting</string>
     <string name="pref_type_ape" translatable="false">Project A.P.E. Cache</string>
+    <string name="pref_type_lab" translatable="false">Adventure LAB Cache</string>
 </resources>
