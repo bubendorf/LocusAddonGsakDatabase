@@ -1,12 +1,14 @@
 package net.kuratkoo.locusaddon.gsakdatabase.util;
 
 import android.content.SharedPreferences;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import menion.android.locus.addon.publiclib.geoData.PointGeocachingData;
 import menion.android.locus.addon.publiclib.geoData.PointGeocachingDataTravelBug;
 
@@ -38,7 +40,7 @@ public class Gsak {
                 return PointGeocachingData.CACHE_SIZE_NOT_CHOSEN;
         }
     }
-    
+
     public static int convertCacheType(String type) {
         switch (type) {
             case "C":

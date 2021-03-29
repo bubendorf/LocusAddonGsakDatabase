@@ -6,13 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import menion.android.locus.addon.publiclib.DisplayData;
 import menion.android.locus.addon.publiclib.PeriodicUpdate;
 import menion.android.locus.addon.publiclib.PeriodicUpdate.UpdateContainer;
@@ -20,7 +23,6 @@ import menion.android.locus.addon.publiclib.geoData.Point;
 import menion.android.locus.addon.publiclib.geoData.PointGeocachingData;
 import menion.android.locus.addon.publiclib.geoData.PointsData;
 import menion.android.locus.addon.publiclib.utils.RequiredVersionMissingException;
-import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
 
 /**
  * PointLoader
@@ -129,16 +131,16 @@ public class PointLoader {
 
                 List<String> geocacheTypes = Gsak.geocacheTypesFromFilter(PreferenceManager.getDefaultSharedPreferences(context));
                 boolean first = true;
-                String sqlType = "";
+                StringBuilder sqlType = new StringBuilder();
                 for (String geocacheType : geocacheTypes) {
                     if (first) {
-                        sqlType += geocacheType;
+                        sqlType.append(geocacheType);
                         first = false;
                     } else {
-                        sqlType += " OR " + geocacheType;
+                        sqlType.append(" OR ").append(geocacheType);
                     }
                 }
-                if (!sqlType.equals("")) {
+                if (!sqlType.toString().equals("")) {
                     sql += " AND (" + sqlType + ")";
                 }
 
@@ -192,12 +194,8 @@ public class PointLoader {
             }
 
             try {
-                File externalDir = Environment.getExternalStorageDirectory();
-                String filePath = externalDir.getAbsolutePath();
-                if (!filePath.endsWith("/")) {
-                    filePath += "/";
-                }
-                filePath += "/Android/data/net.kuratkoo.locusaddon.gsakdatabase/livemap.locus";
+                File fd = new File(PreferenceManager.getDefaultSharedPreferences(context).getString("db", ""));
+                String filePath = fd.getParent() + "livemap.locus";
 
                 ArrayList<PointsData> data = new ArrayList<>();
                 data.add(pd);

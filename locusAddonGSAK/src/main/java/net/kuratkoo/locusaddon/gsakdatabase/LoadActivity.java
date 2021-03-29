@@ -1,6 +1,6 @@
 package net.kuratkoo.locusaddon.gsakdatabase;
 
-import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -12,9 +12,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,24 +24,25 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
 import menion.android.locus.addon.publiclib.DisplayData;
 import menion.android.locus.addon.publiclib.LocusIntents;
-import menion.android.locus.addon.publiclib.geoData.PointGeocachingData;
-import menion.android.locus.addon.publiclib.geoData.PointsData;
 import menion.android.locus.addon.publiclib.geoData.Point;
+import menion.android.locus.addon.publiclib.geoData.PointGeocachingData;
 import menion.android.locus.addon.publiclib.geoData.PointGeocachingDataWaypoint;
+import menion.android.locus.addon.publiclib.geoData.PointsData;
 import menion.android.locus.addon.publiclib.utils.RequiredVersionMissingException;
 
 /**
  * LoadActivity
- * @authovr Radim -kuratkoo- Vaculik <kuratkoo@gmail.com>
+ * @author Radim -kuratkoo- Vaculik <kuratkoo@gmail.com>
  */
 public class LoadActivity extends Activity implements DialogInterface.OnDismissListener {
 
-    private static final String TAG = "LocusAddonGsakDatabase|LoadActivity";
+    private static final String TAG = "LoadActivity";
     private ProgressDialog progress;
     private ArrayList<PointsData> data;
-    private File externalDir;
+    private File fd;
     private Point point;
     private LoadAsyncTask loadAsyncTask;
 
@@ -104,16 +107,16 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
 
                 List<String> geocacheTypes = Gsak.geocacheTypesFromFilter(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this));
                 boolean first = true;
-                String sqlType = "";
+                StringBuilder sqlType = new StringBuilder();
                 for (String geocacheType : geocacheTypes) {
                     if (first) {
-                        sqlType += geocacheType;
+                        sqlType.append(geocacheType);
                         first = false;
                     } else {
-                        sqlType += " OR " + geocacheType;
+                        sqlType.append(" OR ").append(geocacheType);
                     }
                 }
-                if (!sqlType.equals("")) {
+                if (!sqlType.toString().equals("")) {
                     sql += " AND (" + sqlType + ")";
                 }
 
@@ -159,7 +162,9 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                         }
                     }
                     String gcCode = pair.gcCode;
-                    publishProgress(++count);
+                    if (++count % 10 == 0) {
+                        publishProgress(count);
+                    }
                     c = db.rawQuery("SELECT * FROM CachesAll WHERE Code = ?", new String[]{gcCode});
                     c.moveToNext();
                     Location loc = new Location(TAG);
@@ -184,7 +189,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                     gcData.premiumOnly = Gsak.isPremium(c.getInt(c.getColumnIndex("Found")));
                     gcData.computed = Gsak.isCorrected(c.getInt(c.getColumnIndex("HasCorrected")));
 
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
                     Date date = new Date();
                     gcData.exported = dateFormat.format(date);
 
@@ -244,11 +249,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                 return;
             }
 
-            String filePath = externalDir.getAbsolutePath();
-            if (!filePath.endsWith("/")) {
-                filePath += "/";
-            }
-            filePath += "/Android/data/net.kuratkoo.locusaddon.gsakdatabase/data.locus";
+            String filePath = fd.getParent() + "data.locus";
 
             try {
                 DisplayData.sendDataFile(LoadActivity.this,
@@ -292,14 +293,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
         progress.setTitle(getString(R.string.loading));
         progress.setOnDismissListener(this);
 
-        externalDir = Environment.getExternalStorageDirectory();
-        if (externalDir == null || !(externalDir.exists())) {
-            Toast.makeText(LoadActivity.this, R.string.no_external_storage, Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
-        File fd = new File(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("db", ""));
+        fd = new File(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("db", ""));
         if (!Gsak.isGsakDatabase(fd)) {
             Toast.makeText(LoadActivity.this, R.string.no_db_file, Toast.LENGTH_LONG).show();
             finish();

@@ -1,6 +1,6 @@
 package net.kuratkoo.locusaddon.gsakdatabase;
 
-import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,16 +8,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
+
+import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import menion.android.locus.addon.publiclib.LocusConst;
-import menion.android.locus.addon.publiclib.geoData.PointGeocachingData;
 import menion.android.locus.addon.publiclib.geoData.Point;
 import menion.android.locus.addon.publiclib.geoData.PointGeocachingAttributes;
+import menion.android.locus.addon.publiclib.geoData.PointGeocachingData;
 import menion.android.locus.addon.publiclib.geoData.PointGeocachingDataLog;
 import menion.android.locus.addon.publiclib.geoData.PointGeocachingDataWaypoint;
 
@@ -27,7 +30,7 @@ import menion.android.locus.addon.publiclib.geoData.PointGeocachingDataWaypoint;
  */
 public class DetailActivity extends Activity {
 
-    private static final String TAG = "LocusAddonGsakDatabase|DetailActivity";
+    private static final String TAG = "DetailActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +74,7 @@ public class DetailActivity extends Activity {
                 gcData.premiumOnly = Gsak.isPremium(c.getInt(c.getColumnIndex("Found")));
                 gcData.computed = Gsak.isCorrected(c.getInt(c.getColumnIndex("HasCorrected")));
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
                 Date date = new Date();
                 gcData.exported = dateFormat.format(date);
 
