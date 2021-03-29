@@ -31,6 +31,7 @@ public class Gsak {
             case "Micro":
                 return PointGeocachingData.CACHE_SIZE_MICRO;
             case "Not chosen":
+            case "Unknown":
                 return PointGeocachingData.CACHE_SIZE_NOT_CHOSEN;
             case "Other":
                 return PointGeocachingData.CACHE_SIZE_OTHER;
@@ -52,11 +53,11 @@ public class Gsak {
             case "B":
                 return PointGeocachingData.CACHE_TYPE_LETTERBOX;
             case "Q":
-                return PointGeocachingData.CACHE_TYPE_GPS_ADVENTURE;
+                return PointGeocachingData.CACHE_TYPE_ADVENTURE_LAB;
             case "Z":
                 return PointGeocachingData.CACHE_TYPE_MEGA_EVENT;
             case "J":
-                return PointGeocachingData.CACHE_TYPE_MEGA_EVENT; // Should be GIGA
+                return PointGeocachingData.CACHE_TYPE_GIGA_EVENT;
             case "M":
                 return PointGeocachingData.CACHE_TYPE_MULTI;
             case "T":
@@ -121,9 +122,11 @@ public class Gsak {
             case "Trailhead":
                 return PointGeocachingData.CACHE_WAYPOINT_TYPE_TRAILHEAD;
             case "Physical Stage":
-                return "Physical Stage";
+                return PointGeocachingData.CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
             case "Virtual Stage":
-                return "Virtual Stage";
+                return PointGeocachingData.CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
+            case "Original Coordinates":
+                return PointGeocachingData.CACHE_WAYPOINT_TYPE_REFERENCE;
             default:
                 return PointGeocachingData.CACHE_WAYPOINT_TYPE_REFERENCE;
         }
@@ -172,7 +175,7 @@ public class Gsak {
 
     public static ArrayList<PointGeocachingDataTravelBug> parseTravelBug(String tb) {
         ArrayList<PointGeocachingDataTravelBug> pgdtbl = new ArrayList<>();
-        Pattern p = Pattern.compile("<BR>([^\\(]+)\\(id = ([0-9]+), ref = ([A-Z0-9]+)\\)");
+        Pattern p = Pattern.compile("<BR>([^(]+)\\(id = ([0-9]+), ref = ([A-Z0-9]+)\\)");
         Matcher m = p.matcher(tb);
         while (m.find()) {
             MatchResult mr = m.toMatchResult();

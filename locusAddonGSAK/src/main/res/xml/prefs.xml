@@ -78,7 +78,7 @@
                 android:title="@string/pref_type_lab"
                 android:defaultValue="true"
                 android:key="gc_type_lab"
-                android:icon="@drawable/gc_type_gps"
+                android:icon="@drawable/gc_type_lab"
                 />
             <CheckBoxPreference
                 android:title="@string/pref_type_wig"

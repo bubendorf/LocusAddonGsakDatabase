@@ -57,7 +57,9 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
         @Override
         protected void onPreExecute() {
             progress.show();
-            db = SQLiteDatabase.openDatabase(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("db", ""), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+            db = SQLiteDatabase.openDatabase(
+                    PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("db", ""),
+                    null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
         }
 
         @Override
@@ -241,6 +243,8 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
 
         @Override
         protected void onPostExecute(Exception ex) {
+            db.close();
+            db = null;
             progress.dismiss();
 
             if (ex != null) {
@@ -277,6 +281,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
         protected void onCancelled() {
             super.onCancelled();
             db.close();
+            db = null;
             progress.dismiss();
             Toast.makeText(LoadActivity.this, R.string.canceled, Toast.LENGTH_LONG).show();
             LoadActivity.this.finish();

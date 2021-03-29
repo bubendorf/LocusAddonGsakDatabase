@@ -30,7 +30,7 @@
     <string name="pref_limit_nolimit">no limit</string>
     <string name="pref_limit_error">Limit must be number between 0 (no limit) and 9999</string>
     <string name="pref_locus">Locus settings</string>
-    <string name="pref_import_title">Allow import</string>
+    <string name="pref_import_title">Show import dialog in Locus</string>
     <string name="pref_import_sum">Allow import geocaches to Locus</string>
     <string name="pref_livemap_title">Live map</string>
     <string name="pref_livemap_sum">Live loading caches to map (enable in Locus: Settings → Other → Enable periodic updates)</string>
@@ -54,7 +54,7 @@
     <string name="pref_type_mystery" translatable="false">Mystery Cache</string>
     <string name="pref_type_earth" translatable="false">Earth Cache</string>
     <string name="pref_type_letter" translatable="false">Letterbox Hybrid</string>
-    <string name="pref_type_event" translatable="false">Event Cache</string>
+    <string name="pref_type_event" translatable="false">Event Caches</string>
     <string name="pref_type_cito" translatable="false">Cache In Trash Out Event</string>
     <string name="pref_type_wig" translatable="false">Wherigo™ Cache</string>
     <string name="pref_type_virtual" translatable="false">Virtual Cache</string>

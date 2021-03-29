@@ -88,7 +88,9 @@ public class PointLoader {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            db = SQLiteDatabase.openDatabase(PreferenceManager.getDefaultSharedPreferences(context).getString("db", ""), null, SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+            db = SQLiteDatabase.openDatabase(
+                    PreferenceManager.getDefaultSharedPreferences(context).getString("db", ""),
+                    null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
         }
 
         @Override
@@ -188,6 +190,7 @@ public class PointLoader {
         protected void onPostExecute(Exception exception) {
             super.onPostExecute(exception);
             db.close();
+            db = null;
             if (exception != null) {
                 Log.w(TAG, exception);
                 Toast.makeText(context, "Error: " + exception.getLocalizedMessage(), Toast.LENGTH_LONG).show();
@@ -209,6 +212,7 @@ public class PointLoader {
         protected void onCancelled() {
             super.onCancelled();
             db.close();
+            db = null;
         }
     }
 }
