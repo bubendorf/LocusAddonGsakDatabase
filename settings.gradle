@@ -1,0 +1,2 @@
+include ':locusAddonPublicLib'
+include ':locusAddonGSAK'

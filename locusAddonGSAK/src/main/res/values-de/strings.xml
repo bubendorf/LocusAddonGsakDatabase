@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GSAK Datenbank für Locus</string>
+    <string name="pref_path">Speicherorteinstellungen</string>
+    <string name="pref_db_title">GSAK Datenbank</string>
+    <string name="pref_db_sum">Speicherort der GSAK Datenbank (*.db3 Datei)</string>
+    <string name="pref_db_pick_title">Wählen Sie die Datenbank Datei</string>
+    <string name="pref_filter">Filtereinstellungen</string>
+    <string name="pref_type_screen_title">Geocache Typ</string>
+    <string name="pref_type_screen_sum">Gefilterte Typen</string>
+    <string name="pref_nick_title">Accountname bei Geocaching.com</string>
+    <string name="pref_nick_sum">Um eigene Geocaches zu erkennen</string>
+    <string name="pref_disable_title">Deaktivierte Geocaches</string>
+    <string name="pref_disable_sum">Deaktivierte Geocaches in Locus laden.</string>
+    <string name="pref_found_title">Meine gefundenen Geocaches</string>
+    <string name="pref_found_sum">Läd deine gefundenen Geocaches in Locus.</string>
+    <string name="pref_own_title">Meine eigenen Geocaches</string>
+    <string name="pref_own_sum">Läd deine eigenen Geocaches in Locus.</string>
+    <string name="pref_own_fill">Zum aktivieren Geocaching.com Accountnamen eintragen!</string>
+    <string name="pref_archive_title">Archivierte Geocaches</string>
+    <string name="pref_archive_sum">Läd archivierte Geocaches in Locus.</string>
+    <string name="pref_logs_title">Loganzahl</string>
+    <string name="pref_logs_sum">Anzahl der Logs, die Locus aus der GSAK Datenbank läd.</string>
+    <string name="pref_logs_error">Die Anzahl muss eine Zahl zwischen 0 und 99 sein!</string>
+    <string name="pref_radius_title">Distanzradius</string>
+    <string name="pref_radius_sum">Distanzradius in km um Geocaches in Locus zu laden.</string>
+    <string name="pref_radius_error">Der Radius muss eine Zahl zwischen 1 and 99 sein!</string>
+    <string name="pref_limit_title">Geocacheanzahl</string>
+    <string name="pref_limit_sum">Anzahl der zuladenen Geocaches. Wenn der Wert gleich 0 ist, ist die Funktion deaktiviert.</string>
+    <string name="pref_limit_nolimit">Keine Begrenzung</string>
+    <string name="pref_limit_error">Begrenzung muss eine Zahl zwischen 0 (keine Begrenzung) und 9999 sein.</string>
+    <string name="pref_locus">Locus Einstellungen</string>
+    <string name="pref_import_title">Import erlauben</string>
+    <string name="pref_import_sum">Erlaubt Import von Geocaches in Locus.</string>
+    <string name="pref_livemap_title">Live Karte</string>
+    <string name="pref_livemap_sum">Direktes laden der Caches auf die Karte (aktiviere in Locus: Einstellungen → Verschiedenes → Aktiviere periodische Updates)</string>
+    <string name="loading">Läd</string>
+    <string name="geocaches">Geocaches</string>
+    <string name="loading_dots">Läd…</string>
+    <string name="load_from_gsak">Lade Geocaches aus GSAK Datenbank</string>
+    <string name="error">Fehler!</string>
+    <string name="install_it">Locus Anwendung nicht gefunden! Bitte installieren!</string>
+    <string name="update_it">Neuere Version von Locus nötig(>= 1.14.6)! Bitte updaten!</string>
+    <string name="out_of_memory">Speicherplatz reicht nicht aus! Ändere den Filter um die Geocacheanzahl zu verringern!</string>
+    <string name="no_external_storage">Externes Speichermedium (SD card) nicht gefunden!</string>
+    <string name="no_db_file">GSAK Datenbank nicht gefunden! Bitte eingeben!</string>
+    <string name="unable_to_load_geocaches">Laden der Geocaches nicht möglich!</string>
+    <string name="unable_to_load_detail">Laden der Geocachedetails nicht möglich!</string>
+    <string name="pref_about">Über</string>
+    <string name="pref_donate_title">Spende für die Entwicklung!</string>
+    <string name="pref_donate_sum">Gefällt dir dieses Addon? Möchtest du die Entwicklung unterstützen? Dann klicke hier und spende etwas!</string>
+    <string name="support_app">Unterstütze GSAK Datenbank für Locus</string>
+    <string name="support_like_it">Gefällt dir die  GSAK Datenbank für Locus App?</string>
+    <string name="support_rate">Bitte würdige die Arbeit der Entwickler mit einer 5 Sterne-Bewertung im Google Play.</string>
+    <string name="canceled">Läd stornieren!</string>
+</resources>

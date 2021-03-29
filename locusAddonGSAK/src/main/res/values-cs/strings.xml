@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GSAK Database for Locus</string>
+    <string name="pref_path">Nastavení cest</string>
+    <string name="pref_db_title">Databáze GSAKu</string>
+    <string name="pref_db_sum">Cesta k databázi GSAKu (soubor *.db3)</string>
+    <string name="pref_db_pick_title">Vyberte soubor databáze</string>
+    <string name="pref_filter">Nastavení filtru</string>
+    <string name="pref_type_screen_title">Typy keší</string>
+    <string name="pref_type_screen_sum">Budou filtrovány pouze zatrhlé keše</string>
+    <string name="pref_nick_title">Uživatelské jméno na Geocaching.com</string>
+    <string name="pref_nick_sum">Pro rozpoznání vlastních keší</string>
+    <string name="pref_disable_title">Neaktivní (disable) keše</string>
+    <string name="pref_disable_sum">Načte do Locusu neaktivní (disable) keše</string>
+    <string name="pref_found_title">Nalezené keše</string>
+    <string name="pref_found_sum">Načte do Locusu nalezené keše</string>
+    <string name="pref_own_title">Vlastní keše</string>
+    <string name="pref_own_sum">Načte do Locusu vlastní keše</string>
+    <string name="pref_own_fill">Pro aktivaci vyplňte uživatelské jméno na Geocaching.com.</string>
+    <string name="pref_archive_title">Archivované keše</string>
+    <string name="pref_archive_sum">Načte do Locusu archivované keše</string>
+    <string name="pref_logs_title">Počet logů</string>
+    <string name="pref_logs_sum">Počet posledních logů, které budou načteny ke keši</string>
+    <string name="pref_logs_error">Počet logů musí být číslo od 0 do 99</string>
+    <string name="pref_radius_title">Vzdálenost</string>
+    <string name="pref_radius_sum">Maximální vzdálenost pro načtení keší do Locusu</string>
+    <string name="pref_radius_error">Vzdálenost musí být číslo od 1 do 99</string>
+    <string name="pref_limit_title">Počet keší</string>
+    <string name="pref_limit_sum">Počet keší pro načtení. Pokud je hodnota rovna 0, limit není aplikován (neomezeno).</string>
+    <string name="pref_limit_nolimit">neomezeno</string>
+    <string name="pref_limit_error">Počet keší musí být číslo od 0 (neomezeno) do 9999</string>
+    <string name="pref_locus">Nastavení Locusu</string>
+    <string name="pref_import_title">Importovat</string>
+    <string name="pref_import_sum">Importovat keše do Locusu po načtení z databáze</string>
+    <string name="pref_livemap_title">Live mapa</string>
+    <string name="pref_livemap_sum">Živé načítání keší do mapy (povolte v Locusu: Nastavení → Různé → Povolit periodické aktualizace)</string>
+    <string name="loading">Načítám</string>
+    <string name="geocaches">keší</string>
+    <string name="loading_dots">Načítám…</string>
+    <string name="load_from_gsak">Načíst keše z GSAKu</string>
+    <string name="error">Chyba!</string>
+    <string name="install_it">Aplikace Locus nebyla nalezena! Prosím, nainstalujte ji!</string>
+    <string name="update_it">Je požadována novější verze Locusu (>= 1.14.6)! Prosím, aktualizujte!</string>
+    <string name="out_of_memory">Nedostatek paměti! Změntě filtr ke snížení počtu načítaných keší!</string>
+    <string name="no_external_storage">Nebylo nalezeno externí úložiště (SD karta)!</string>
+    <string name="no_db_file">Nebyla nalezen soubor s GSAK databází! Nastavte ji!</string>
+    <string name="unable_to_load_geocaches">Nepodařilo se načíst kešky!</string>
+    <string name="unable_to_load_detail">Nepodařilo se načíst detail kešky!</string>
+    <string name="pref_about">O aplikaci</string>
+    <string name="pref_donate_title">Přispěj na vývoj!</string>
+    <string name="pref_donate_sum">Líbí se ti addon a chtěl bys podpořit další vývoj? Klikni a přispěj pár kaček!</string>
+    <string name="support_app">Podpořte GSAK Database for Locus</string>
+    <string name="support_like_it">Líbí se Vám aplikace GSAK Database for Locus?</string>
+    <string name="support_rate">Oceňte prosím vývojáře přidáním 5-ti hvězdiček v Google Play.</string>
+    <string name="canceled">Načítání zrušeno!</string>
+</resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GSAK Database voor Locus</string>
+    <string name="pref_path">Pad instellingen</string>
+    <string name="pref_db_title">GSAK database pad</string>
+    <string name="pref_db_sum">Pad naar database GSAK bestand (*.db3 bestand)</string>
+    <string name="pref_db_pick_title">Selecteer het database bestand</string>
+    <string name="pref_filter">Filter </string>
+    <string name="pref_type_screen_title">Geocache type</string>
+    <string name="pref_type_screen_sum">Filter geselecteerde types</string>
+    <string name="pref_nick_title">Naam op Geocaching.com</string>
+    <string name="pref_nick_sum">Voor het herkennen van eigen caches</string>
+    <string name="pref_disable_title">Uitgeschakelde geocaches</string>
+    <string name="pref_disable_sum">Laad uitgeschakelde caches in Locus</string>
+    <string name="pref_found_title">Mijn gevonden geocaches</string>
+    <string name="pref_found_sum">Laad door mij gevonden geocaches in Locus</string>
+    <string name="pref_own_title">Mijn eigen geocaches</string>
+    <string name="pref_own_sum">Laad mijn eigen geocaches in Locus.</string>
+    <string name="pref_own_fill"> Vul Geocaching.com naam in om in te schakelen.</string>
+    <string name="pref_archive_title">Gearchiveerde geocaches</string>
+    <string name="pref_archive_sum">Laad gearchiveerde geocaches in Locus</string>
+    <string name="pref_logs_title">Aantal logs</string>
+    <string name="pref_logs_sum">Aantal logs, welke Locus laad uit GSAK database</string>
+    <string name="pref_logs_error">Aantal logs moet een getal zijn tussen 0 en 99</string>
+    <string name="pref_radius_title">Straal afstand</string>
+    <string name="pref_radius_sum">Afstand voor de straal in km om geocaches in Locus te laden</string>
+    <string name="pref_radius_error">Straal moet een getal zijn tussen 1 en 99</string>
+    <string name="pref_limit_title">Aantal geocaches</string>
+    <string name="pref_limit_sum">Aantal te laden geocaches. Bij het getal 0 wordt geen limiet gesteld (ongelimiteerd).</string>
+    <string name="pref_limit_nolimit">geen limit</string>
+    <string name="pref_limit_error">Limiet moet een getal zijn tussen 0 (ongelimiteerd) en 9999</string>
+    <string name="pref_locus">Locus instellingen</string>
+    <string name="pref_import_title">Importeren toestaan</string>
+    <string name="pref_import_sum">Maakt het mogelijk om geocaches te importeren in Locus</string>
+    <string name="pref_livemap_title">Live kaart</string>
+    <string name="pref_livemap_sum">Live laden van caches naar kaart (Inschakelen in Locus: Instellingen → Diversen → Periodieke updates inschakelen)</string>    
+    <string name="loading">Laden</string>
+    <string name="geocaches">geocaches</string>
+    <string name="loading_dots">Laden…</string>
+    <string name="load_from_gsak">Laad GSAK geocaches</string>
+    <string name="error">Fout!</string>
+    <string name="install_it">Locus applicatie is niet gevonden! Graag installeren!</string>
+    <string name="update_it">Nieuwere versie van Locus benodigd (>= 1.14.6)! Graag updaten!</string>
+    <string name="out_of_memory">Onvoldoende geheugen! Wijzig filter om het aantal geocaches te verminderen!</string>
+    <string name="no_external_storage">Externe opslag (SD card) niet gevonden!</string>
+    <string name="no_db_file">GSAK database niet gevonden! Graag instellen!</string>
+    <string name="unable_to_load_geocaches">Niet mogelijk om geocaches te laden!</string>
+    <string name="unable_to_load_detail">Niet mogelijk om geocache details te laden!</string>
+    <string name="pref_about">Over</string>
+    <string name="pref_donate_title">Doneer voor ontwikkeling!</string>
+    <string name="pref_donate_sum">Vind u dit een handige add-on? Wilt u verdere ontwikkeling ondersteunen? Klik en doneer wat geld!</string>
+    <string name="support_app">Ondersteun GSAK Database voor Locus</string>
+    <string name="support_like_it">Bevalt GSAK Database voor Locus u goed?</string>
+    <string name="support_rate">Geef de ontwikkelaars een 5-sterren waardering in Google Play.</string>
+    <string name="canceled">Laden geannuleerd</string>
+</resources>
