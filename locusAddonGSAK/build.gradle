@@ -8,12 +8,20 @@ android {
         applicationId "net.kuratkoo.locusaddon.gsakdatabase"
         minSdkVersion 21
         targetSdkVersion 21
+        versionCode 11
+        versionName "3.1.0"
+        archivesBaseName = "LocusAddonGSAK-$versionName"
     }
 
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles 'proguard.cfg'
+        }
+        debug {
+//            applicationIdSuffix ".debug"
+            minifyEnabled false
+            debuggable true
         }
     }
 

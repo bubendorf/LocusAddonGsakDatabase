@@ -1,14 +1,9 @@
 package net.kuratkoo.locusaddon.gsakdatabase;
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -17,9 +12,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.Spanned;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Toast;
+
 import menion.android.locus.addon.publiclib.LocusUtils;
 
 /**
@@ -29,6 +23,8 @@ import menion.android.locus.addon.publiclib.LocusUtils;
 public class MainActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
     private Preference dbPick;
+    private Preference db2Pick;
+    private Preference db3Pick;
     private EditTextPreference nick;
     private EditTextPreference logsCount;
     private EditTextPreference radius;
@@ -45,19 +41,16 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
         own = (CheckBoxPreference) getPreferenceScreen().findPreference("own");
 
         dbPick = getPreferenceScreen().findPreference("db_pick");
-        dbPick.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(Preference pref) {
-                try {
-                    LocusUtils.intentPickFile(MainActivity.this, 0, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
-                } catch (ActivityNotFoundException anfe) {
-                    Toast.makeText(MainActivity.this, "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                }
-                return true;
-            }
-        });
-
+        dbPick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(0));
         dbPick.setSummary(editPreferenceSummary(PreferenceManager.getDefaultSharedPreferences(this).getString("db", ""), getText(R.string.pref_db_sum)));
+
+        db2Pick = getPreferenceScreen().findPreference("db2_pick");
+        db2Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(1));
+        db2Pick.setSummary(editPreferenceSummary(PreferenceManager.getDefaultSharedPreferences(this).getString("db2", ""), getText(R.string.pref_db_sum)));
+
+        db3Pick = getPreferenceScreen().findPreference("db3_pick");
+        db3Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(2));
+        db3Pick.setSummary(editPreferenceSummary(PreferenceManager.getDefaultSharedPreferences(this).getString("db3", ""), getText(R.string.pref_db_sum)));
 
         nick = (EditTextPreference) getPreferenceScreen().findPreference("nick");
         nick.setSummary(editPreferenceSummary(nick.getText(), getText(R.string.pref_nick_sum)));
@@ -88,10 +81,32 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
         }
     }
 
+    private Preference.OnPreferenceClickListener getOnDBPreferenceClickListener(final int requestCode) {
+        return new Preference.OnPreferenceClickListener() {
+
+            public boolean onPreferenceClick(Preference pref) {
+                try {
+                    LocusUtils.intentPickFile(MainActivity.this, requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
+                } catch (ActivityNotFoundException anfe) {
+                    Toast.makeText(MainActivity.this, "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
+                return true;
+            }
+        };
+    }
+
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("db")) {
             String path = sharedPreferences.getString(key, "");
             dbPick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db_sum)));
+        }
+        if (key.equals("db2")) {
+            String path = sharedPreferences.getString(key, "");
+            db2Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db_sum)));
+        }
+        if (key.equals("db3")) {
+            String path = sharedPreferences.getString(key, "");
+            db3Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db_sum)));
         }
 
         if (key.equals("nick")) {
@@ -149,14 +164,22 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        if (requestCode == 0) {
+        if (requestCode >= 0 && requestCode <= 2) {
             if (resultCode == RESULT_OK && data != null) {
                 String filename = data.getData().toString().replace("file://", "");
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("db", filename);
+                if (requestCode == 0) {
+                    editor.putString("db", filename);
+                    dbPick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db_sum)));
+                } else if (requestCode == 1) {
+                    editor.putString("db2", filename);
+                    db2Pick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db2_sum)));
+                } else {
+                    editor.putString("db3", filename);
+                    db3Pick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db3_sum)));
+                }
                 editor.commit();
-                dbPick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db_sum)));
             }
         }
     }

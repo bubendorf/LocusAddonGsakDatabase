@@ -7,12 +7,12 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import menion.android.locus.addon.publiclib.DisplayData;
 import menion.android.locus.addon.publiclib.LocusIntents;
@@ -32,6 +34,10 @@ import menion.android.locus.addon.publiclib.geoData.PointGeocachingData;
 import menion.android.locus.addon.publiclib.geoData.PointGeocachingDataWaypoint;
 import menion.android.locus.addon.publiclib.geoData.PointsData;
 import menion.android.locus.addon.publiclib.utils.RequiredVersionMissingException;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import static java.lang.Float.parseFloat;
+import static java.lang.Integer.parseInt;
 
 /**
  * LoadActivity
@@ -53,13 +59,26 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
     private class LoadAsyncTask extends AsyncTask<Point, Integer, Exception> {
 
         private SQLiteDatabase db;
+        private SQLiteDatabase db2;
+        private SQLiteDatabase db3;
 
         @Override
         protected void onPreExecute() {
             progress.show();
-            db = SQLiteDatabase.openDatabase(
-                    PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("db", ""),
-                    null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
+
+            SharedPreferences sharedPreferences = getDefaultSharedPreferences(LoadActivity.this);
+            if (sharedPreferences.getBoolean("pref_use_db", true)) {
+                db = SQLiteDatabase.openDatabase(sharedPreferences.getString("db", ""),
+                        null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
+            }
+            if (sharedPreferences.getBoolean("pref_use_db2", false)) {
+                db2 = SQLiteDatabase.openDatabase(sharedPreferences.getString("db2", ""),
+                        null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
+            }
+            if (sharedPreferences.getBoolean("pref_use_db3", false)) {
+                db3 = SQLiteDatabase.openDatabase(sharedPreferences.getString("db3", ""),
+                        null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
+            }
         }
 
         @Override
@@ -69,105 +88,57 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
 
         protected Exception doInBackground(Point... pointSet) {
             try {
-                if (this.isCancelled()) {
+                if (isCancelled()) {
                     return null;
                 }
 
-                Point pp = pointSet[0];
-                Location curr = pp.getLocation();
-                PointsData pd = new PointsData("GSAK data");
-                float radius = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("radius", "1")) / 70;
+                List<Pair> gcCodes = new ArrayList<>(256);
+                Set<String> alreadyLoaded = new HashSet<>(256);
 
-                String[] cond = new String[]{
-                    String.valueOf(curr.getLatitude() - radius),
-                    String.valueOf(curr.getLatitude() + radius),
-                    String.valueOf(curr.getLongitude() - radius),
-                    String.valueOf(curr.getLongitude() + radius)
-                };
-                Cursor c;
-                String sql = "SELECT Latitude, Longitude, Code, PlacedBy FROM Caches WHERE (status = 'A'";
-
-                // Disable geocaches
-                if (PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getBoolean("disable", false)) {
-                    sql = sql + " OR status = 'T'";
-                }
-
-                // Archived geocaches
-                if (PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getBoolean("archive", false)) {
-                    sql = sql + " OR status = 'X'";
-                }
-
-                sql = sql + ") ";
-
-                if (!PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getBoolean("found", false)) {
-                    sql = sql + " AND Found = 0";
-                }
-
-                if (!PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getBoolean("own", false)) {
-                    sql = sql + " AND PlacedBy != '" + PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("nick", "") + "'";
-                }
-
-                List<String> geocacheTypes = Gsak.geocacheTypesFromFilter(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this));
-                boolean first = true;
-                StringBuilder sqlType = new StringBuilder();
-                for (String geocacheType : geocacheTypes) {
-                    if (first) {
-                        sqlType.append(geocacheType);
-                        first = false;
-                    } else {
-                        sqlType.append(" OR ").append(geocacheType);
-                    }
-                }
-                if (!sqlType.toString().equals("")) {
-                    sql += " AND (" + sqlType + ")";
-                }
-
-                sql += " AND CAST(Latitude AS REAL) > ? AND CAST(Latitude AS REAL) < ? AND CAST(Longitude AS REAL) > ? AND CAST(Longitude AS REAL) < ?";
-
-                c = db.rawQuery(sql, cond);
-
-                /* Load GC codes */
-                List<Pair> gcCodes = new ArrayList<>();
-                while (c.moveToNext()) {
-                    if (this.isCancelled()) {
-                        c.close();
+                Location curr = pointSet[0].getLocation();
+                if (db != null) {
+                    loadGCCodes(db, gcCodes, alreadyLoaded, curr);
+                    if (isCancelled()) {
                         return null;
                     }
-                    Location loc = new Location(TAG);
-                    loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
-                    loc.setLongitude(c.getDouble(c.getColumnIndex("Longitude")));
-                    if (loc.distanceTo(curr) < Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("radius", "1")) * 1000) {
-                        gcCodes.add(new Pair(loc.distanceTo(curr), c.getString(c.getColumnIndex("Code"))));
+                }
+                if (db2 != null) {
+                    loadGCCodes(db2, gcCodes, alreadyLoaded, curr);
+                    if (isCancelled()) {
+                        return null;
                     }
                 }
-                c.close();
+                if (db3 != null) {
+                    loadGCCodes(db3, gcCodes, alreadyLoaded, curr);
+                    if (isCancelled()) {
+                        return null;
+                    }
+                }
 
                 int count = 0;
-                int limit = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("limit", "0"));
+                int limit = parseInt(getDefaultSharedPreferences(LoadActivity.this).getString("limit", "0"));
 
                 if (limit > 0) {
                     Collections.sort(gcCodes, new Comparator<Pair>() {
-
                         public int compare(Pair p1, Pair p2) {
-                            return p1.distance.compareTo(p2.distance);
+                            return Float.compare(p1.distance, p2.distance);
                         }
                     });
                 }
 
+                PointsData pd = new PointsData("GSAK data");
                 for (Pair pair : gcCodes) {
-                    if (this.isCancelled()) {
+                    if (isCancelled()) {
                         return null;
                     }
-                    if (limit > 0) {
-                        if (count >= limit) {
+                    if (limit > 0 && count >= limit) {
                             break;
-                        }
                     }
                     String gcCode = pair.gcCode;
                     if (++count % 10 == 0) {
                         publishProgress(count);
                     }
-                    c = db.rawQuery("SELECT * FROM CachesAll WHERE Code = ?", new String[]{gcCode});
+                    Cursor c = pair.db.rawQuery("SELECT * FROM CachesAll WHERE Code = ?", new String[]{gcCode});
                     c.moveToNext();
                     Location loc = new Location(TAG);
                     loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
@@ -177,7 +148,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                     PointGeocachingData gcData = new PointGeocachingData();
                     gcData.cacheID = c.getString(c.getColumnIndex("Code"));
                     gcData.name = c.getString(c.getColumnIndex("Name"));
-                    gcData.owner = c.getString(c.getColumnIndex("PlacedBy"));
+                    gcData.owner = c.getString(c.getColumnIndex("OwnerName"));
                     gcData.placedBy = c.getString(c.getColumnIndex("PlacedBy"));
                     gcData.difficulty = c.getFloat(c.getColumnIndex("Difficulty"));
                     gcData.terrain = c.getFloat(c.getColumnIndex("Terrain"));
@@ -188,7 +159,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                     gcData.available = Gsak.isAvailable(c.getString(c.getColumnIndex("Status")));
                     gcData.archived = Gsak.isArchived(c.getString(c.getColumnIndex("Status")));
                     gcData.found = Gsak.isFound(c.getInt(c.getColumnIndex("Found")));
-                    gcData.premiumOnly = Gsak.isPremium(c.getInt(c.getColumnIndex("Found")));
+                    gcData.premiumOnly = Gsak.isPremium(c.getInt(c.getColumnIndex("IsPremium")));
                     gcData.computed = Gsak.isCorrected(c.getInt(c.getColumnIndex("HasCorrected")));
 
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -206,7 +177,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                     /* Add waypoints to Geocache */
                     ArrayList<PointGeocachingDataWaypoint> pgdws = new ArrayList<>();
 
-                    Cursor wp = db.rawQuery("SELECT * FROM WayAll WHERE cParent = ?", new String[]{gcData.cacheID});
+                    Cursor wp = pair.db.rawQuery("SELECT * FROM WayAll WHERE cParent = ?", new String[]{gcData.cacheID});
                     while (wp.moveToNext()) {
                         if (this.isCancelled()) {
                             wp.close();
@@ -232,7 +203,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                 data = new ArrayList<>();
                 data.add(pd);
 
-                if (this.isCancelled()) {
+                if (isCancelled()) {
                     return null;
                 }
                 return null;
@@ -241,10 +212,99 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
             }
         }
 
+        private void loadGCCodes(SQLiteDatabase database, List<Pair> gcCodes, Set<String> alreadyLoaded, Location curr) {
+            String sql = buildCacheSQL();
+
+            float radiusMeter = parseFloat(getDefaultSharedPreferences(LoadActivity.this).getString("radius", "25")) * 1000;
+            float radiusLatLon = radiusMeter / 1000 / 70;
+            float radiusNorthSouth = 360f / (40007863 / radiusMeter);
+            float radiusEastWest = 360f / (40075017 / radiusMeter) / (float)Math.cos(curr.getLatitude() / 180 * Math.PI);
+            String[] cond = new String[]{
+                    String.valueOf(curr.getLatitude() - radiusNorthSouth),
+                    String.valueOf(curr.getLatitude() + radiusNorthSouth),
+                    String.valueOf(curr.getLongitude() - radiusEastWest),
+                    String.valueOf(curr.getLongitude() + radiusEastWest)
+            };
+            /* Load GC codes */
+            Location loc = new Location(TAG);
+            Cursor c = database.rawQuery(sql, cond);
+            while (c.moveToNext()) {
+                if (isCancelled()) {
+                    c.close();
+                    return;
+                }
+                String code = c.getString(c.getColumnIndex("Code"));
+                if (!alreadyLoaded.contains(code)) {
+                    alreadyLoaded.add(code);
+                    loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
+                    loc.setLongitude(c.getDouble(c.getColumnIndex("Longitude")));
+                    if (loc.distanceTo(curr) <= radiusMeter) {
+                        gcCodes.add(new Pair(loc.distanceTo(curr), code, database));
+                    }
+                }
+            }
+            c.close();
+        }
+
+        private String buildCacheSQL() {
+            StringBuilder sql = new StringBuilder(256);
+            sql.append("SELECT Latitude, Longitude, Code FROM Caches WHERE (status = 'A'");
+
+            // Disable geocaches
+            SharedPreferences sharedPreferences = getDefaultSharedPreferences(LoadActivity.this);
+            if (sharedPreferences.getBoolean("disable", false)) {
+                sql.append(" OR status = 'T'");
+            }
+            // Archived geocaches
+            if (sharedPreferences.getBoolean("archive", false)) {
+                sql.append(" OR status = 'X'");
+            }
+            sql.append(") ");
+
+            // Found and not Found
+            boolean found = sharedPreferences.getBoolean("found", false);
+            boolean notfound = sharedPreferences.getBoolean("notfound", true);
+            if (found || notfound) {
+                sql.append(" AND ( 1=0 ");
+                if (found) {
+                    sql.append(" OR Found = 1");
+                }
+                if (notfound) {
+                    sql.append(" OR Found = 0");
+                }
+                sql.append(" ) ");
+            }
+
+            if (!sharedPreferences.getBoolean("own", false)) {
+                sql.append(" AND PlacedBy != '");
+                sql.append(sharedPreferences.getString("nick", ""));
+                sql.append("'");
+            }
+
+            List<String> geocacheTypes = Gsak.geocacheTypesFromFilter(sharedPreferences);
+            boolean first = true;
+            StringBuilder sqlType = new StringBuilder(256);
+            for (String geocacheType : geocacheTypes) {
+                if (first) {
+                    sqlType.append(geocacheType);
+                    first = false;
+                } else {
+                    sqlType.append(" OR ").append(geocacheType);
+                }
+            }
+            if (sqlType.length() > 0) {
+                sql.append(" AND (");
+                sql.append(sqlType);
+                sql.append(")");
+            }
+
+            sql.append(" AND CAST(Latitude AS REAL) > ? AND CAST(Latitude AS REAL) < ? AND CAST(Longitude AS REAL) > ? AND CAST(Longitude AS REAL) < ?");
+            return sql.toString();
+        }
+
         @Override
         protected void onPostExecute(Exception ex) {
-            db.close();
-            db = null;
+            closeDatabases();
             progress.dismiss();
 
             if (ex != null) {
@@ -259,7 +319,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                 DisplayData.sendDataFile(LoadActivity.this,
                         data,
                         filePath,
-                        PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getBoolean("import", true));
+                        getDefaultSharedPreferences(LoadActivity.this).getBoolean("import", true));
             } catch (OutOfMemoryError e) {
                 AlertDialog.Builder ad = new AlertDialog.Builder(LoadActivity.this);
                 ad.setIcon(android.R.drawable.ic_dialog_alert);
@@ -277,11 +337,25 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
             }
         }
 
+        private void closeDatabases() {
+            if (db != null) {
+                db.close();
+                db = null;
+            }
+            if (db2 != null) {
+                db2.close();
+                db2 = null;
+            }
+            if (db3 != null) {
+                db3.close();
+                db3 = null;
+            }
+        }
+
         @Override
         protected void onCancelled() {
             super.onCancelled();
-            db.close();
-            db = null;
+            closeDatabases();
             progress.dismiss();
             Toast.makeText(LoadActivity.this, R.string.canceled, Toast.LENGTH_LONG).show();
             LoadActivity.this.finish();
@@ -298,8 +372,21 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
         progress.setTitle(getString(R.string.loading));
         progress.setOnDismissListener(this);
 
-        fd = new File(PreferenceManager.getDefaultSharedPreferences(LoadActivity.this).getString("db", ""));
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(LoadActivity.this);
+        fd = new File(sharedPreferences.getString("db", ""));
         if (!Gsak.isGsakDatabase(fd)) {
+            Toast.makeText(LoadActivity.this, R.string.no_db_file, Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+        if (sharedPreferences.getBoolean("pref_use_db2", false) &&
+                !Gsak.isGsakDatabase(new File(sharedPreferences.getString("db2", "")))) {
+            Toast.makeText(LoadActivity.this, R.string.no_db_file, Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+        if (sharedPreferences.getBoolean("pref_use_db3", false) &&
+                !Gsak.isGsakDatabase(new File(sharedPreferences.getString("db3", "")))) {
             Toast.makeText(LoadActivity.this, R.string.no_db_file, Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -326,11 +413,13 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
     private static class Pair {
 
         private final String gcCode;
-        private final Float distance;
+        private final float distance;
+        private final SQLiteDatabase db;
 
-        public Pair(Float f, String s) {
-            this.distance = f;
-            this.gcCode = s;
+        public Pair(final float dist, final String code, final SQLiteDatabase db) {
+            this.distance = dist;
+            this.gcCode = code;
+            this.db = db;
         }
     }
 }

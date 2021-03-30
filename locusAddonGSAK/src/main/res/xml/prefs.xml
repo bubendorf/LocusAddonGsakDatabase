@@ -1,10 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="@string/app_name">
     <PreferenceCategory android:title="@string/pref_path">
+        <CheckBoxPreference
+            android:title="@string/pref_use_db"
+            android:defaultValue="true"
+            android:key="pref_use_db"
+            />
         <Preference
             android:title="@string/pref_db_title"
             android:key="db_pick"
             android:summary="@string/pref_db_sum"
+            />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_use_db2"
+            android:title="@string/pref_use_db2" />
+        <Preference
+            android:title="@string/pref_db2_title"
+            android:key="db2_pick"
+            android:summary="@string/pref_db2_sum"
+            />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_use_db3"
+            android:title="@string/pref_use_db3" />
+        <Preference
+            android:title="@string/pref_db3_title"
+            android:key="db3_pick"
+            android:summary="@string/pref_db3_sum"
             />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_locus">
@@ -154,6 +177,12 @@
             android:key="found"
             />
         <CheckBoxPreference
+            android:title="@string/pref_notfound_title"
+            android:defaultValue="true"
+            android:summary="@string/pref_notfound_sum"
+            android:key="notfound"
+            />
+        <CheckBoxPreference
             android:title="@string/pref_own_title"
             android:defaultValue="false"
             android:summary="@string/pref_own_sum"
@@ -166,19 +195,19 @@
             android:key="archive"
             />
         <EditTextPreference
-            android:defaultValue="0"
+            android:defaultValue="250"
             android:title="@string/pref_limit_title"
             android:summary="@string/pref_limit_sum"
             android:key="limit"
-            android:numeric="integer"
+            android:inputType="number"
             android:maxLength="4"
             />
         <EditTextPreference
-            android:defaultValue="1"
+            android:defaultValue="25"
             android:title="@string/pref_radius_title"
             android:summary="@string/pref_radius_sum"
             android:key="radius"
-            android:numeric="integer"
+            android:inputType="number"
             android:maxLength="2"
             />
         <EditTextPreference
@@ -186,7 +215,7 @@
             android:title="@string/pref_logs_title"
             android:key="logs_count"
             android:summary="@string/pref_logs_sum"
-            android:numeric="integer"
+            android:inputType="number"
             android:maxLength="2"
             />
     </PreferenceCategory>

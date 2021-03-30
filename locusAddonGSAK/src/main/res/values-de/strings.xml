@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">GSAK für Locus</string>
     <string name="pref_path">Speicherorteinstellungen</string>
-    <string name="pref_db_title">GSAK Datenbank</string>
-    <string name="pref_db_sum">Speicherort der GSAK Datenbank (*.db3 Datei)</string>
+    <string name="pref_db_title">Haupt GSAK Datenbank</string>
+    <string name="pref_db_sum">Speicherort der Haupt GSAK Datenbank (*.db3 Datei)</string>
     <string name="pref_db_pick_title">Wählen Sie die Datenbank Datei</string>
     <string name="pref_filter">Filtereinstellungen</string>
     <string name="pref_type_screen_title">Geocache Typ</string>
@@ -13,14 +13,14 @@
     <string name="pref_disable_title">Deaktivierte Geocaches</string>
     <string name="pref_disable_sum">Deaktivierte Geocaches in Locus laden.</string>
     <string name="pref_found_title">Meine gefundenen Geocaches</string>
-    <string name="pref_found_sum">Läd deine gefundenen Geocaches in Locus.</string>
+    <string name="pref_found_sum">Lädt deine gefundenen Geocaches in Locus.</string>
     <string name="pref_own_title">Meine eigenen Geocaches</string>
-    <string name="pref_own_sum">Läd deine eigenen Geocaches in Locus.</string>
+    <string name="pref_own_sum">Lädt deine eigenen Geocaches in Locus.</string>
     <string name="pref_own_fill">Zum aktivieren Geocaching.com Accountnamen eintragen!</string>
     <string name="pref_archive_title">Archivierte Geocaches</string>
-    <string name="pref_archive_sum">Läd archivierte Geocaches in Locus.</string>
+    <string name="pref_archive_sum">Lädt archivierte Geocaches in Locus.</string>
     <string name="pref_logs_title">Loganzahl</string>
-    <string name="pref_logs_sum">Anzahl der Logs, die Locus aus der GSAK Datenbank läd.</string>
+    <string name="pref_logs_sum">Anzahl der Logs, die Locus aus der GSAK Datenbank lädt.</string>
     <string name="pref_logs_error">Die Anzahl muss eine Zahl zwischen 0 und 99 sein!</string>
     <string name="pref_radius_title">Distanzradius</string>
     <string name="pref_radius_sum">Distanzradius in km um Geocaches in Locus zu laden.</string>
@@ -34,9 +34,9 @@
     <string name="pref_import_sum">Erlaubt Import von Geocaches in Locus.</string>
     <string name="pref_livemap_title">Live Karte (Kaputt - Nicht verwenden)</string>
     <string name="pref_livemap_sum">Direktes laden der Caches auf die Karte (aktiviere in Locus: Einstellungen → Verschiedenes → Verbinde mit AddOns)</string>
-    <string name="loading">Läd</string>
+    <string name="loading">Lädt</string>
     <string name="geocaches">Geocaches</string>
-    <string name="loading_dots">Läd…</string>
+    <string name="loading_dots">Lädt…</string>
     <string name="load_from_gsak">Lade Geocaches aus GSAK</string>
     <string name="error">Fehler!</string>
     <string name="install_it">Locus Anwendung nicht gefunden! Bitte installieren!</string>
@@ -46,5 +46,14 @@
     <string name="no_db_file">GSAK Datenbank nicht gefunden! Bitte eingeben!</string>
     <string name="unable_to_load_geocaches">Laden der Geocaches nicht möglich!</string>
     <string name="unable_to_load_detail">Laden der Geocachedetails nicht möglich!</string>
-    <string name="canceled">Läd stornieren!</string>
+    <string name="canceled">Lädtstornieren!</string>
+    <string name="pref_db2_title">Zweite GSAK Datenbank</string>
+    <string name="pref_db3_title">Dritte GSAK Datenbank</string>
+    <string name="pref_use_db">Haupt Datenbank verwenden</string>
+    <string name="pref_use_db2">Zweite Datenbank verwenden</string>
+    <string name="pref_use_db3">Dritte Datenbank verwenden</string>
+    <string name="pref_notfound_title">Meine (noch) nicht gefundenen Geocaches</string>
+    <string name="pref_notfound_sum">Lädt deine (noch) nicht gefundenen Geocaches</string>
+    <string name="pref_db2_sum">Speicherort der zweiten GSAK Datenbank (*.db3 Datei)</string>
+    <string name="pref_db3_sum">Speicherort der dritten GSAK Datenbank (*.db3 Datei)</string>
 </resources>
