@@ -7,10 +7,11 @@ android {
     defaultConfig {
         applicationId "net.kuratkoo.locusaddon.gsakdatabase"
         minSdkVersion 21
-        targetSdkVersion 21
+        targetSdkVersion 21 // Do not use a higher number!
         versionCode 11
         versionName "3.1.0"
-        archivesBaseName = "LocusAddonGSAK-$versionName"
+        //archivesBaseName = "LocusAddonGSAK-$versionName"
+        archivesBaseName = "${applicationId}-${versionCode}"
     }
 
     buildTypes {
@@ -25,12 +26,38 @@ android {
         }
     }
 
-    lintOptions {
+    flavorDimensions "dimension"
+
+    productFlavors {
+        main {
+            dimension "dimension"
+            resValue "string", "app_name", "GSAK Locus Main"
+            resValue "string", "load_from_gsak", "Load GSAK Main"
+        }
+        alternative {
+            dimension "dimension"
+            applicationIdSuffix ".alt"
+            resValue "string", "app_name", "GSAK Locus Alternative"
+            resValue "string", "load_from_gsak", "Load GSAK Alternative"
+        }
+    }
+        lintOptions {
         abortOnError false
         checkReleaseBuilds false
     }
 }
 
+/*android.applicationVariants.all { variant ->
+    variant.outputs.all {
+
+        outputFileName = applicationId
+        outputFileName += "-" + android.defaultConfig.versionName
+        outputFileName += "-" + variant.buildType.name
+        outputFileName += ".apk"
+    }
+}*/
+
 dependencies {
     implementation project(':locusAddonPublicLib')
+    //implementation 'com.asamm:locus-api-android:0.9.28'
 }

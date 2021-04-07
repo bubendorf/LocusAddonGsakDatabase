@@ -1,6 +1,6 @@
-# [Locus](http://www.locusmap.eu/) - addon [GSAK](http://gsak.net) Database
+# [Locus](https://www.locusmap.app/) - addon [GSAK](https://gsak.net/index.php) Database
 
-Do you know GSAK? 
+Do you know GSAK?  
 GSAK is a geocache management program where you can edit the final waypoints,
 add notes or other auxiliary points or import / export geocaches.
 
@@ -33,10 +33,10 @@ nastav správně cesty a spusť Locus. A jen naimportuj kešky.
 [![](http://i.imgur.com/GPT0L.png)](http://i.imgur.com/yquTP.png)
 [![](http://i.imgur.com/MGaZZ.png)](http://i.imgur.com/QRD46.png)
 
-## Autor
+## Author
 
-Radim -kuratkoo- Vaculik kuratkoo@gmail.com
-Markus Bubendorf markus@bubendorf.ch
+* Radim -kuratkoo- Vaculik kuratkoo@gmail.com
+* Markus Bubendorf markus@bubendorf.ch
 
 ### Překlad
 
