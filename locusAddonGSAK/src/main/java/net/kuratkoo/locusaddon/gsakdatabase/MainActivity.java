@@ -14,7 +14,8 @@ import android.text.Html;
 import android.text.Spanned;
 import android.widget.Toast;
 
-import menion.android.locus.addon.publiclib.LocusUtils;
+import locus.api.android.ActionFiles;
+
 
 /**
  * MainActivity
@@ -86,7 +87,7 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
 
             public boolean onPreferenceClick(Preference pref) {
                 try {
-                    LocusUtils.intentPickFile(MainActivity.this, requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
+                    ActionFiles.INSTANCE.actionPickFile(MainActivity.this, requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
                 } catch (ActivityNotFoundException anfe) {
                     Toast.makeText(MainActivity.this, "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }

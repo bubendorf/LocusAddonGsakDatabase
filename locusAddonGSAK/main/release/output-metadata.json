@@ -10,9 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 11,
-      "versionName": "3.1.0",
-      "outputFile": "net.kuratkoo.locusaddon.gsakdatabase-v3.1.0(11)-main-release.apk"
+      "versionCode": 12,
+      "versionName": "3.2.0",
+      "outputFile": "net.kuratkoo.locusaddon.gsakdatabase-12-main-release.apk"
     }
   ]
 }

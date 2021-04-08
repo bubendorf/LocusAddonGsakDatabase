@@ -19,11 +19,11 @@
             android:theme="@style/dialog_theme"
             android:configChanges="orientation">
             <intent-filter>
-                <action android:name="menion.android.locus.ON_POINT_ACTION" />
+                <action android:name="locus.api.android.INTENT_ITEM_POINT_TOOLS" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="menion.android.locus.MAIN_FUNCTION" />
+                <action android:name="locus.api.android.INTENT_ITEM_MAIN_FUNCTION_GC" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -33,7 +33,7 @@
             android:configChanges="orientation" />
         <receiver android:name=".receiver.LocationReceiver">
             <intent-filter>
-                <action android:name="menion.android.locus.PERIODIC_UPDATE" />
+                <action android:name="locus.api.android.ACTION_PERIODIC_UPDATE" />
             </intent-filter>
         </receiver>
     </application>

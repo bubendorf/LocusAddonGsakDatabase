@@ -13,4 +13,5 @@ gradle/
 locusAddonGSAK/build
 locusAddonGSAK/release
 locusAddonGSAK/debug
-locusAddonPublicLib/build
+locusAddonGSAK/main
+locusAddonGSAK/alternative

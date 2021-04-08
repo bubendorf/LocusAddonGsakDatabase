@@ -16,14 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import menion.android.locus.addon.publiclib.DisplayData;
-import menion.android.locus.addon.publiclib.PeriodicUpdate;
-import menion.android.locus.addon.publiclib.PeriodicUpdate.UpdateContainer;
-import menion.android.locus.addon.publiclib.geoData.Point;
-import menion.android.locus.addon.publiclib.geoData.PointGeocachingData;
-import menion.android.locus.addon.publiclib.geoData.PointsData;
-import menion.android.locus.addon.publiclib.utils.RequiredVersionMissingException;
-
 /**
  * PointLoader
  * @author Radim -kuratkoo- Vaculik <kuratkoo@gmail.com>
@@ -34,7 +26,7 @@ public class PointLoader {
     private static PointLoader mInstance;
     private Context context;
     private Intent intent;
-    private MapLoadAsyncTask mapLoadAsyncTask;
+    //private MapLoadAsyncTask mapLoadAsyncTask;
 
     public static PointLoader getInstance() {
         if (mInstance == null) {
@@ -55,7 +47,7 @@ public class PointLoader {
     }
 
     public void run() {
-        PeriodicUpdate pu = PeriodicUpdate.getInstance();
+/*        PeriodicUpdate pu = PeriodicUpdate.getInstance();
         pu.setLocNotificationLimit(50.0);
         pu.onReceive(context, intent, new PeriodicUpdate.OnUpdate() {
 
@@ -74,10 +66,10 @@ public class PointLoader {
 
             public void onIncorrectData() {
             }
-        });
+        });*/
     }
 
-    private class MapLoadAsyncTask extends AsyncTask<UpdateContainer, Integer, Exception> {
+    /*private class MapLoadAsyncTask extends AsyncTask<UpdateContainer, Integer, Exception> {
 
         private PointsData pd;
         private SQLiteDatabase db;
@@ -211,5 +203,5 @@ public class PointLoader {
             db.close();
             db = null;
         }
-    }
+    }*/
 }
