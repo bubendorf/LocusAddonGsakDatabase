@@ -40,14 +40,13 @@
     <string name="pref_locus">Locus settings</string>
     <string name="pref_import_title">Show import dialog in Locus</string>
     <string name="pref_import_sum">Allow import geocaches to Locus</string>
-    <string name="pref_livemap_title">Live map (Broken - Do not use it)</string>
+    <string name="pref_livemap_title">Live map</string>
     <string name="pref_livemap_sum">Live loading caches to map (enable in Locus: Settings → Other → Enable periodic updates)</string>
     <string name="loading">Loading</string>
     <string name="geocaches">geocaches</string>
     <string name="loading_dots">Loading…</string>
     <string name="error">Error!</string>
     <string name="install_it">Locus application not found! Please install!</string>
-    <string name="update_it">Newer version of Locus required (>= 1.14.6)! Please update!</string>
     <string name="out_of_memory">Out of memory! Change filter to decrease geocache count!</string>
     <string name="no_external_storage">External storage (SD card) not found!</string>
     <string name="no_db_file">GSAK database not found! Set it!</string>

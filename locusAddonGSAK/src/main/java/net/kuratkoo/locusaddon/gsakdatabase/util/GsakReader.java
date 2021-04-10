@@ -5,19 +5,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-
-import net.kuratkoo.locusaddon.gsakdatabase.LoadActivity;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import locus.api.android.objects.PackPoints;
 import locus.api.objects.extra.Location;
 import locus.api.objects.geoData.Point;
 import locus.api.objects.geocaching.GeocachingAttribute;
@@ -27,31 +27,101 @@ import locus.api.objects.geocaching.GeocachingWaypoint;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static java.lang.Float.parseFloat;
+import static java.lang.Integer.parseInt;
 
 public class GsakReader {
 
-    public static void loadGCCodes(Context context, AsyncTask asyncTask, SQLiteDatabase database,
-                                   List<Pair> gcCodes, Set<String> alreadyLoaded, Location curr) {
-        String sql = buildCacheSQL(context);
+    public static SQLiteDatabase openDatabase(final Context context, final String dbId) {
+        final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean("pref_use_" + dbId, false)) {
+            final String path = sharedPreferences.getString("db", "");
+            if (Gsak.isGsakDatabase(path)) {
+                return SQLiteDatabase.openDatabase(path,
+                        null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
+            }
+        }
+        return null;
+    }
 
-        float radiusMeter = parseFloat(getDefaultSharedPreferences(context).getString("radius", "25")) * 1000;
-        float radiusNorthSouth = 360f / (40007863 / radiusMeter);
-        float radiusEastWest = 360f / (40075017 / radiusMeter) / (float)Math.cos(curr.getLatitude() / 180 * Math.PI);
-        String[] cond = new String[]{
+    public static List<Pair> readGCCodes(final Context context, final GeocacheAsyncTask asyncTask,
+                                         final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3, final Location curr) {
+        List<Pair> gcCodes = new ArrayList<>(256);
+        final Set<String> alreadyLoaded = new HashSet<>(256);
+
+        if (db != null) {
+            GsakReader.loadGCCodes(context, asyncTask, db, gcCodes, alreadyLoaded, curr);
+            if (asyncTask.isCancelled()) {
+                return null;
+            }
+        }
+        if (db2 != null) {
+            GsakReader.loadGCCodes(context, asyncTask, db2, gcCodes, alreadyLoaded, curr);
+            if (asyncTask.isCancelled()) {
+                return null;
+            }
+        }
+        if (db3 != null) {
+            GsakReader.loadGCCodes(context, asyncTask, db3, gcCodes, alreadyLoaded, curr);
+            if (asyncTask.isCancelled()) {
+                return null;
+            }
+        }
+
+        final int limit = parseInt(getDefaultSharedPreferences(context).getString("limit", "0"));
+
+        if (limit > 0 && gcCodes.size() > limit) {
+            Collections.sort(gcCodes, new Comparator<Pair>() {
+                public int compare(final Pair p1, final Pair p2) {
+                    return Float.compare(p1.distance, p2.distance);
+                }
+            });
+            gcCodes = gcCodes.subList(0, limit);
+        }
+        return gcCodes;
+    }
+
+    public static PackPoints readGeocaches(final GeocacheAsyncTask asyncTask, final List<Pair> gcCodes) throws ParseException {
+        int count = 0;
+        final PackPoints packPoints = new PackPoints("GSAK data");
+        for (final Pair pair : gcCodes) {
+            if (asyncTask.isCancelled()) {
+                return null;
+            }
+            final String gcCode = pair.gcCode;
+            if (++count % 10 == 0) {
+                asyncTask.myPublishProgress(count);
+            }
+            final SQLiteDatabase database = pair.db;
+            final Point p = GsakReader.readGeocache(database, gcCode, false);
+            if (p != null) {
+                packPoints.addPoint(p);
+            }
+        }
+        return packPoints;
+    }
+
+    public static void loadGCCodes(final Context context, final GeocacheAsyncTask asyncTask, final SQLiteDatabase database,
+                                   final List<Pair> gcCodes, final Set<String> alreadyLoaded, final Location curr) {
+        final String sql = buildCacheSQL(context);
+
+        final float radiusMeter = parseFloat(getDefaultSharedPreferences(context).getString("radius", "25")) * 1000;
+        final float radiusNorthSouth = 360f / (40007863 / radiusMeter);
+        final float radiusEastWest = 360f / (40075017 / radiusMeter) / (float)Math.cos(curr.getLatitude() / 180 * Math.PI);
+        final String[] cond = new String[]{
                 String.valueOf(curr.getLatitude() - radiusNorthSouth),
                 String.valueOf(curr.getLatitude() + radiusNorthSouth),
                 String.valueOf(curr.getLongitude() - radiusEastWest),
                 String.valueOf(curr.getLongitude() + radiusEastWest)
         };
         /* Load GC codes */
-        Location loc = new Location();
-        Cursor c = database.rawQuery(sql, cond);
+        final Location loc = new Location();
+        final Cursor c = database.rawQuery(sql, cond);
         while (c.moveToNext()) {
             if (asyncTask !=null && asyncTask.isCancelled()) {
                 c.close();
                 return;
             }
-            String code = c.getString(c.getColumnIndex("Code"));
+            final String code = c.getString(c.getColumnIndex("Code"));
             if (!alreadyLoaded.contains(code)) {
                 alreadyLoaded.add(code);
                 loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
@@ -64,12 +134,12 @@ public class GsakReader {
         c.close();
     }
 
-    private static String buildCacheSQL(Context context) {
-        StringBuilder sql = new StringBuilder(256);
+    private static String buildCacheSQL(final Context context) {
+        final StringBuilder sql = new StringBuilder(256);
         sql.append("SELECT Latitude, Longitude, Code FROM Caches WHERE (status = 'A'");
 
         // Disable geocaches
-        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         if (sharedPreferences.getBoolean("disable", false)) {
             sql.append(" OR status = 'T'");
         }
@@ -80,8 +150,8 @@ public class GsakReader {
         sql.append(") ");
 
         // Found and not Found
-        boolean found = sharedPreferences.getBoolean("found", false);
-        boolean notfound = sharedPreferences.getBoolean("notfound", true);
+        final boolean found = sharedPreferences.getBoolean("found", false);
+        final boolean notfound = sharedPreferences.getBoolean("notfound", true);
         if (found || notfound) {
             sql.append(" AND ( 1=0 ");
             if (found) {
@@ -99,10 +169,10 @@ public class GsakReader {
             sql.append("'");
         }
 
-        List<String> geocacheTypes = Gsak.geocacheTypesFromFilter(sharedPreferences);
+        final List<String> geocacheTypes = Gsak.geocacheTypesFromFilter(sharedPreferences);
         boolean first = true;
-        StringBuilder sqlType = new StringBuilder(256);
-        for (String geocacheType : geocacheTypes) {
+        final StringBuilder sqlType = new StringBuilder(256);
+        for (final String geocacheType : geocacheTypes) {
             if (first) {
                 sqlType.append(geocacheType);
                 first = false;
@@ -121,13 +191,13 @@ public class GsakReader {
     }
 
     @Nullable
-    public static Point readGeocache(SQLiteDatabase database, String gcCode, boolean withDetails) throws ParseException {
-        Cursor cacheCursor = database.rawQuery("SELECT * FROM CachesAll WHERE Code = ?", new String[]{gcCode});
+    public static Point readGeocache(final SQLiteDatabase database, final String gcCode, final boolean withDetails) throws ParseException {
+        final Cursor cacheCursor = database.rawQuery("SELECT * FROM CachesAll WHERE Code = ?", new String[]{gcCode});
         cacheCursor.moveToNext();
-        Location loc = new Location(cacheCursor.getDouble(cacheCursor.getColumnIndex("Latitude")), cacheCursor.getDouble(cacheCursor.getColumnIndex("Longitude")));
-        Point point = new Point(cacheCursor.getString(cacheCursor.getColumnIndex("Name")), loc);
+        final Location loc = new Location(cacheCursor.getDouble(cacheCursor.getColumnIndex("Latitude")), cacheCursor.getDouble(cacheCursor.getColumnIndex("Longitude")));
+        final Point point = new Point(cacheCursor.getString(cacheCursor.getColumnIndex("Name")), loc);
 
-        GeocachingData gcData = new GeocachingData();
+        final GeocachingData gcData = new GeocachingData();
         gcData.setCacheID(cacheCursor.getString(cacheCursor.getColumnIndex("Code")));
         gcData.setName(cacheCursor.getString(cacheCursor.getColumnIndex("Name")));
         gcData.setOwner(cacheCursor.getString(cacheCursor.getColumnIndex("OwnerName")));
@@ -173,15 +243,15 @@ public class GsakReader {
         cacheCursor.close();
 
         /* Add waypoints to Geocache */
-        ArrayList<GeocachingWaypoint> pgdws = new ArrayList<>();
+        final ArrayList<GeocachingWaypoint> pgdws = new ArrayList<>();
 
-        Cursor wpCursor = database.rawQuery("SELECT * FROM WayAll WHERE cParent = ?", new String[]{gcData.getCacheID()});
+        final Cursor wpCursor = database.rawQuery("SELECT * FROM WayAll WHERE cParent = ?", new String[]{gcData.getCacheID()});
         while (wpCursor.moveToNext()) {
 /*            if (this.isCancelled()) {
                 wpCursor.close();
                 return null;
             }*/
-            GeocachingWaypoint waypoint = new GeocachingWaypoint();
+            final GeocachingWaypoint waypoint = new GeocachingWaypoint();
             waypoint.setLat(wpCursor.getDouble(wpCursor.getColumnIndex("cLat")));
             waypoint.setLon(wpCursor.getDouble(wpCursor.getColumnIndex("cLon")));
             waypoint.setName(wpCursor.getString(wpCursor.getColumnIndex("cName")));
@@ -197,13 +267,13 @@ public class GsakReader {
         if (withDetails) {
             // Add logsCursor to Geocache
             //String limit = PreferenceManager.getDefaultSharedPreferences(context).getString("logs_count", "20");
-            String limit = "20";
-            Cursor logsCursor = database.rawQuery("SELECT * FROM LogsAll WHERE lParent = ? ORDER BY lDate DESC LIMIT ?",
+            final String limit = "20";
+            final Cursor logsCursor = database.rawQuery("SELECT * FROM LogsAll WHERE lParent = ? ORDER BY lDate DESC LIMIT ?",
                     new String[]{gcData.getCacheID(), limit});
-            ArrayList<GeocachingLog> pgdls = new ArrayList<>();
+            final ArrayList<GeocachingLog> pgdls = new ArrayList<>();
 
             while (logsCursor.moveToNext()) {
-                GeocachingLog pgdl = new GeocachingLog();
+                final GeocachingLog pgdl = new GeocachingLog();
                 pgdl.setDate(getDate(logsCursor, "lDate"));
                 pgdl.setFinder(logsCursor.getString(logsCursor.getColumnIndex("lBy")));
                 pgdl.setLogText(logsCursor.getString(logsCursor.getColumnIndex("lText")));
@@ -216,12 +286,12 @@ public class GsakReader {
 
         if (withDetails) {
             // Add attributes to Geocache
-            Cursor at = database.rawQuery("SELECT * FROM Attributes WHERE aCode = ?", new String[]{gcData.getCacheID()});
-            List<GeocachingAttribute> pgas = new ArrayList<>();
+            final Cursor at = database.rawQuery("SELECT * FROM Attributes WHERE aCode = ?", new String[]{gcData.getCacheID()});
+            final List<GeocachingAttribute> pgas = new ArrayList<>();
 
             while (at.moveToNext()) {
-                boolean isPositive = at.getInt(at.getColumnIndex("aInc")) == 1;
-                GeocachingAttribute pga = new GeocachingAttribute(at.getInt(at.getColumnIndex("aId")), isPositive);
+                final boolean isPositive = at.getInt(at.getColumnIndex("aInc")) == 1;
+                final GeocachingAttribute pga = new GeocachingAttribute(at.getInt(at.getColumnIndex("aId")), isPositive);
                 pgas.add(pga);
             }
             at.close();
@@ -235,8 +305,8 @@ public class GsakReader {
         return point;
     }
 
-    private static long getDate(Cursor c, final String columnName) throws ParseException {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static long getDate(final Cursor c, final String columnName) throws ParseException {
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         final String text = c.getString(c.getColumnIndex(columnName));
         if (text.length() == 10) {
             return dateFormat.parse(text).getTime();

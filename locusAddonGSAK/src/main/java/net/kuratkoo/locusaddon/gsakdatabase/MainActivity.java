@@ -33,7 +33,7 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
     private CheckBoxPreference own;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.prefs);
@@ -75,8 +75,8 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
         }
 
         if (PreferenceManager.getDefaultSharedPreferences(this).getInt("count", 0) < 3) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = sharedPref.edit();
+            final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            final SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt("count", PreferenceManager.getDefaultSharedPreferences(this).getInt("count", 0) + 1);
             editor.commit();
         }
@@ -85,10 +85,10 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
     private Preference.OnPreferenceClickListener getOnDBPreferenceClickListener(final int requestCode) {
         return new Preference.OnPreferenceClickListener() {
 
-            public boolean onPreferenceClick(Preference pref) {
+            public boolean onPreferenceClick(final Preference pref) {
                 try {
                     ActionFiles.INSTANCE.actionPickFile(MainActivity.this, requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
-                } catch (ActivityNotFoundException anfe) {
+                } catch (final ActivityNotFoundException anfe) {
                     Toast.makeText(MainActivity.this, "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
                 return true;
@@ -96,18 +96,18 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
         };
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
         if (key.equals("db")) {
-            String path = sharedPreferences.getString(key, "");
+            final String path = sharedPreferences.getString(key, "");
             dbPick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db_sum)));
         }
         if (key.equals("db2")) {
-            String path = sharedPreferences.getString(key, "");
-            db2Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db_sum)));
+            final String path = sharedPreferences.getString(key, "");
+            db2Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db2_sum)));
         }
         if (key.equals("db3")) {
-            String path = sharedPreferences.getString(key, "");
-            db3Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db_sum)));
+            final String path = sharedPreferences.getString(key, "");
+            db3Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db3_sum)));
         }
 
         if (key.equals("nick")) {
@@ -142,7 +142,7 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
         }
 
         if (key.equals("limit")) {
-            String value = sharedPreferences.getString(key, "0");
+            final String value = sharedPreferences.getString(key, "0");
             if (value.equals("") || !value.matches("[0-9]+")) {
                 Toast.makeText(this, getString(R.string.pref_limit_error), Toast.LENGTH_LONG).show();
                 limit.setText("0");
@@ -155,7 +155,7 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
         }
     }
 
-    private Spanned editPreferenceSummary(String value, CharSequence summary) {
+    private Spanned editPreferenceSummary(final String value, final CharSequence summary) {
         if (!value.equals("")) {
             return Html.fromHtml("<font color=\"#FF8000\"><b>(" + value + ")</b></font> " + summary);
         } else {
@@ -164,12 +164,12 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if (requestCode >= 0 && requestCode <= 2) {
             if (resultCode == RESULT_OK && data != null) {
-                String filename = data.getData().toString().replace("file://", "");
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = sharedPref.edit();
+                final String filename = data.getData().toString().replace("file://", "");
+                final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                final SharedPreferences.Editor editor = sharedPref.edit();
                 if (requestCode == 0) {
                     editor.putString("db", filename);
                     dbPick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db_sum)));

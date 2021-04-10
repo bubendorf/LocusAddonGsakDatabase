@@ -27,12 +27,12 @@ public class DetailActivity extends Activity {
 //    private static final String TAG = "DetailActivity";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
 
-        File fd = new File(PreferenceManager.getDefaultSharedPreferences(this).getString("db", ""));
+        final File fd = new File(PreferenceManager.getDefaultSharedPreferences(this).getString("db", ""));
         if (!Gsak.isGsakDatabase(fd)) {
             Toast.makeText(this, R.string.no_db_file, Toast.LENGTH_LONG).show();
             finish();
@@ -40,7 +40,7 @@ public class DetailActivity extends Activity {
         }
 
         if (intent.hasExtra("cacheId")) {
-            String value = intent.getStringExtra("cacheId");
+            final String value = intent.getStringExtra("cacheId");
 
             try {
                 Point point = readGeocacheFromDatabase("db", value);
@@ -51,9 +51,9 @@ public class DetailActivity extends Activity {
                     }
                 }
                 // return data
-                Intent retIntent = LocusUtils.INSTANCE.prepareResultExtraOnDisplayIntent(point, true);
+                final Intent retIntent = LocusUtils.INSTANCE.prepareResultExtraOnDisplayIntent(point, true);
                 setResult(Activity.RESULT_OK, retIntent);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Toast.makeText(this, getText(R.string.unable_to_load_detail) + " " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             } finally {
                 finish();
@@ -62,13 +62,13 @@ public class DetailActivity extends Activity {
     }
 
     @Nullable
-    private Point readGeocacheFromDatabase(String dbId, String gcCode) throws ParseException {
-        String dbPath = PreferenceManager.getDefaultSharedPreferences(this).getString(dbId, "");
+    private Point readGeocacheFromDatabase(final String dbId, final String gcCode) throws ParseException {
+        final String dbPath = PreferenceManager.getDefaultSharedPreferences(this).getString(dbId, "");
         if (dbPath.length() == 0) {
             return null;
         }
-        SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
-        Point p = GsakReader.readGeocache(database, gcCode, true);
+        final SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
+        final Point p = GsakReader.readGeocache(database, gcCode, true);
         database.close();
         return p;
     }

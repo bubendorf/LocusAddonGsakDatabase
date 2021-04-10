@@ -20,11 +20,15 @@ import locus.api.objects.geocaching.GeocachingWaypoint;
  */
 public class Gsak {
 
-    public static Boolean isGsakDatabase(File f) {
-        return f.exists() && f.canRead() && f.isFile() && f.getName().endsWith("db3");
+    public static Boolean isGsakDatabase(final String file) {
+        return isGsakDatabase(new File(file));
     }
 
-    public static int convertContainer(String size) {
+    public static Boolean isGsakDatabase(final File file) {
+        return file.exists() && file.canRead() && file.isFile() && file.getName().endsWith("db3");
+    }
+
+    public static int convertContainer(final String size) {
         switch (size) {
             case "Small":
                 return GeocachingData.CACHE_SIZE_SMALL;
@@ -44,7 +48,7 @@ public class Gsak {
         }
     }
 
-    public static int convertCacheType(String type) {
+    public static int convertCacheType(final String type) {
         switch (type) {
             case "C":
                 return GeocachingData.CACHE_TYPE_CACHE_IN_TRASH_OUT;
@@ -93,23 +97,23 @@ public class Gsak {
         }
     }
 
-    public static boolean isAvailable(String status) {
+    public static boolean isAvailable(final String status) {
         return status.equals("A");
     }
 
-    public static boolean isArchived(String status) {
+    public static boolean isArchived(final String status) {
         return status.equals("X");
     }
 
-    public static boolean isFound(int found) {
+    public static boolean isFound(final int found) {
         return found == 1;
     }
 
-    public static boolean isPremium(int premium) {
+    public static boolean isPremium(final int premium) {
         return premium == 1;
     }
 
-    public static String convertWaypointType(String waypointType) {
+    public static String convertWaypointType(final String waypointType) {
         switch (waypointType) {
             case "Final Location":
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_FINAL;
@@ -134,7 +138,7 @@ public class Gsak {
         }
     }
 
-    public static int convertLogType(String logType) {
+    public static int convertLogType(final String logType) {
         switch (logType) {
             case "Announcement":
                 return GeocachingLog.CACHE_LOG_TYPE_ANNOUNCEMENT;
@@ -171,17 +175,17 @@ public class Gsak {
         }
     }
 
-    public static boolean isCorrected(int correction) {
+    public static boolean isCorrected(final int correction) {
         return correction == 1;
     }
 
-    public static List<GeocachingTrackable> parseTravelBug(String tb) {
-        ArrayList<GeocachingTrackable> pgdtbl = new ArrayList<>();
-        Pattern p = Pattern.compile("<BR>([^(]+)\\(id = ([0-9]+), ref = ([A-Z0-9]+)\\)");
-        Matcher m = p.matcher(tb);
+    public static List<GeocachingTrackable> parseTravelBug(final String tb) {
+        final ArrayList<GeocachingTrackable> pgdtbl = new ArrayList<>();
+        final Pattern p = Pattern.compile("<BR>([^(]+)\\(id = ([0-9]+), ref = ([A-Z0-9]+)\\)");
+        final Matcher m = p.matcher(tb);
         while (m.find()) {
-            MatchResult mr = m.toMatchResult();
-            GeocachingTrackable pgdtb = new GeocachingTrackable();
+            final MatchResult mr = m.toMatchResult();
+            final GeocachingTrackable pgdtb = new GeocachingTrackable();
             pgdtb.setName(mr.group(1));
             pgdtb.setSrcDetails("http://www.geocaching.com/track/details.aspx?tracker=" + mr.group(3));
             pgdtbl.add(pgdtb);
@@ -189,8 +193,8 @@ public class Gsak {
         return pgdtbl;
     }
 
-    public static List<String> geocacheTypesFromFilter(SharedPreferences sharedPref) {
-        List<String> geocacheTypes = new ArrayList<>();
+    public static List<String> geocacheTypesFromFilter(final SharedPreferences sharedPref) {
+        final List<String> geocacheTypes = new ArrayList<>();
 
         if (sharedPref.getBoolean("gc_type_tradi", false)) {
             geocacheTypes.add("CacheType = 'T'");

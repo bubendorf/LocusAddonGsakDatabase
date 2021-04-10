@@ -1,17 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "net.kuratkoo.locusaddon.gsakdatabase"
         minSdkVersion 21
-        targetSdkVersion 21 // Do not use a higher number!
-        versionCode 12
-        versionName "3.2.0"
+        targetSdkVersion 28 // Do not use a higher number!
+        versionCode 13
+        versionName "3.2.1"
         //archivesBaseName = "LocusAddonGSAK-$versionName"
-        archivesBaseName = "${applicationId}-${versionCode}"
+        archivesBaseName = "LocusAddonGSAK-${versionName}-${versionCode}"
     }
 
     buildTypes {

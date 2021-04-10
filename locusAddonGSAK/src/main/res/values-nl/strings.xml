@@ -31,14 +31,13 @@
     <string name="pref_locus">Locus instellingen</string>
     <string name="pref_import_title">Importeren toestaan</string>
     <string name="pref_import_sum">Maakt het mogelijk om geocaches te importeren in Locus</string>
-    <string name="pref_livemap_title">Live kaart (Broken - Do not use it)</string>
+    <string name="pref_livemap_title">Live kaart</string>
     <string name="pref_livemap_sum">Live laden van caches naar kaart (Inschakelen in Locus: Instellingen → Diversen → Periodieke updates inschakelen)</string>    
     <string name="loading">Laden</string>
     <string name="geocaches">geocaches</string>
     <string name="loading_dots">Laden…</string>
     <string name="error">Fout!</string>
     <string name="install_it">Locus applicatie is niet gevonden! Graag installeren!</string>
-    <string name="update_it">Nieuwere versie van Locus benodigd (>= 1.14.6)! Graag updaten!</string>
     <string name="out_of_memory">Onvoldoende geheugen! Wijzig filter om het aantal geocaches te verminderen!</string>
     <string name="no_external_storage">Externe opslag (SD card) niet gevonden!</string>
     <string name="no_db_file">GSAK database niet gevonden! Graag instellen!</string>
