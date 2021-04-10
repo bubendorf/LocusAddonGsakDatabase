@@ -1,13 +1,13 @@
-package net.kuratkoo.locusaddon.gsakdatabase.receiver;
+package ch.bubendorf.locusaddon.gsakdatabase.receiver;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import net.kuratkoo.locusaddon.gsakdatabase.util.GeocacheAsyncTask;
-import net.kuratkoo.locusaddon.gsakdatabase.util.GsakReader;
-import net.kuratkoo.locusaddon.gsakdatabase.util.Pair;
+import ch.bubendorf.locusaddon.gsakdatabase.util.GeocacheAsyncTask;
+import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
+import ch.bubendorf.locusaddon.gsakdatabase.util.Pair;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package net.kuratkoo.locusaddon.gsakdatabase.util;
+package ch.bubendorf.locusaddon.gsakdatabase.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.kuratkoo.locusaddon.gsakdatabase.DetailActivity;
+import ch.bubendorf.locusaddon.gsakdatabase.DetailActivity;
 
 import org.jetbrains.annotations.Nullable;
 

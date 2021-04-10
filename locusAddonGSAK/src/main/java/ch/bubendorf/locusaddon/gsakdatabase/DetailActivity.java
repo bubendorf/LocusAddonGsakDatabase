@@ -1,4 +1,4 @@
-package net.kuratkoo.locusaddon.gsakdatabase;
+package ch.bubendorf.locusaddon.gsakdatabase;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,8 +9,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
-import net.kuratkoo.locusaddon.gsakdatabase.util.GsakReader;
+import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
+import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
 
 import java.io.File;
 import java.text.ParseException;

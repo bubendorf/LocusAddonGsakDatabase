@@ -1,4 +1,4 @@
-package net.kuratkoo.locusaddon.gsakdatabase;
+package ch.bubendorf.locusaddon.gsakdatabase;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,10 +10,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import net.kuratkoo.locusaddon.gsakdatabase.util.GeocacheAsyncTask;
-import net.kuratkoo.locusaddon.gsakdatabase.util.Gsak;
-import net.kuratkoo.locusaddon.gsakdatabase.util.GsakReader;
-import net.kuratkoo.locusaddon.gsakdatabase.util.Pair;
+import ch.bubendorf.locusaddon.gsakdatabase.util.GeocacheAsyncTask;
+import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
+import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
+import ch.bubendorf.locusaddon.gsakdatabase.util.Pair;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

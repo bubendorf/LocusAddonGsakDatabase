@@ -1,4 +1,4 @@
-package net.kuratkoo.locusaddon.gsakdatabase.util;
+package ch.bubendorf.locusaddon.gsakdatabase.util;
 
 import android.database.sqlite.SQLiteDatabase;
 

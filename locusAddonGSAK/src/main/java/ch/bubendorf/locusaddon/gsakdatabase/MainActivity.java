@@ -1,4 +1,4 @@
-package net.kuratkoo.locusaddon.gsakdatabase;
+package ch.bubendorf.locusaddon.gsakdatabase;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;

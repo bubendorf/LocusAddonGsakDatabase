@@ -1,4 +1,4 @@
-package net.kuratkoo.locusaddon.gsakdatabase.receiver;
+package ch.bubendorf.locusaddon.gsakdatabase.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

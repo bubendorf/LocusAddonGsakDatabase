@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "net.kuratkoo.locusaddon.gsakdatabase"
+        applicationId "ch.bubendorf.locusaddon.gsakdatabase"
         minSdkVersion 21
         targetSdkVersion 28 // Do not use a higher number!
         versionCode 14
@@ -46,16 +46,6 @@ android {
         checkReleaseBuilds false
     }
 }
-
-/*android.applicationVariants.all { variant ->
-    variant.outputs.all {
-
-        outputFileName = applicationId
-        outputFileName += "-" + android.defaultConfig.versionName
-        outputFileName += "-" + variant.buildType.name
-        outputFileName += ".apk"
-    }
-}*/
 
 dependencies {
    implementation 'com.asamm:locus-api-android:0.9.28'
