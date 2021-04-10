@@ -20,6 +20,7 @@ import locus.api.objects.geoData.Point;
 
 /**
  * DetailActivity
+ *
  * @author Radim -kuratkoo- Vaculik <kuratkoo@gmail.com>
  */
 public class DetailActivity extends Activity {

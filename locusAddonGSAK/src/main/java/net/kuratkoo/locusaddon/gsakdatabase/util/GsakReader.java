@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.kuratkoo.locusaddon.gsakdatabase.DetailActivity;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.text.ParseException;
@@ -44,30 +46,32 @@ public class GsakReader {
     }
 
     public static List<Pair> readGCCodes(final Context context, final GeocacheAsyncTask asyncTask,
-                                         final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3, final Location curr) {
+                                         final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3,
+                                         final Location centerLocation, final Location topLeftLocation,
+                                         final Location bottomRightLocation) {
         List<Pair> gcCodes = new ArrayList<>(256);
         final Set<String> alreadyLoaded = new HashSet<>(256);
 
         if (db != null) {
-            GsakReader.loadGCCodes(context, asyncTask, db, gcCodes, alreadyLoaded, curr);
+            GsakReader.loadGCCodes(context, asyncTask, db, gcCodes, alreadyLoaded, centerLocation, topLeftLocation, bottomRightLocation);
             if (asyncTask.isCancelled()) {
                 return null;
             }
         }
         if (db2 != null) {
-            GsakReader.loadGCCodes(context, asyncTask, db2, gcCodes, alreadyLoaded, curr);
+            GsakReader.loadGCCodes(context, asyncTask, db2, gcCodes, alreadyLoaded, centerLocation, topLeftLocation, bottomRightLocation);
             if (asyncTask.isCancelled()) {
                 return null;
             }
         }
         if (db3 != null) {
-            GsakReader.loadGCCodes(context, asyncTask, db3, gcCodes, alreadyLoaded, curr);
+            GsakReader.loadGCCodes(context, asyncTask, db3, gcCodes, alreadyLoaded, centerLocation, topLeftLocation, bottomRightLocation);
             if (asyncTask.isCancelled()) {
                 return null;
             }
         }
 
-        final int limit = parseInt(getDefaultSharedPreferences(context).getString("limit", "0"));
+        final int limit = Math.min(2000, parseInt(getDefaultSharedPreferences(context).getString("limit", "100")));
 
         if (limit > 0 && gcCodes.size() > limit) {
             Collections.sort(gcCodes, new Comparator<Pair>() {
@@ -101,23 +105,36 @@ public class GsakReader {
     }
 
     public static void loadGCCodes(final Context context, final GeocacheAsyncTask asyncTask, final SQLiteDatabase database,
-                                   final List<Pair> gcCodes, final Set<String> alreadyLoaded, final Location curr) {
+                                   final List<Pair> gcCodes, final Set<String> alreadyLoaded,
+                                   final Location centerLocation, final Location topLeftLocation,
+                                   final Location bottomRightLocation) {
         final String sql = buildCacheSQL(context);
 
+        final String[] cond;
         final float radiusMeter = parseFloat(getDefaultSharedPreferences(context).getString("radius", "25")) * 1000;
-        final float radiusNorthSouth = 360f / (40007863 / radiusMeter);
-        final float radiusEastWest = 360f / (40075017 / radiusMeter) / (float)Math.cos(curr.getLatitude() / 180 * Math.PI);
-        final String[] cond = new String[]{
-                String.valueOf(curr.getLatitude() - radiusNorthSouth),
-                String.valueOf(curr.getLatitude() + radiusNorthSouth),
-                String.valueOf(curr.getLongitude() - radiusEastWest),
-                String.valueOf(curr.getLongitude() + radiusEastWest)
-        };
+        if (topLeftLocation != null && bottomRightLocation != null) {
+            cond = new String[]{
+                    String.valueOf(bottomRightLocation.getLatitude()),
+                    String.valueOf(topLeftLocation.getLatitude()),
+                    String.valueOf(topLeftLocation.getLongitude()),
+                    String.valueOf(bottomRightLocation.getLongitude())
+            };
+        } else {
+            final float radiusNorthSouth = 360f / (40007863 / radiusMeter);
+            final float radiusEastWest = 360f / (40075017 / radiusMeter) / (float) Math.cos(centerLocation.getLatitude() / 180 * Math.PI);
+            cond = new String[]{
+                    String.valueOf(centerLocation.getLatitude() - radiusNorthSouth),
+                    String.valueOf(centerLocation.getLatitude() + radiusNorthSouth),
+                    String.valueOf(centerLocation.getLongitude() - radiusEastWest),
+                    String.valueOf(centerLocation.getLongitude() + radiusEastWest)
+            };
+        }
+
         /* Load GC codes */
         final Location loc = new Location();
         final Cursor c = database.rawQuery(sql, cond);
         while (c.moveToNext()) {
-            if (asyncTask !=null && asyncTask.isCancelled()) {
+            if (asyncTask != null && asyncTask.isCancelled()) {
                 c.close();
                 return;
             }
@@ -126,8 +143,8 @@ public class GsakReader {
                 alreadyLoaded.add(code);
                 loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
                 loc.setLongitude(c.getDouble(c.getColumnIndex("Longitude")));
-                if (loc.distanceTo(curr) <= radiusMeter) {
-                    gcCodes.add(new Pair(loc.distanceTo(curr), code, database));
+                if (loc.distanceTo(centerLocation) <= radiusMeter) {
+                    gcCodes.add(new Pair(loc.distanceTo(centerLocation), code, database));
                 }
             }
         }
@@ -224,8 +241,8 @@ public class GsakReader {
 
         //gcData.setexported = dateFormat.format(date);
         gcData.setDateUpdated(getDate(cacheCursor, "LastUserDate"));
-        gcData.setDateHidden(getDate(cacheCursor,"PlacedDate")); //TODO
-        gcData.setDatePublished(getDate(cacheCursor,"PlacedDate")); // TODO
+        gcData.setDateHidden(getDate(cacheCursor, "PlacedDate")); //TODO
+        gcData.setDatePublished(getDate(cacheCursor, "PlacedDate")); // TODO
 
         if (withDetails) {
             // More!
@@ -299,8 +316,9 @@ public class GsakReader {
         }
 
         point.setGcData(gcData);
-        point.setExtraOnDisplay("net.kuratkoo.locusaddon.gsakdatabase",
-                "net.kuratkoo.locusaddon.gsakdatabase.DetailActivity",
+        point.setExtraOnDisplay(
+                DetailActivity.class.getPackage().getName(),
+                DetailActivity.class.getName(),
                 "cacheId", gcData.getCacheID());
         return point;
     }

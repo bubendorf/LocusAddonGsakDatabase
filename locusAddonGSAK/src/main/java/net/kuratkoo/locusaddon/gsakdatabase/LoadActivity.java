@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -25,7 +24,6 @@ import java.util.List;
 import locus.api.android.ActionDisplayPoints;
 import locus.api.android.ActionDisplayVarious;
 import locus.api.android.objects.LocusVersion;
-import locus.api.android.objects.PackPoints;
 import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Location;
@@ -35,6 +33,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
  * LoadActivity
+ *
  * @author Radim -kuratkoo- Vaculik <kuratkoo@gmail.com>
  */
 public class LoadActivity extends Activity implements DialogInterface.OnDismissListener {
@@ -50,19 +49,11 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
 
     private class LoadAsyncTask extends GeocacheAsyncTask {
 
-        private SQLiteDatabase db;
-        private SQLiteDatabase db2;
-        private SQLiteDatabase db3;
-
-        private PackPoints packPoints;
-
         @Override
         protected void onPreExecute() {
             progress.show();
 
-            db = GsakReader.openDatabase(LoadActivity.this, "db");
-            db2 = GsakReader.openDatabase(LoadActivity.this, "db2");
-            db3 = GsakReader.openDatabase(LoadActivity.this, "db3");
+            openDatabases(LoadActivity.this);
         }
 
         @Override
@@ -76,7 +67,8 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                     return null;
                 }
 
-                final List<Pair> gcCodes = GsakReader.readGCCodes(LoadActivity.this, this, db, db2, db3, locations[0]);
+                final List<Pair> gcCodes = GsakReader.readGCCodes(LoadActivity.this, this,
+                        db, db2, db3, locations[0], null, null);
                 packPoints = GsakReader.readGeocaches(this, gcCodes);
                 return null;
             } catch (final Exception e) {
@@ -102,11 +94,6 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                         ActionDisplayVarious.ExtraAction.IMPORT :
                         ActionDisplayVarious.ExtraAction.CENTER;
                 ActionDisplayPoints.INSTANCE.sendPack(LoadActivity.this, packPoints, action);
-
-/*                DisplayData.sendDataFile(LoadActivity.this,
-                        data,
-                        filePath,
-                        getDefaultSharedPreferences(LoadActivity.this).getBoolean("import", true));*/
             } catch (final OutOfMemoryError e) {
                 final AlertDialog.Builder ad = new AlertDialog.Builder(LoadActivity.this);
                 ad.setIcon(android.R.drawable.ic_dialog_alert);
@@ -124,25 +111,9 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
             }
         }
 
-        private void closeDatabases() {
-            if (db != null) {
-                db.close();
-                db = null;
-            }
-            if (db2 != null) {
-                db2.close();
-                db2 = null;
-            }
-            if (db3 != null) {
-                db3.close();
-                db3 = null;
-            }
-        }
-
         @Override
         protected void onCancelled() {
             super.onCancelled();
-            closeDatabases();
             progress.dismiss();
             Toast.makeText(LoadActivity.this, R.string.canceled, Toast.LENGTH_LONG).show();
             LoadActivity.this.finish();
@@ -187,27 +158,27 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
         }
 
         try {
-        final Intent fromIntent = getIntent();
-        if (IntentHelper.INSTANCE.isIntentPointTools(fromIntent)) {
-            point = IntentHelper.INSTANCE.getPointFromIntent(this, fromIntent);
-        } else if (IntentHelper.INSTANCE.isIntentMainFunctionGc(fromIntent)) {
-            IntentHelper.INSTANCE.handleIntentMainFunctionGc(LoadActivity.this, fromIntent, new IntentHelper.OnIntentReceived() {
-                @Override
-                public void onReceived(@NotNull final LocusVersion locusVersion, @Nullable final Location gpsLocation, @Nullable final Location mapCenterlocation) {
-                    if (mapCenterlocation != null) {
-                        point = new Point("Map center", mapCenterlocation);
+            final Intent fromIntent = getIntent();
+            if (IntentHelper.INSTANCE.isIntentPointTools(fromIntent)) {
+                point = IntentHelper.INSTANCE.getPointFromIntent(this, fromIntent);
+            } else if (IntentHelper.INSTANCE.isIntentMainFunctionGc(fromIntent)) {
+                IntentHelper.INSTANCE.handleIntentMainFunctionGc(LoadActivity.this, fromIntent, new IntentHelper.OnIntentReceived() {
+                    @Override
+                    public void onReceived(@NotNull final LocusVersion locusVersion, @Nullable final Location gpsLocation, @Nullable final Location mapCenterlocation) {
+                        if (mapCenterlocation != null) {
+                            point = new Point("Map center", mapCenterlocation);
+                        }
                     }
-                }
 
-                @Override
-                public void onFailed() {
-                }
-            });
-        }
-        if (point != null) {
-            loadAsyncTask = new LoadAsyncTask();
-            loadAsyncTask.execute(point.getLocation());
-        }
+                    @Override
+                    public void onFailed() {
+                    }
+                });
+            }
+            if (point != null) {
+                loadAsyncTask = new LoadAsyncTask();
+                loadAsyncTask.execute(point.getLocation());
+            }
         } catch (final RequiredVersionMissingException rvme) {
             Toast.makeText(LoadActivity.this, "Error: " + rvme.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }

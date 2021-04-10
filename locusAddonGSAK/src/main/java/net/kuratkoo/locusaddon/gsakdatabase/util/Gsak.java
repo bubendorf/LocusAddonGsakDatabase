@@ -16,6 +16,7 @@ import locus.api.objects.geocaching.GeocachingWaypoint;
 
 /**
  * Gsak
+ *
  * @author Radim -kuratkoo- Vaculik <kuratkoo@gmail.com>
  */
 public class Gsak {
@@ -36,13 +37,12 @@ public class Gsak {
                 return GeocachingData.CACHE_SIZE_LARGE;
             case "Micro":
                 return GeocachingData.CACHE_SIZE_MICRO;
-            case "Not chosen":
-            case "Unknown":
-                return GeocachingData.CACHE_SIZE_NOT_CHOSEN;
             case "Other":
                 return GeocachingData.CACHE_SIZE_OTHER;
             case "Regular":
                 return GeocachingData.CACHE_SIZE_REGULAR;
+            case "Not chosen":
+            case "Unknown":
             default:
                 return GeocachingData.CACHE_SIZE_NOT_CHOSEN;
         }
@@ -66,8 +66,6 @@ public class Gsak {
                 return GeocachingData.CACHE_TYPE_GIGA_EVENT;
             case "M":
                 return GeocachingData.CACHE_TYPE_MULTI;
-            case "T":
-                return GeocachingData.CACHE_TYPE_TRADITIONAL;
             case "U":
                 return GeocachingData.CACHE_TYPE_MYSTERY;
             case "V":
@@ -83,15 +81,18 @@ public class Gsak {
             case "G":
                 return GeocachingData.CACHE_TYPE_BENCHMARK;
             case "H":
-                return GeocachingData.CACHE_TYPE_GROUNDSPEAK;
+                //return GeocachingData.CACHE_TYPE_GROUNDSPEAK;
+                return GeocachingData.CACHE_TYPE_GC_HQ;
             case "X":
                 return GeocachingData.CACHE_TYPE_MAZE_EXHIBIT;
             case "Y":
                 return GeocachingData.CACHE_TYPE_WAYMARK;
             case "F":
-                return GeocachingData.CACHE_TYPE_LF_EVENT;
+                //return GeocachingData.CACHE_TYPE_LF_EVENT;
+                return GeocachingData.CACHE_TYPE_COMMUNITY_CELEBRATION;
             case "D":
                 return GeocachingData.CACHE_TYPE_GC_HQ_BLOCK_PARTY;
+            case "T":
             default:
                 return GeocachingData.CACHE_TYPE_TRADITIONAL;
         }
@@ -120,11 +121,11 @@ public class Gsak {
             case "Parking Area":
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PARKING;
             case "Question to Answer":
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_QUESTION;
-            case "Reference Point":
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_REFERENCE;
+                //return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_QUESTION;
+                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
             case "Stages of a Multicache":
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_STAGES;
+                //return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_STAGES;
+                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
             case "Trailhead":
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_TRAILHEAD;
             case "Physical Stage":
@@ -133,6 +134,7 @@ public class Gsak {
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
             case "Original Coordinates":
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_REFERENCE;
+            case "Reference Point":
             default:
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_REFERENCE;
         }

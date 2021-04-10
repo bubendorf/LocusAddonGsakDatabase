@@ -16,9 +16,9 @@ import android.widget.Toast;
 
 import locus.api.android.ActionFiles;
 
-
 /**
  * MainActivity
+ *
  * @author Radim -kuratkoo- Vaculik <kuratkoo@gmail.com>
  */
 public class MainActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener {
@@ -64,11 +64,7 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
         logsCount.setSummary(editPreferenceSummary(logsCount.getText(), getText(R.string.pref_logs_sum)));
 
         limit = (EditTextPreference) getPreferenceScreen().findPreference("limit");
-        if (limit.getText().equals("0")) {
-            limit.setSummary(editPreferenceSummary(getString(R.string.pref_limit_nolimit), getText(R.string.pref_limit_sum)));
-        } else {
-            limit.setSummary(editPreferenceSummary(limit.getText(), getText(R.string.pref_limit_sum)));
-        }
+        limit.setSummary(editPreferenceSummary(limit.getText(), getText(R.string.pref_limit_sum)));
 
         if (!own.isEnabled()) {
             own.setSummary(Html.fromHtml(getString(R.string.pref_own_sum) + " <b>" + getString(R.string.pref_own_fill) + "</b>"));
@@ -78,7 +74,7 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
             final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             final SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt("count", PreferenceManager.getDefaultSharedPreferences(this).getInt("count", 0) + 1);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -134,7 +130,7 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
         if (key.equals("radius")) {
             String value = sharedPreferences.getString(key, "1");
             if (value.equals("") || !value.matches("[0-9]+") || value.equals("0") || value.equals("00")) {
-                Toast.makeText(this, getString(R.string.pref_logs_error), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.pref_radius_error), Toast.LENGTH_LONG).show();
                 value = "1";
                 radius.setText(value);
             }
@@ -142,22 +138,18 @@ public class MainActivity extends PreferenceActivity implements OnSharedPreferen
         }
 
         if (key.equals("limit")) {
-            final String value = sharedPreferences.getString(key, "0");
+            String value = sharedPreferences.getString(key, "0");
             if (value.equals("") || !value.matches("[0-9]+")) {
                 Toast.makeText(this, getString(R.string.pref_limit_error), Toast.LENGTH_LONG).show();
-                limit.setText("0");
-                limit.setSummary(editPreferenceSummary(getString(R.string.pref_limit_nolimit), getText(R.string.pref_logs_sum)));
-            } else if (value.equals("0")) {
-                limit.setSummary(editPreferenceSummary(getString(R.string.pref_limit_nolimit), getText(R.string.pref_limit_sum)));
-            } else {
-                limit.setSummary(editPreferenceSummary(value, getText(R.string.pref_limit_sum)));
+                value = "100";
+                limit.setText(value);
             }
+            limit.setSummary(editPreferenceSummary(value, getText(R.string.pref_limit_sum)));
         }
     }
-
     private Spanned editPreferenceSummary(final String value, final CharSequence summary) {
         if (!value.equals("")) {
-            return Html.fromHtml("<font color=\"#FF8000\"><b>(" + value + ")</b></font> " + summary);
+            return Html.fromHtml("<font color=\"#FF8000\"><b>(" + value + ")</b></font><br/> " + summary);
         } else {
             return Html.fromHtml(summary.toString());
         }

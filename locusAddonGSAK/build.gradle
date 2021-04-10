@@ -8,8 +8,8 @@ android {
         applicationId "net.kuratkoo.locusaddon.gsakdatabase"
         minSdkVersion 21
         targetSdkVersion 28 // Do not use a higher number!
-        versionCode 13
-        versionName "3.2.1"
+        versionCode 14
+        versionName "3.2.2"
         //archivesBaseName = "LocusAddonGSAK-$versionName"
         archivesBaseName = "LocusAddonGSAK-${versionName}-${versionCode}"
     }
@@ -31,8 +31,8 @@ android {
     productFlavors {
         main {
             dimension "dimension"
-            resValue "string", "app_name", "GSAK Locus Main"
-            resValue "string", "load_from_gsak", "Load GSAK Main"
+            resValue "string", "app_name", "GSAK for Locus"
+            resValue "string", "load_from_gsak", "Load GSAK data"
         }
         alternative {
             dimension "dimension"
