@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import ch.bubendorf.locusaddon.gsakdatabase.PermissionActivity;
 import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.objects.LocusVersion;
@@ -61,12 +62,20 @@ public class LocationReceiver extends BroadcastReceiver {
         }
     }
 
-    private void update(Context context, UpdateContainer updateContainer) {
+    private void update(final Context context, final UpdateContainer updateContainer) {
+        final PointLoader pointLoader = PointLoader.getInstance();
+        pointLoader.setContext(context);
+
+        // We need the permission to access the file system. Check and ask for the permission if necessary
+        PermissionActivity.checkPermission(context, this::goOn, updateContainer);
+    }
+
+    private void goOn(final UpdateContainer updateContainer) {
         lastMapCenter = updateContainer.getLocMapCenter();
         lastUpdate = System.currentTimeMillis();
 
         final PointLoader pointLoader = PointLoader.getInstance();
-        pointLoader.setContext(context);
+
         pointLoader.run(updateContainer.getLocMapCenter(), updateContainer.getMapTopLeft(), updateContainer.getMapBottomRight());
     }
 

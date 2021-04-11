@@ -42,7 +42,7 @@ public class PointLoader {
     }
 
     public void run(final Location center, final Location topLeft, final Location bottomRight) {
-        Log.d(TAG, "run(" + center + ")");
+//        Log.d(TAG, "run(" + center + ")");
         if (mapLoadAsyncTask != null && mapLoadAsyncTask.getStatus() != AsyncTask.Status.FINISHED) {
             mapLoadAsyncTask.cancel(true);
         }

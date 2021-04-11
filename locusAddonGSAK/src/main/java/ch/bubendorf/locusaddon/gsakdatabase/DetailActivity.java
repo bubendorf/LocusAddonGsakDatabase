@@ -31,6 +31,11 @@ public class DetailActivity extends Activity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // We need the permission to access the file system. Check and ask for the permission if necessary
+        PermissionActivity.checkPermission(this, this::goOn, null);
+    }
+
+    private void goOn(final Void data) {
         final Intent intent = getIntent();
 
         final File fd = new File(PreferenceManager.getDefaultSharedPreferences(this).getString("db", ""));

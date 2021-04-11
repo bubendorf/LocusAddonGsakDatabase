@@ -47,6 +47,7 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
         loadAsyncTask.cancel(true);
     }
 
+
     private class LoadAsyncTask extends GeocacheAsyncTask {
 
         @Override
@@ -124,6 +125,11 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // We need the permission to access the file system. Check and ask for the permission if necessary
+        PermissionActivity.checkPermission(this, this::goOn, null);
+    }
+
+    private void goOn(final Void  data) {
         progress = new ProgressDialog(this);
         progress.setMessage(getString(R.string.loading_dots));
         progress.setIcon(android.R.drawable.ic_dialog_info);
