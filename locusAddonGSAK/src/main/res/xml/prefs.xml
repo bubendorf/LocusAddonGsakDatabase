@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="@string/app_name">
-    <PreferenceCategory android:title="@string/pref_path">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/app_name">
+    <PreferenceCategory
+        android:title="@string/pref_path">
         <CheckBoxPreference
-            android:title="@string/pref_use_db"
             android:defaultValue="true"
             android:key="pref_use_db"
-            />
+            android:title="@string/pref_use_db" />
         <Preference
-            android:title="@string/pref_db_title"
             android:key="db_pick"
             android:summary="@string/pref_db_sum"
-            />
+            android:title="@string/pref_db_title" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_use_db2"
             android:title="@string/pref_use_db2" />
         <Preference
-            android:title="@string/pref_db2_title"
             android:key="db2_pick"
             android:summary="@string/pref_db2_sum"
-            />
+            android:title="@string/pref_db2_title" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_use_db3"
             android:title="@string/pref_use_db3" />
         <Preference
-            android:title="@string/pref_db3_title"
             android:key="db3_pick"
             android:summary="@string/pref_db3_sum"
-            />
+            android:title="@string/pref_db3_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_locus">
         <CheckBoxPreference
@@ -209,6 +207,12 @@
             android:key="radius"
             android:inputType="number"
             android:maxLength="2"
+            />
+        <CheckBoxPreference
+            android:title="@string/pref_consider_wps"
+            android:defaultValue="true"
+            android:key="consider_wps"
+            android:summary="@string/pref_consider_wps_summary"
             />
         <EditTextPreference
             android:defaultValue="20"

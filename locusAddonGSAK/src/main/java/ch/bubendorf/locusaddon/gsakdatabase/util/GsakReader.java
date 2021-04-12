@@ -108,31 +108,26 @@ public class GsakReader {
                                    final List<Pair> gcCodes, final Set<String> alreadyLoaded,
                                    final Location centerLocation, final Location topLeftLocation,
                                    final Location bottomRightLocation) {
-        final String sql = buildCacheSQL(context);
+        String sql = buildCacheSQL(context);
 
-        final String[] cond;
         final float radiusMeter = parseFloat(getDefaultSharedPreferences(context).getString("radius", "25")) * 1000;
         if (topLeftLocation != null && bottomRightLocation != null) {
-            cond = new String[]{
-                    String.valueOf(bottomRightLocation.getLatitude()),
-                    String.valueOf(topLeftLocation.getLatitude()),
-                    String.valueOf(topLeftLocation.getLongitude()),
-                    String.valueOf(bottomRightLocation.getLongitude())
-            };
+            sql = sql.replace(":latFrom", Double.toString(bottomRightLocation.getLatitude()));
+            sql = sql.replace(":latTo", Double.toString(topLeftLocation.getLatitude()));
+            sql = sql.replace(":lonFrom", Double.toString(topLeftLocation.getLongitude()));
+            sql = sql.replace(":lonTo", Double.toString(bottomRightLocation.getLongitude()));
         } else {
             final float radiusNorthSouth = 360f / (40007863 / radiusMeter);
             final float radiusEastWest = 360f / (40075017 / radiusMeter) / (float) Math.cos(centerLocation.getLatitude() / 180 * Math.PI);
-            cond = new String[]{
-                    String.valueOf(centerLocation.getLatitude() - radiusNorthSouth),
-                    String.valueOf(centerLocation.getLatitude() + radiusNorthSouth),
-                    String.valueOf(centerLocation.getLongitude() - radiusEastWest),
-                    String.valueOf(centerLocation.getLongitude() + radiusEastWest)
-            };
+            sql = sql.replace(":latFrom", Double.toString(centerLocation.getLatitude() - radiusNorthSouth));
+            sql = sql.replace(":latTo", Double.toString(centerLocation.getLatitude() + radiusNorthSouth));
+            sql = sql.replace(":lonFrom", Double.toString(centerLocation.getLongitude() - radiusEastWest));
+            sql = sql.replace(":lonTo", Double.toString(centerLocation.getLongitude() + radiusEastWest));
         }
 
         /* Load GC codes */
         final Location loc = new Location();
-        final Cursor c = database.rawQuery(sql, cond);
+        final Cursor c = database.rawQuery(sql, null);
         while (c.moveToNext()) {
             if (asyncTask != null && asyncTask.isCancelled()) {
                 c.close();
@@ -143,9 +138,9 @@ public class GsakReader {
                 alreadyLoaded.add(code);
                 loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
                 loc.setLongitude(c.getDouble(c.getColumnIndex("Longitude")));
-                if (loc.distanceTo(centerLocation) <= radiusMeter) {
+//                if (loc.distanceTo(centerLocation) <= radiusMeter) {
                     gcCodes.add(new Pair(loc.distanceTo(centerLocation), code, database));
-                }
+//                }
             }
         }
         c.close();
@@ -153,16 +148,19 @@ public class GsakReader {
 
     private static String buildCacheSQL(final Context context) {
         final StringBuilder sql = new StringBuilder(256);
-        sql.append("SELECT Latitude, Longitude, Code FROM Caches WHERE (status = 'A'");
+        sql.append("SELECT DISTINCT c.Latitude, c.Longitude, c.Code ");
+        sql.append("FROM Caches c ");
+        sql.append("LEFT JOIN Waypoints w on w.cParent = c.Code ");
+        sql.append("WHERE (c.status = 'A'");
 
         // Disable geocaches
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         if (sharedPreferences.getBoolean("disable", false)) {
-            sql.append(" OR status = 'T'");
+            sql.append(" OR c.status = 'T'");
         }
         // Archived geocaches
         if (sharedPreferences.getBoolean("archive", false)) {
-            sql.append(" OR status = 'X'");
+            sql.append(" OR c.status = 'X'");
         }
         sql.append(") ");
 
@@ -172,16 +170,16 @@ public class GsakReader {
         if (found || notfound) {
             sql.append(" AND ( 1=0 ");
             if (found) {
-                sql.append(" OR Found = 1");
+                sql.append(" OR c.Found = 1");
             }
             if (notfound) {
-                sql.append(" OR Found = 0");
+                sql.append(" OR c.Found = 0");
             }
             sql.append(" ) ");
         }
 
         if (!sharedPreferences.getBoolean("own", false)) {
-            sql.append(" AND PlacedBy != '");
+            sql.append(" AND c.PlacedBy != '");
             sql.append(sharedPreferences.getString("nick", ""));
             sql.append("'");
         }
@@ -203,7 +201,15 @@ public class GsakReader {
             sql.append(")");
         }
 
-        sql.append(" AND CAST(Latitude AS REAL) > ? AND CAST(Latitude AS REAL) < ? AND CAST(Longitude AS REAL) > ? AND CAST(Longitude AS REAL) < ?");
+        sql.append(" AND ( (");
+        sql.append("CAST(c.Latitude AS REAL) >= :latFrom AND CAST(c.Latitude AS REAL) <= :latTo AND CAST(c.Longitude AS REAL) >= :lonFrom AND CAST(c.Longitude AS REAL) <= :lonTo");
+        if (sharedPreferences.getBoolean("consider_wps", true)) {
+            sql.append(" ) OR (");
+            sql.append("CAST(c.LatOriginal AS REAL) >= :latFrom AND CAST(c.LatOriginal AS REAL) <= :latTo AND CAST(c.LonOriginal AS REAL) >= :lonFrom AND CAST(c.LonOriginal AS REAL) <= :lonTo");
+            sql.append(" ) OR (");
+            sql.append("CAST(w.cLat AS REAL) >= :latFrom AND CAST(w.cLat AS REAL) <= :latTo AND CAST(w.cLon AS REAL) >= :lonFrom AND CAST(w.cLon AS REAL) <= :lonTo");
+        }
+        sql.append(" ) )");
         return sql.toString();
     }
 

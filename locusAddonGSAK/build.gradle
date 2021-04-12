@@ -9,7 +9,7 @@ android {
         applicationId "ch.bubendorf.locusaddon.gsakdatabase"
         minSdkVersion 24
         targetSdkVersion 28 // Do not use a higher number!
-        versionCode 15
+        versionCode 16
         versionName "3.2.3"
         //archivesBaseName = "LocusAddonGSAK-$versionName"
         archivesBaseName = "LocusAddonGSAK-${versionName}-${versionCode}-${targetSdkVersion.apiLevel}"

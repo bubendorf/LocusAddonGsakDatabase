@@ -52,4 +52,6 @@
     <string name="pref_notfound_sum">Lädt deine (noch) nicht gefundenen Geocaches</string>
     <string name="pref_db2_sum">Speicherort der zweiten GSAK Datenbank (*.db3 Datei)</string>
     <string name="pref_db3_sum">Speicherort der dritten GSAK Datenbank (*.db3 Datei)</string>
+    <string name="pref_consider_wps">Wegpunkte und original Koordinaten</string>
+    <string name="pref_consider_wps_summary">Koordinaten der Wegpunkte und die original Koordinaten ebenfalls berücksichtigen</string>
 </resources>
