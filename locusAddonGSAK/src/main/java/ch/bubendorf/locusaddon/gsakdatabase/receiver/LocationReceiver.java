@@ -63,20 +63,17 @@ public class LocationReceiver extends BroadcastReceiver {
     }
 
     private void update(final Context context, final UpdateContainer updateContainer) {
-        final PointLoader pointLoader = PointLoader.getInstance();
-        pointLoader.setContext(context);
-
         // We need the permission to access the file system. Check and ask for the permission if necessary
         PermissionActivity.checkPermission(context, this::goOn, updateContainer);
     }
 
-    private void goOn(final UpdateContainer updateContainer) {
+    private void goOn(final Context context, final UpdateContainer updateContainer) {
         lastMapCenter = updateContainer.getLocMapCenter();
         lastUpdate = System.currentTimeMillis();
 
         final PointLoader pointLoader = PointLoader.getInstance();
 
-        pointLoader.run(updateContainer.getLocMapCenter(), updateContainer.getMapTopLeft(), updateContainer.getMapBottomRight());
+        pointLoader.run(context, updateContainer.getLocMapCenter(), updateContainer.getMapTopLeft(), updateContainer.getMapBottomRight());
     }
 
     private UpdateContainer getContent(final Context context) {

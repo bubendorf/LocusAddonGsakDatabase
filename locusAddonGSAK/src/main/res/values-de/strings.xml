@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">GSAK für Locus</string>
+    <string name="load_from_gsak">Lade Geocaches aus GSAK</string>
     <string name="pref_path">Speicherorteinstellungen</string>
     <string name="pref_db_title">Haupt GSAK Datenbank</string>
     <string name="pref_db_sum">Speicherort der Haupt GSAK Datenbank (*.db3 Datei)</string>

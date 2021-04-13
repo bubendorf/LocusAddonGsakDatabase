@@ -2,22 +2,19 @@ package ch.bubendorf.locusaddon.gsakdatabase;
 
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.Toast;
 
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Activity to ask the user for a permission.
@@ -26,15 +23,15 @@ public class PermissionActivity extends ComponentActivity {
 
     private final static String PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
 
-    private static Consumer runnable;
+    private static BiConsumer<Context, Object> runnable;
     private static Object data;
 
-    public static <T> void checkPermission(final Context context, final Consumer<T> callback, final T data) {
+    public static <T> void checkPermission(final Context context, final BiConsumer<Context, T> callback, final T data) {
         if (ContextCompat.checkSelfPermission(context, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
             // Everything OK ==> Go On
-            callback.accept(data);
+            callback.accept(context, data);
         } else {
-            runnable = callback;
+            runnable = (BiConsumer<Context, Object>) callback;
             PermissionActivity.data = data;
             final Intent intent = new Intent(context, PermissionActivity.class);
             context.startActivity(intent);
@@ -54,8 +51,7 @@ public class PermissionActivity extends ComponentActivity {
         final ActivityResultLauncher<String> requestPermissionLauncher =
                 registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                     if (isGranted) {
-                        // Permission is granted. Continue the action or workflow in your
-                        // app.
+                        // Permission is granted. Continue the action or workflow in your app.
                         goOn();
                     } else {
                         // Explain to the user that the feature is unavailable because the
@@ -67,7 +63,6 @@ public class PermissionActivity extends ComponentActivity {
                         finish();
                         goToAppSettings(this);
                     }
-
                 });
 
         if (ContextCompat.checkSelfPermission(this, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
@@ -107,7 +102,7 @@ public class PermissionActivity extends ComponentActivity {
     private void goOn() {
         finish();
         if (runnable != null) {
-            runnable.accept(data);
+            runnable.accept(getParent(), data);
             runnable = null;
         }
     }

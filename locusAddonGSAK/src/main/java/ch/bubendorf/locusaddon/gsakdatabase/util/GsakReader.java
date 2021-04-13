@@ -6,19 +6,18 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import ch.bubendorf.locusaddon.gsakdatabase.DetailActivity;
+import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ch.bubendorf.locusaddon.gsakdatabase.DetailActivity;
 import locus.api.android.objects.PackPoints;
 import locus.api.objects.extra.Location;
 import locus.api.objects.geoData.Point;
@@ -36,7 +35,7 @@ public class GsakReader {
     public static SQLiteDatabase openDatabase(final Context context, final String dbId) {
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         if (sharedPreferences.getBoolean("pref_use_" + dbId, false)) {
-            final String path = sharedPreferences.getString("db", "");
+            final String path = sharedPreferences.getString(dbId, "");
             if (Gsak.isGsakDatabase(path)) {
                 return SQLiteDatabase.openDatabase(path,
                         null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
@@ -45,59 +44,58 @@ public class GsakReader {
         return null;
     }
 
-    public static List<Pair> readGCCodes(final Context context, final GeocacheAsyncTask asyncTask,
-                                         final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3,
-                                         final Location centerLocation, final Location topLeftLocation,
-                                         final Location bottomRightLocation) {
-        List<Pair> gcCodes = new ArrayList<>(256);
+    @NonNull
+    public static List<CacheWrapper> readGCCodes(final Context context, final GeocacheAsyncTask asyncTask,
+                                                 final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3,
+                                                 final Location centerLocation, final Location topLeftLocation,
+                                                 final Location bottomRightLocation) {
+        List<CacheWrapper> gcCodes = new ArrayList<>(256);
         final Set<String> alreadyLoaded = new HashSet<>(256);
 
         if (db != null) {
             GsakReader.loadGCCodes(context, asyncTask, db, gcCodes, alreadyLoaded, centerLocation, topLeftLocation, bottomRightLocation);
             if (asyncTask.isCancelled()) {
-                return null;
+                return gcCodes;
             }
         }
         if (db2 != null) {
             GsakReader.loadGCCodes(context, asyncTask, db2, gcCodes, alreadyLoaded, centerLocation, topLeftLocation, bottomRightLocation);
             if (asyncTask.isCancelled()) {
-                return null;
+                return gcCodes;
             }
         }
         if (db3 != null) {
             GsakReader.loadGCCodes(context, asyncTask, db3, gcCodes, alreadyLoaded, centerLocation, topLeftLocation, bottomRightLocation);
             if (asyncTask.isCancelled()) {
-                return null;
+                return gcCodes;
             }
         }
 
         final int limit = Math.min(2000, parseInt(getDefaultSharedPreferences(context).getString("limit", "100")));
 
         if (limit > 0 && gcCodes.size() > limit) {
-            Collections.sort(gcCodes, new Comparator<Pair>() {
-                public int compare(final Pair p1, final Pair p2) {
-                    return Float.compare(p1.distance, p2.distance);
-                }
-            });
+            gcCodes.sort((p1, p2) -> Float.compare(p1.distance, p2.distance));
             gcCodes = gcCodes.subList(0, limit);
         }
         return gcCodes;
     }
 
-    public static PackPoints readGeocaches(final GeocacheAsyncTask asyncTask, final List<Pair> gcCodes) throws ParseException {
+    @NonNull
+    public static PackPoints readGeocaches(final GeocacheAsyncTask asyncTask, final List<CacheWrapper> gcCodes) throws ParseException {
         int count = 0;
         final PackPoints packPoints = new PackPoints("GSAK data");
-        for (final Pair pair : gcCodes) {
+        for (final CacheWrapper cacheWrapper : gcCodes) {
             if (asyncTask.isCancelled()) {
-                return null;
+                return packPoints;
             }
-            final String gcCode = pair.gcCode;
-            if (++count % 10 == 0) {
+            final String gcCode = cacheWrapper.gcCode;
+            if (count % 10 == 0) {
                 asyncTask.myPublishProgress(count);
             }
-            final SQLiteDatabase database = pair.db;
+            final SQLiteDatabase database = cacheWrapper.db;
             final Point p = GsakReader.readGeocache(database, gcCode, false);
             if (p != null) {
+                count++;
                 packPoints.addPoint(p);
             }
         }
@@ -105,7 +103,7 @@ public class GsakReader {
     }
 
     public static void loadGCCodes(final Context context, final GeocacheAsyncTask asyncTask, final SQLiteDatabase database,
-                                   final List<Pair> gcCodes, final Set<String> alreadyLoaded,
+                                   final List<CacheWrapper> gcCodes, final Set<String> alreadyLoaded,
                                    final Location centerLocation, final Location topLeftLocation,
                                    final Location bottomRightLocation) {
         String sql = buildCacheSQL(context);
@@ -139,7 +137,7 @@ public class GsakReader {
                 loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
                 loc.setLongitude(c.getDouble(c.getColumnIndex("Longitude")));
 //                if (loc.distanceTo(centerLocation) <= radiusMeter) {
-                    gcCodes.add(new Pair(loc.distanceTo(centerLocation), code, database));
+                    gcCodes.add(new CacheWrapper(loc.distanceTo(centerLocation), code, database));
 //                }
             }
         }
@@ -216,7 +214,9 @@ public class GsakReader {
     @Nullable
     public static Point readGeocache(final SQLiteDatabase database, final String gcCode, final boolean withDetails) throws ParseException {
         final Cursor cacheCursor = database.rawQuery("SELECT * FROM CachesAll WHERE Code = ?", new String[]{gcCode});
-        cacheCursor.moveToNext();
+        if (!cacheCursor.moveToNext()) {
+            return null;
+        }
         final Location loc = new Location(cacheCursor.getDouble(cacheCursor.getColumnIndex("Latitude")), cacheCursor.getDouble(cacheCursor.getColumnIndex("Longitude")));
         final Point point = new Point(cacheCursor.getString(cacheCursor.getColumnIndex("Name")), loc);
 

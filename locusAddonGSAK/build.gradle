@@ -8,8 +8,8 @@ android {
     defaultConfig {
         applicationId "ch.bubendorf.locusaddon.gsakdatabase"
         minSdkVersion 24
-        targetSdkVersion 28 // Do not use a higher number!
-        versionCode 16
+        targetSdkVersion 29 // Do not use another number without a very good reason!
+        versionCode 18
         versionName "3.2.3"
         //archivesBaseName = "LocusAddonGSAK-$versionName"
         archivesBaseName = "LocusAddonGSAK-${versionName}-${versionCode}-${targetSdkVersion.apiLevel}"
@@ -27,22 +27,7 @@ android {
         }
     }
 
-    flavorDimensions "dimension"
-
-    productFlavors {
-        main {
-            dimension "dimension"
-            resValue "string", "app_name", "GSAK for Locus"
-            resValue "string", "load_from_gsak", "Load GSAK data"
-        }
-        alternative {
-            dimension "dimension"
-            applicationIdSuffix ".alt"
-            resValue "string", "app_name", "GSAK Locus Alternative"
-            resValue "string", "load_from_gsak", "Load GSAK Alternative"
-        }
-    }
-        lintOptions {
+    lintOptions {
         abortOnError false
         checkReleaseBuilds false
     }

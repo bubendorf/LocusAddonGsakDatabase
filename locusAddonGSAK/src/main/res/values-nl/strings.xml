@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">GSAK voor Locus</string>
+    <string name="load_from_gsak">Laad GSAK geocaches</string>
     <string name="pref_path">Pad instellingen</string>
     <string name="pref_db_title">GSAK database pad</string>
     <string name="pref_db_sum">Pad naar database GSAK bestand (*.db3 bestand)</string>

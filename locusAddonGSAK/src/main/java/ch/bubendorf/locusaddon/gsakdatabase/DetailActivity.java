@@ -1,6 +1,7 @@
 package ch.bubendorf.locusaddon.gsakdatabase;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -35,7 +36,7 @@ public class DetailActivity extends Activity {
         PermissionActivity.checkPermission(this, this::goOn, null);
     }
 
-    private void goOn(final Void data) {
+    private void goOn(final Context context, final Void data) {
         final Intent intent = getIntent();
 
         final File fd = new File(PreferenceManager.getDefaultSharedPreferences(this).getString("db", ""));
@@ -56,9 +57,13 @@ public class DetailActivity extends Activity {
                         point = readGeocacheFromDatabase("db3", value);
                     }
                 }
-                // return data
-                final Intent retIntent = LocusUtils.INSTANCE.prepareResultExtraOnDisplayIntent(point, true);
-                setResult(Activity.RESULT_OK, retIntent);
+                if (point != null) {
+                    // return data
+                    final Intent retIntent = LocusUtils.INSTANCE.prepareResultExtraOnDisplayIntent(point, true);
+                    setResult(Activity.RESULT_OK, retIntent);
+                } else {
+                    setResult(Activity.RESULT_CANCELED);
+                }
             } catch (final Exception e) {
                 Toast.makeText(this, getText(R.string.unable_to_load_detail) + " " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             } finally {
