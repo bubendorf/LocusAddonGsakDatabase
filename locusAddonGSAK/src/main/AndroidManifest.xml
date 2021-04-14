@@ -11,7 +11,10 @@
         android:requestLegacyExternalStorage="true" >
         <meta-data android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIxtbwo_e2LyaiyQgUD3B7YKdg8KxBY2i7-CGHdA" />
-        <activity android:name=".PrefActivity" android:label="@string/app_name">
+        <activity android:name=".PrefActivity"
+            android:label="@string/app_name"
+            android:theme="@style/prefs_theme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

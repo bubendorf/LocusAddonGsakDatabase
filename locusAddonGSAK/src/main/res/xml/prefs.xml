@@ -206,7 +206,7 @@
             android:summary="@string/pref_radius_sum"
             android:key="radius"
             android:inputType="number"
-            android:maxLength="2"
+            android:maxLength="3"
             />
         <CheckBoxPreference
             android:title="@string/pref_consider_wps"
@@ -220,7 +220,7 @@
             android:key="logs_count"
             android:summary="@string/pref_logs_sum"
             android:inputType="number"
-            android:maxLength="2"
+            android:maxLength="3"
             />
     </PreferenceCategory>
 

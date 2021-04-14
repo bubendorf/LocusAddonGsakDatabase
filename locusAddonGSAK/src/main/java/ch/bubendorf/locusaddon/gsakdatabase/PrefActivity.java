@@ -99,16 +99,13 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
     }
 
     private Preference.OnPreferenceClickListener getOnDBPreferenceClickListener(final int requestCode) {
-        return new Preference.OnPreferenceClickListener() {
-
-            public boolean onPreferenceClick(final Preference pref) {
-                try {
-                    ActionFiles.INSTANCE.actionPickFile(PrefActivity.this, requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
-                } catch (final ActivityNotFoundException anfe) {
-                    Toast.makeText(PrefActivity.this, "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                }
-                return true;
+        return pref -> {
+            try {
+                ActionFiles.INSTANCE.actionPickFile(PrefActivity.this, requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
+            } catch (final ActivityNotFoundException anfe) {
+                Toast.makeText(PrefActivity.this, "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
+            return true;
         };
     }
 
@@ -192,7 +189,7 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
                     editor.putString("db3", filename);
                     db3Pick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db3_sum)));
                 }
-                editor.commit();
+                editor.apply();
             }
         }
     }
