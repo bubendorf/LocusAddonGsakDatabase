@@ -16,14 +16,15 @@
 
 package ch.bubendorf.locusaddon.gsakdatabase.receiver;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 
 import java.util.List;
 
+import ch.bubendorf.locusaddon.gsakdatabase.util.CacheWrapper;
 import ch.bubendorf.locusaddon.gsakdatabase.util.GeocacheAsyncTask;
 import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
-import ch.bubendorf.locusaddon.gsakdatabase.util.CacheWrapper;
 import locus.api.android.ActionDisplayPoints;
 import locus.api.objects.extra.Location;
 
@@ -32,6 +33,7 @@ import locus.api.objects.extra.Location;
  */
 public class PointLoaderAsyncTask extends GeocacheAsyncTask {
 
+    @SuppressLint("StaticFieldLeak")
     private final Context context;
 
     public PointLoaderAsyncTask(final Context context) {

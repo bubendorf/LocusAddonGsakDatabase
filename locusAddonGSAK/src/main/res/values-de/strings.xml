@@ -38,9 +38,7 @@
     <string name="geocaches">Geocaches</string>
     <string name="loading_dots">Lädt…</string>
     <string name="error">Fehler!</string>
-    <string name="install_it">Locus Anwendung nicht gefunden! Bitte installieren!</string>
     <string name="out_of_memory">Speicherplatz reicht nicht aus! Ändere den Filter um die Geocacheanzahl zu verringern!</string>
-    <string name="no_external_storage">Externes Speichermedium (SD card) nicht gefunden!</string>
     <string name="no_db_file">GSAK Datenbank nicht gefunden! Bitte eingeben!</string>
     <string name="unable_to_load_geocaches">Laden der Geocaches nicht möglich!</string>
     <string name="unable_to_load_detail">Laden der Geocachedetails nicht möglich!</string>

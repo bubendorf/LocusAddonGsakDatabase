@@ -49,9 +49,7 @@
     <string name="geocaches">geocaches</string>
     <string name="loading_dots">Loading…</string>
     <string name="error">Error!</string>
-    <string name="install_it">Locus application not found! Please install!</string>
     <string name="out_of_memory">Out of memory! Change filter to decrease geocache count!</string>
-    <string name="no_external_storage">External storage (SD card) not found!</string>
     <string name="no_db_file">GSAK database not found! Set it!</string>
     <string name="unable_to_load_geocaches">Unable to load geocaches!</string>
     <string name="unable_to_load_detail">Unable to load geocache detail!</string>

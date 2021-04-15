@@ -48,6 +48,7 @@ public class PermissionActivity extends ComponentActivity {
             // Everything OK ==> Go On
             callback.accept(context, data);
         } else {
+            //noinspection unchecked
             runnable = (BiConsumer<Context, Object>) callback;
             PermissionActivity.data = data;
             final Intent intent = new Intent(context, PermissionActivity.class);

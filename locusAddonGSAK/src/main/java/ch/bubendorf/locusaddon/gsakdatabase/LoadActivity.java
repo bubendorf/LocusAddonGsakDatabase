@@ -17,10 +17,7 @@
 package ch.bubendorf.locusaddon.gsakdatabase;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -30,14 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.List;
 
-import ch.bubendorf.locusaddon.gsakdatabase.util.GeocacheAsyncTask;
 import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
-import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
-import ch.bubendorf.locusaddon.gsakdatabase.util.CacheWrapper;
-import locus.api.android.ActionDisplayPoints;
-import locus.api.android.ActionDisplayVarious;
 import locus.api.android.objects.LocusVersion;
 import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
@@ -52,86 +43,10 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
  * @author Radim -kuratkoo- Vaculik <kuratkoo@gmail.com>
  * @author Markus Bubendorf <gsakforlocus@bubendorf.net>
  */
-public class LoadActivity extends Activity implements DialogInterface.OnDismissListener {
+public class LoadActivity extends Activity  {
 
 //    private static final String TAG = "LoadActivity";
-    private ProgressDialog progress;
     private Point point;
-    private LoadAsyncTask loadAsyncTask;
-
-    public void onDismiss(final DialogInterface arg0) {
-        loadAsyncTask.cancel(true);
-    }
-
-
-    private class LoadAsyncTask extends GeocacheAsyncTask {
-
-        @Override
-        protected void onPreExecute() {
-            progress.show();
-
-            openDatabases(LoadActivity.this);
-        }
-
-        @Override
-        public void onProgressUpdate(final Integer... values) {
-            progress.setMessage(getString(R.string.loading) + " " + values[0] + " " + getString(R.string.geocaches));
-        }
-
-        protected Exception doInBackground(final Location... locations) {
-            try {
-                if (isCancelled()) {
-                    return null;
-                }
-
-                final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(LoadActivity.this, this,
-                        db, db2, db3, locations[0], null, null);
-                packPoints = GsakReader.readGeocaches(this, gcCodes);
-                return null;
-            } catch (final Exception e) {
-                return e;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final Exception ex) {
-            closeDatabases();
-            progress.dismiss();
-
-            if (ex != null) {
-                Toast.makeText(LoadActivity.this, getString(R.string.unable_to_load_geocaches) + " (" + ex.getLocalizedMessage() + ")", Toast.LENGTH_LONG).show();
-                LoadActivity.this.finish();
-                return;
-            }
-
-            if (packPoints != null && packPoints.getPoints().length > 0) {
-                try {
-                    final ActionDisplayVarious.ExtraAction action = getDefaultSharedPreferences(LoadActivity.this).getBoolean("import", true) ?
-                            ActionDisplayVarious.ExtraAction.IMPORT :
-                            ActionDisplayVarious.ExtraAction.CENTER;
-                    ActionDisplayPoints.INSTANCE.sendPack(LoadActivity.this, packPoints, action);
-                } catch (final OutOfMemoryError e) {
-                    final AlertDialog.Builder ad = new AlertDialog.Builder(LoadActivity.this);
-                    ad.setIcon(android.R.drawable.ic_dialog_alert);
-                    ad.setTitle(R.string.error);
-                    ad.setMessage(R.string.out_of_memory);
-                    ad.setPositiveButton(android.R.string.ok, (di, arg1) -> di.dismiss());
-                    ad.show();
-                } catch (final RequiredVersionMissingException rvme) {
-                    Toast.makeText(LoadActivity.this, "Error: " + rvme.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-            LoadActivity.this.finish();
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            progress.dismiss();
-            Toast.makeText(LoadActivity.this, R.string.canceled, Toast.LENGTH_LONG).show();
-            LoadActivity.this.finish();
-        }
-    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -142,12 +57,6 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
     }
 
     private void goOn(final Context context, final Void  data) {
-        progress = new ProgressDialog(this);
-        progress.setMessage(getString(R.string.loading_dots));
-        progress.setIcon(android.R.drawable.ic_dialog_info);
-        progress.setTitle(getString(R.string.loading));
-        progress.setOnDismissListener(this);
-
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(LoadActivity.this);
         final String dbPath = sharedPreferences.getString("db", "");
         final File fd = new File(dbPath);
@@ -194,13 +103,11 @@ public class LoadActivity extends Activity implements DialogInterface.OnDismissL
                 });
             }
             if (point != null) {
-                loadAsyncTask = new LoadAsyncTask();
+                final LoadAsyncTask loadAsyncTask = new LoadAsyncTask(this);
                 loadAsyncTask.execute(point.getLocation());
             }
         } catch (final RequiredVersionMissingException rvme) {
             Toast.makeText(LoadActivity.this, "Error: " + rvme.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
-
-
 }

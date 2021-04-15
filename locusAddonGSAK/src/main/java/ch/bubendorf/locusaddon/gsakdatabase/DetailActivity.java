@@ -26,12 +26,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
-import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
-
 import java.io.File;
 import java.text.ParseException;
 
+import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
+import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
 import locus.api.android.utils.LocusUtils;
 import locus.api.objects.geoData.Point;
 
