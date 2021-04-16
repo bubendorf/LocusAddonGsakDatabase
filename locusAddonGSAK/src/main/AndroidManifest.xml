@@ -11,6 +11,7 @@
         android:requestLegacyExternalStorage="true" >
         <meta-data android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIxtbwo_e2LyaiyQgUD3B7YKdg8KxBY2i7-CGHdA" />
+
         <activity android:name=".PrefActivity"
             android:label="@string/app_name"
             android:theme="@style/prefs_theme"
@@ -20,6 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name="LoadActivity"
             android:label="@string/load_from_gsak"
             android:theme="@style/dialog_theme"
@@ -33,20 +35,34 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity android:name="DetailActivity"
             android:exported="true"
             android:theme="@style/dialog_theme"
             android:configChanges="orientation" >
         </activity>
+
         <activity android:name="PermissionActivity"
             android:exported="true"
             android:theme="@style/dialog_theme"
             android:configChanges="orientation" >
         </activity>
+
         <receiver android:name=".receiver.LocationReceiver">
             <intent-filter>
                 <action android:name="locus.api.android.ACTION_PERIODIC_UPDATE" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="@string/file_provider_authority"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
     </application>
 </manifest>

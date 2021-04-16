@@ -90,7 +90,7 @@ public class GsakReader {
             }
         }
 
-        final int limit = Math.min(2000, parseInt(getDefaultSharedPreferences(context).getString("limit", "100")));
+        final int limit = parseInt(getDefaultSharedPreferences(context).getString("limit", "100"));
 
         if (limit > 0 && gcCodes.size() > limit) {
             gcCodes.sort((p1, p2) -> Float.compare(p1.distance, p2.distance));

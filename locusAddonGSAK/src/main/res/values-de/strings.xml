@@ -3,7 +3,7 @@
     <string name="app_name">GSAK für Locus</string>
     <string name="load_from_gsak">Lade Geocaches aus GSAK</string>
     <string name="pref_path">Speicherorteinstellungen</string>
-    <string name="pref_db_title">Haupt GSAK Datenbank</string>
+    <string name="pref_db_title">Erste GSAK Datenbank</string>
     <string name="pref_db_sum">Speicherort der Haupt GSAK Datenbank (*.db3 Datei)</string>
     <string name="pref_db_pick_title">Wählen Sie die Datenbank Datei</string>
     <string name="pref_filter">Filtereinstellungen</string>
@@ -45,7 +45,7 @@
     <string name="canceled">Lädtstornieren!</string>
     <string name="pref_db2_title">Zweite GSAK Datenbank</string>
     <string name="pref_db3_title">Dritte GSAK Datenbank</string>
-    <string name="pref_use_db">Haupt Datenbank verwenden</string>
+    <string name="pref_use_db">Erste Datenbank verwenden</string>
     <string name="pref_use_db2">Zweite Datenbank verwenden</string>
     <string name="pref_use_db3">Dritte Datenbank verwenden</string>
     <string name="pref_notfound_title">Meine (noch) nicht gefundenen Geocaches</string>

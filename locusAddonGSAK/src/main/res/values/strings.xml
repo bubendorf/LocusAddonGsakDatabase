@@ -3,8 +3,8 @@
     <string name="app_name">GSAK for Locus</string>
     <string name="load_from_gsak">Load GSAK geocaches</string>
     <string name="pref_path">Path settings</string>
-    <string name="pref_db_title">Main GSAK database path</string>
-    <string name="pref_use_db">Use main GSAK database</string>
+    <string name="pref_db_title">First GSAK database path</string>
+    <string name="pref_use_db">Use first GSAK database</string>
     <string name="pref_db2_title">Second GSAK database path</string>
     <string name="pref_use_db2">Use second GSAK database</string>
     <string name="pref_db3_title">Third GSAK database path</string>
@@ -73,4 +73,6 @@
     <string name="pref_type_benchmark" translatable="false">Benchmark Hunting</string>
     <string name="pref_type_ape" translatable="false">Project A.P.E. Cache</string>
     <string name="pref_type_lab" translatable="false">Adventure LAB Cache</string>
+
+    <string name="file_provider_authority" translatable="false">ch.bubendorf.locusaddon.gsakdatabase.provider</string>
 </resources>
