@@ -3,30 +3,30 @@
     android:title="@string/app_name">
     <PreferenceCategory
         android:title="@string/pref_path">
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="pref_use_db"
-            android:title="@string/pref_use_db" />
         <Preference
             android:key="db_pick"
             android:summary="@string/pref_db_sum"
             android:title="@string/pref_db_title" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="pref_use_db2"
-            android:title="@string/pref_use_db2" />
+            android:key="pref_use_db"
+            android:title="@string/pref_use_db" />
         <Preference
             android:key="db2_pick"
             android:summary="@string/pref_db2_sum"
             android:title="@string/pref_db2_title" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="pref_use_db3"
-            android:title="@string/pref_use_db3" />
+            android:key="pref_use_db2"
+            android:title="@string/pref_use_db2" />
         <Preference
             android:key="db3_pick"
             android:summary="@string/pref_db3_sum"
             android:title="@string/pref_db3_title" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_use_db3"
+            android:title="@string/pref_use_db3" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_locus">
         <CheckBoxPreference
@@ -206,7 +206,7 @@
             android:summary="@string/pref_radius_sum"
             android:key="radius"
             android:inputType="number"
-            android:maxLength="3"
+            android:maxLength="4"
             />
         <CheckBoxPreference
             android:title="@string/pref_consider_wps"

@@ -60,7 +60,7 @@ public class LoadActivity extends Activity  {
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(LoadActivity.this);
         final String dbPath = sharedPreferences.getString("db", "");
         final File fd = new File(dbPath);
-        if (sharedPreferences.getBoolean("pref_use_db", true) &&
+        if (sharedPreferences.getBoolean("pref_use_db", false) &&
                 !Gsak.isGsakDatabase(fd)) {
             final String text = getResources().getString(R.string.no_db_file);
             Toast.makeText(LoadActivity.this, text + " " + dbPath, Toast.LENGTH_LONG).show();

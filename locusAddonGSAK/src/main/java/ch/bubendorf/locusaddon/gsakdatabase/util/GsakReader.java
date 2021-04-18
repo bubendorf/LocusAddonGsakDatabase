@@ -112,7 +112,7 @@ public class GsakReader {
                 asyncTask.myPublishProgress(count);
             }
             final SQLiteDatabase database = cacheWrapper.db;
-            final Point p = GsakReader.readGeocache(database, gcCode, false);
+            final Point p = GsakReader.readGeocache(database, gcCode, false, null);
             if (p != null) {
                 count++;
                 packPoints.addPoint(p);
@@ -231,7 +231,7 @@ public class GsakReader {
     }
 
     @Nullable
-    public static Point readGeocache(final SQLiteDatabase database, final String gcCode, final boolean withDetails) throws ParseException {
+    public static Point readGeocache(final SQLiteDatabase database, final String gcCode, final boolean withDetails, final String logLimit) throws ParseException {
         final Cursor cacheCursor = database.rawQuery("SELECT * FROM CachesAll WHERE Code = ?", new String[]{gcCode});
         if (!cacheCursor.moveToNext()) {
             return null;
@@ -306,12 +306,10 @@ public class GsakReader {
         wpCursor.close();
         gcData.setWaypoints(pgdws);
 
-        if (withDetails) {
+        if (withDetails && logLimit != null) {
             // Add logsCursor to Geocache
-            //String limit = PreferenceManager.getDefaultSharedPreferences(context).getString("logs_count", "20");
-            final String limit = "20";
             final Cursor logsCursor = database.rawQuery("SELECT * FROM LogsAll WHERE lParent = ? ORDER BY lDate DESC LIMIT ?",
-                    new String[]{gcData.getCacheID(), limit});
+                    new String[]{gcData.getCacheID(), logLimit});
             final ArrayList<GeocachingLog> pgdls = new ArrayList<>();
 
             while (logsCursor.moveToNext()) {

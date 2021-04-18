@@ -95,7 +95,8 @@ public class DetailActivity extends Activity {
             return null;
         }
         final SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
-        final Point p = GsakReader.readGeocache(database, gcCode, true);
+        final String logLimit = PreferenceManager.getDefaultSharedPreferences(this).getString("logs_count", "20");
+        final Point p = GsakReader.readGeocache(database, gcCode, true, logLimit);
         database.close();
         return p;
     }
