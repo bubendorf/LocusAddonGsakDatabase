@@ -48,6 +48,9 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
     private EditTextPreference radius;
     private EditTextPreference limit;
     private CheckBoxPreference own;
+    private CheckBoxPreference useDb;
+    private CheckBoxPreference useDb2;
+    private CheckBoxPreference useDb3;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -60,18 +63,27 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
         own = (CheckBoxPreference) getPreferenceScreen().findPreference("own");
+        useDb = (CheckBoxPreference) getPreferenceScreen().findPreference("pref_use_db");
+        useDb2 = (CheckBoxPreference) getPreferenceScreen().findPreference("pref_use_db2");
+        useDb3 = (CheckBoxPreference) getPreferenceScreen().findPreference("pref_use_db3");
 
         dbPick = getPreferenceScreen().findPreference("db_pick");
         dbPick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(0));
-        dbPick.setSummary(editPreferenceSummary(PreferenceManager.getDefaultSharedPreferences(this).getString("db", ""), getText(R.string.pref_db_sum)));
+        String dbPath = PreferenceManager.getDefaultSharedPreferences(this).getString("db", "");
+        dbPick.setSummary(editPreferenceSummary(dbPath, getText(R.string.pref_db_sum)));
+        useDb.setEnabled(dbPath != null && dbPath.length() > 0);
 
         db2Pick = getPreferenceScreen().findPreference("db2_pick");
         db2Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(1));
-        db2Pick.setSummary(editPreferenceSummary(PreferenceManager.getDefaultSharedPreferences(this).getString("db2", ""), getText(R.string.pref_db_sum)));
+        String db2Path = PreferenceManager.getDefaultSharedPreferences(this).getString("db2", "");
+        db2Pick.setSummary(editPreferenceSummary(db2Path, getText(R.string.pref_db2_sum)));
+        useDb2.setEnabled(db2Path != null && db2Path.length() > 0);
 
         db3Pick = getPreferenceScreen().findPreference("db3_pick");
         db3Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(2));
-        db3Pick.setSummary(editPreferenceSummary(PreferenceManager.getDefaultSharedPreferences(this).getString("db3", ""), getText(R.string.pref_db_sum)));
+        String db3Path = PreferenceManager.getDefaultSharedPreferences(this).getString("db3", "");
+        db3Pick.setSummary(editPreferenceSummary(db3Path, getText(R.string.pref_db3_sum)));
+        useDb3.setEnabled(db3Path != null && db3Path.length() > 0);
 
         nick = (EditTextPreference) getPreferenceScreen().findPreference("nick");
         nick.setSummary(editPreferenceSummary(nick.getText(), getText(R.string.pref_nick_sum)));
@@ -113,14 +125,17 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
         if (key.equals("db")) {
             final String path = sharedPreferences.getString(key, "");
             dbPick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db_sum)));
+            useDb.setEnabled(path != null && path.length() > 0);
         }
         if (key.equals("db2")) {
             final String path = sharedPreferences.getString(key, "");
             db2Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db2_sum)));
+            useDb2.setEnabled(path != null && path.length() > 0);
         }
         if (key.equals("db3")) {
             final String path = sharedPreferences.getString(key, "");
             db3Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db3_sum)));
+            useDb3.setEnabled(path != null && path.length() > 0);
         }
 
         if (key.equals("nick")) {
@@ -182,12 +197,18 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
                 if (requestCode == 0) {
                     editor.putString("db", filename);
                     dbPick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db_sum)));
+                    useDb.setChecked(filename != null && filename.length() > 0);
+                    useDb.setEnabled(filename != null && filename.length() > 0);
                 } else if (requestCode == 1) {
                     editor.putString("db2", filename);
                     db2Pick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db2_sum)));
+                    useDb2.setChecked(filename != null && filename.length() > 0);
+                    useDb2.setEnabled(filename != null && filename.length() > 0);
                 } else {
                     editor.putString("db3", filename);
                     db3Pick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db3_sum)));
+                    useDb3.setChecked(filename != null && filename.length() > 0);
+                    useDb3.setEnabled(filename != null && filename.length() > 0);
                 }
                 editor.apply();
             }
