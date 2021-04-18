@@ -30,198 +30,168 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_locus">
         <CheckBoxPreference
-            android:title="@string/pref_livemap_title"
             android:defaultValue="false"
-            android:summary="@string/pref_livemap_sum"
             android:key="livemap"
-            />
+            android:summary="@string/pref_livemap_sum"
+            android:title="@string/pref_livemap_title" />
         <CheckBoxPreference
-            android:title="@string/pref_import_title"
             android:defaultValue="true"
-            android:summary="@string/pref_import_sum"
             android:key="import"
-            />
+            android:summary="@string/pref_import_sum"
+            android:title="@string/pref_import_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_filter">
         <PreferenceScreen
             android:key="pref_type_screen"
-            android:title="@string/pref_type_screen_title"
-            android:summary="@string/pref_type_screen_sum">
+            android:summary="@string/pref_type_screen_sum"
+            android:title="@string/pref_type_screen_title">
             <CheckBoxPreference
-                android:title="@string/pref_type_corrected"
                 android:defaultValue="false"
-                android:key="gc_type_corrected"
                 android:icon="@drawable/gc_type_corrected"
-                />
+                android:key="gc_type_corrected"
+                android:title="@string/pref_type_corrected" />
             <CheckBoxPreference
-                android:title="@string/pref_type_traditional"
                 android:defaultValue="true"
-                android:key="gc_type_tradi"
                 android:icon="@drawable/gc_type_tradi"
-                />
+                android:key="gc_type_tradi"
+                android:title="@string/pref_type_traditional" />
             <CheckBoxPreference
-                android:title="@string/pref_type_multi"
                 android:defaultValue="true"
-                android:key="gc_type_multi"
                 android:icon="@drawable/gc_type_multi"
-                />
+                android:key="gc_type_multi"
+                android:title="@string/pref_type_multi" />
             <CheckBoxPreference
-                android:title="@string/pref_type_mystery"
                 android:defaultValue="true"
-                android:key="gc_type_mystery"
                 android:icon="@drawable/gc_type_mystery"
-                />
+                android:key="gc_type_mystery"
+                android:title="@string/pref_type_mystery" />
             <CheckBoxPreference
-                android:title="@string/pref_type_earth"
                 android:defaultValue="true"
-                android:key="gc_type_earth"
                 android:icon="@drawable/gc_type_earth"
-                />
+                android:key="gc_type_earth"
+                android:title="@string/pref_type_earth" />
             <CheckBoxPreference
-                android:title="@string/pref_type_letter"
                 android:defaultValue="true"
-                android:key="gc_type_letter"
                 android:icon="@drawable/gc_type_letter"
-                />
+                android:key="gc_type_letter"
+                android:title="@string/pref_type_letter" />
             <CheckBoxPreference
-                android:title="@string/pref_type_event"
                 android:defaultValue="true"
-                android:key="gc_type_event"
                 android:icon="@drawable/gc_type_event"
-                />
+                android:key="gc_type_event"
+                android:title="@string/pref_type_event" />
             <CheckBoxPreference
-                android:title="@string/pref_type_cito"
                 android:defaultValue="true"
-                android:key="gc_type_cito"
                 android:icon="@drawable/gc_type_cito"
-                />
+                android:key="gc_type_cito"
+                android:title="@string/pref_type_cito" />
             <CheckBoxPreference
-                android:title="@string/pref_type_lab"
                 android:defaultValue="true"
-                android:key="gc_type_lab"
                 android:icon="@drawable/gc_type_lab"
-                />
+                android:key="gc_type_lab"
+                android:title="@string/pref_type_lab" />
             <CheckBoxPreference
-                android:title="@string/pref_type_wig"
                 android:defaultValue="true"
-                android:key="gc_type_wig"
                 android:icon="@drawable/gc_type_wig"
-                />
+                android:key="gc_type_wig"
+                android:title="@string/pref_type_wig" />
             <CheckBoxPreference
-                android:title="@string/pref_type_virtual"
                 android:defaultValue="true"
-                android:key="gc_type_virtual"
                 android:icon="@drawable/gc_type_virtual"
-                />
+                android:key="gc_type_virtual"
+                android:title="@string/pref_type_virtual" />
             <CheckBoxPreference
-                android:title="@string/pref_type_webcam"
                 android:defaultValue="true"
-                android:key="gc_type_webcam"
                 android:icon="@drawable/gc_type_webcam"
-                />
+                android:key="gc_type_webcam"
+                android:title="@string/pref_type_webcam" />
             <CheckBoxPreference
-                android:title="@string/pref_type_loc"
                 android:defaultValue="true"
-                android:key="gc_type_loc"
                 android:icon="@drawable/gc_type_loc"
-                />
+                android:key="gc_type_loc"
+                android:title="@string/pref_type_loc" />
             <CheckBoxPreference
-                android:title="@string/pref_type_hq"
                 android:defaultValue="true"
-                android:key="gc_type_hq"
                 android:icon="@drawable/gc_type_hq"
-                />
+                android:key="gc_type_hq"
+                android:title="@string/pref_type_hq" />
             <CheckBoxPreference
-                android:title="@string/pref_type_gps"
                 android:defaultValue="true"
-                android:key="gc_type_gps"
                 android:icon="@drawable/gc_type_gps"
-                />
+                android:key="gc_type_gps"
+                android:title="@string/pref_type_gps" />
             <CheckBoxPreference
-                android:title="@string/pref_type_10years"
                 android:defaultValue="true"
-                android:key="gc_type_10years"
                 android:icon="@drawable/gc_type_10years"
-                />
+                android:key="gc_type_10years"
+                android:title="@string/pref_type_10years" />
             <CheckBoxPreference
-                android:title="@string/pref_type_benchmark"
                 android:defaultValue="true"
-                android:key="gc_type_benchmark"
                 android:icon="@drawable/gc_type_benchmark"
-                />
+                android:key="gc_type_benchmark"
+                android:title="@string/pref_type_benchmark" />
             <CheckBoxPreference
-                android:title="@string/pref_type_ape"
                 android:defaultValue="true"
-                android:key="gc_type_ape"
                 android:icon="@drawable/gc_type_ape"
-                />
+                android:key="gc_type_ape"
+                android:title="@string/pref_type_ape" />
         </PreferenceScreen>
         <EditTextPreference
             android:defaultValue=""
-            android:title="@string/pref_nick_title"
             android:key="nick"
             android:summary="@string/pref_nick_sum"
-            />     
+            android:title="@string/pref_nick_title" />
         <CheckBoxPreference
-            android:title="@string/pref_disable_title"
             android:defaultValue="false"
-            android:summary="@string/pref_disable_sum"
             android:key="disable"
-            />
+            android:summary="@string/pref_disable_sum"
+            android:title="@string/pref_disable_title" />
         <CheckBoxPreference
-            android:title="@string/pref_found_title"
             android:defaultValue="false"
-            android:summary="@string/pref_found_sum"
             android:key="found"
-            />
+            android:summary="@string/pref_found_sum"
+            android:title="@string/pref_found_title" />
         <CheckBoxPreference
-            android:title="@string/pref_notfound_title"
             android:defaultValue="true"
-            android:summary="@string/pref_notfound_sum"
             android:key="notfound"
-            />
+            android:summary="@string/pref_notfound_sum"
+            android:title="@string/pref_notfound_title" />
         <CheckBoxPreference
-            android:title="@string/pref_own_title"
             android:defaultValue="false"
-            android:summary="@string/pref_own_sum"
             android:key="own"
-            />
+            android:summary="@string/pref_own_sum"
+            android:title="@string/pref_own_title" />
         <CheckBoxPreference
-            android:title="@string/pref_archive_title"
             android:defaultValue="false"
-            android:summary="@string/pref_archive_sum"
             android:key="archive"
-            />
+            android:summary="@string/pref_archive_sum"
+            android:title="@string/pref_archive_title" />
         <EditTextPreference
             android:defaultValue="250"
-            android:title="@string/pref_limit_title"
-            android:summary="@string/pref_limit_sum"
-            android:key="limit"
             android:inputType="number"
+            android:key="limit"
             android:maxLength="4"
-            />
+            android:summary="@string/pref_limit_sum"
+            android:title="@string/pref_limit_title" />
         <EditTextPreference
             android:defaultValue="25"
-            android:title="@string/pref_radius_title"
-            android:summary="@string/pref_radius_sum"
-            android:key="radius"
             android:inputType="number"
+            android:key="radius"
             android:maxLength="4"
-            />
+            android:summary="@string/pref_radius_sum"
+            android:title="@string/pref_radius_title" />
         <CheckBoxPreference
-            android:title="@string/pref_consider_wps"
             android:defaultValue="true"
             android:key="consider_wps"
             android:summary="@string/pref_consider_wps_summary"
-            />
+            android:title="@string/pref_consider_wps" />
         <EditTextPreference
             android:defaultValue="20"
-            android:title="@string/pref_logs_title"
-            android:key="logs_count"
-            android:summary="@string/pref_logs_sum"
             android:inputType="number"
+            android:key="logs_count"
             android:maxLength="3"
-            />
+            android:summary="@string/pref_logs_sum"
+            android:title="@string/pref_logs_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

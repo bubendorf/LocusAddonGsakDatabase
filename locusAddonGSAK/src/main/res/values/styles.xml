@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="dialog_theme" parent="@android:style/Theme.Translucent.NoTitleBar" />
-    <style name="prefs_theme" parent="@android:style/Theme" />
+
+    <style name="prefs_theme" parent="@android:style/Theme.DeviceDefault" >
+        <!--<item name="android:textColor">#ff8080</item>-->
+        <!--<item name="android:textSize">18sp</item>-->
+        <item name="android:layout_marginTop">-2sp</item>
+        <!--<item name="android:layout_marginBottom">-1sp</item>-->
+        <!--<item name="android:paddingVertical">4sp</item>-->
+        <!--<item name="android:paddingBottom">0sp</item>-->
+    </style>
 </resources>
