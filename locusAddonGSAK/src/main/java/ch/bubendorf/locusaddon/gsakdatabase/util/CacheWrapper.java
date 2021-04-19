@@ -21,8 +21,8 @@ import android.database.sqlite.SQLiteDatabase;
 public class CacheWrapper {
 
     public final String gcCode;
-    public final float distance;
-    public final SQLiteDatabase db;
+    public float distance;
+    public SQLiteDatabase db;
 
     public CacheWrapper(final float dist, final String code, final SQLiteDatabase db) {
         this.distance = dist;

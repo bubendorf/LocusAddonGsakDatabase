@@ -170,7 +170,7 @@
             android:defaultValue="250"
             android:inputType="number"
             android:key="limit"
-            android:maxLength="4"
+            android:maxLength="5"
             android:summary="@string/pref_limit_sum"
             android:title="@string/pref_limit_title" />
         <EditTextPreference

@@ -52,12 +52,13 @@ public class LocationReceiver extends BroadcastReceiver {
             return;
         }
         if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("livemap", false)) {
+            // Live Map is switch off in GSAk for Locus ==> Do nothing
             return;
         }
 
         if (System.currentTimeMillis() >= lastUpdate + MIN_INTERVALL) {
             final UpdateContainer updateContainer = getContent(context);
-            if (updateContainer != null && updateContainer.isMapVisible()) {
+            if (updateContainer != null && updateContainer.isMapVisible() && !updateContainer.isUserTouching()) {
                 if (lastMapCenter == null) {
                     update(context, updateContainer);
                 } else {
@@ -89,7 +90,6 @@ public class LocationReceiver extends BroadcastReceiver {
         lastUpdate = System.currentTimeMillis();
 
         final PointLoader pointLoader = PointLoader.getInstance();
-
         pointLoader.run(context, updateContainer.getLocMapCenter(), updateContainer.getMapTopLeft(), updateContainer.getMapBottomRight());
     }
 

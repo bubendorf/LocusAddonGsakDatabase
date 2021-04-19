@@ -28,7 +28,7 @@
     <string name="pref_radius_error">Vzdálenost musí být číslo od 1 do 9999</string>
     <string name="pref_limit_title">Počet keší</string>
     <string name="pref_limit_sum">Počet keší pro načtení.</string>
-    <string name="pref_limit_error">Počet keší musí být číslo od 1 do 9999</string>
+    <string name="pref_limit_error">Počet keší musí být číslo od 1 do 99999</string>
     <string name="pref_locus">Nastavení Locusu</string>
     <string name="pref_import_title">Importovat</string>
     <string name="pref_import_sum">Importovat keše do Locusu po načtení z databáze</string>

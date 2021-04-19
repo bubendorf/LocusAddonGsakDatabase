@@ -29,9 +29,9 @@ import org.jetbrains.annotations.Nullable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import ch.bubendorf.locusaddon.gsakdatabase.DetailActivity;
 import locus.api.android.objects.PackPoints;
@@ -65,38 +65,29 @@ public class GsakReader {
 
     @NonNull
     public static List<CacheWrapper> readGCCodes(final Context context, final GeocacheAsyncTask asyncTask,
-                                                 final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3,
-                                                 final Location centerLocation, final Location topLeftLocation,
-                                                 final Location bottomRightLocation) {
-        List<CacheWrapper> gcCodes = new ArrayList<>(256);
-        final Set<String> alreadyLoaded = new HashSet<>(256);
+                                                       final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3,
+                                                       final Location centerLocation, final Location topLeftLocation,
+                                                       final Location bottomRightLocation) {
+        final Map<String, CacheWrapper> gcCodes = new HashMap<>(256);
 
-        if (db != null) {
-            GsakReader.loadGCCodes(context, asyncTask, db, gcCodes, alreadyLoaded, centerLocation, topLeftLocation, bottomRightLocation);
-            if (asyncTask.isCancelled()) {
-                return gcCodes;
-            }
+        if (db != null && !asyncTask.isCancelled()) {
+            GsakReader.loadGCCodes(context, asyncTask, db, gcCodes, centerLocation, topLeftLocation, bottomRightLocation);
         }
-        if (db2 != null) {
-            GsakReader.loadGCCodes(context, asyncTask, db2, gcCodes, alreadyLoaded, centerLocation, topLeftLocation, bottomRightLocation);
-            if (asyncTask.isCancelled()) {
-                return gcCodes;
-            }
+        if (db2 != null && !asyncTask.isCancelled()) {
+            GsakReader.loadGCCodes(context, asyncTask, db2, gcCodes, centerLocation, topLeftLocation, bottomRightLocation);
         }
-        if (db3 != null) {
-            GsakReader.loadGCCodes(context, asyncTask, db3, gcCodes, alreadyLoaded, centerLocation, topLeftLocation, bottomRightLocation);
-            if (asyncTask.isCancelled()) {
-                return gcCodes;
-            }
+        if (db3 != null && !asyncTask.isCancelled()) {
+            GsakReader.loadGCCodes(context, asyncTask, db3, gcCodes, centerLocation, topLeftLocation, bottomRightLocation);
         }
 
         final int limit = parseInt(getDefaultSharedPreferences(context).getString("limit", "100"));
 
-        if (limit > 0 && gcCodes.size() > limit) {
-            gcCodes.sort((p1, p2) -> Float.compare(p1.distance, p2.distance));
-            gcCodes = gcCodes.subList(0, limit);
+        List<CacheWrapper> cacheWrappers = new ArrayList<>(gcCodes.values());
+        cacheWrappers.sort((p1, p2) -> Float.compare(p1.distance, p2.distance));
+        if (limit > 0 && cacheWrappers.size() > limit) {
+            cacheWrappers = cacheWrappers.subList(0, limit);
         }
-        return gcCodes;
+        return cacheWrappers;
     }
 
     @NonNull
@@ -121,57 +112,99 @@ public class GsakReader {
         return packPoints;
     }
 
-    public static void loadGCCodes(final Context context, final GeocacheAsyncTask asyncTask, final SQLiteDatabase database,
-                                   final List<CacheWrapper> gcCodes, final Set<String> alreadyLoaded,
-                                   final Location centerLocation, final Location topLeftLocation,
-                                   final Location bottomRightLocation) {
-        String sql = buildCacheSQL(context);
+    public static void loadGCCodes(@NonNull final Context context,
+                                   @NonNull final GeocacheAsyncTask asyncTask,
+                                   @NonNull final SQLiteDatabase database,
+                                   @NonNull final Map<String, CacheWrapper> gcCodes,
+                                   @NonNull final Location centerLocation,
+                                   @Nullable final Location topLeftLocation,
+                                   @Nullable final Location bottomRightLocation) {
+        String sql = buildGCCodesSQL(context);
+
+        double latFrom = Double.MIN_VALUE;
+        double latTo = Double.MAX_VALUE;
+        double lonFrom = Double.MIN_VALUE;
+        double lonTo = Double.MAX_VALUE;
 
         final float radiusMeter = parseFloat(getDefaultSharedPreferences(context).getString("radius", "25")) * 1000;
         if (topLeftLocation != null && bottomRightLocation != null) {
-            sql = sql.replace(":latFrom", Double.toString(bottomRightLocation.getLatitude()));
-            sql = sql.replace(":latTo", Double.toString(topLeftLocation.getLatitude()));
-            sql = sql.replace(":lonFrom", Double.toString(topLeftLocation.getLongitude()));
-            sql = sql.replace(":lonTo", Double.toString(bottomRightLocation.getLongitude()));
-        } else {
-            final float radiusNorthSouth = 360f / (40007863 / radiusMeter);
-            final float radiusEastWest = 360f / (40075017 / radiusMeter) / (float) Math.cos(centerLocation.getLatitude() / 180 * Math.PI);
-            sql = sql.replace(":latFrom", Double.toString(centerLocation.getLatitude() - radiusNorthSouth));
-            sql = sql.replace(":latTo", Double.toString(centerLocation.getLatitude() + radiusNorthSouth));
-            sql = sql.replace(":lonFrom", Double.toString(centerLocation.getLongitude() - radiusEastWest));
-            sql = sql.replace(":lonTo", Double.toString(centerLocation.getLongitude() + radiusEastWest));
+            latFrom = Math.max(latFrom, bottomRightLocation.getLatitude());
+            latTo = Math.min(latTo, topLeftLocation.getLatitude());
+            lonFrom = Math.max(lonFrom, topLeftLocation.getLongitude());
+            lonTo = Math.min(lonTo, bottomRightLocation.getLongitude());
         }
+
+        final float radiusNorthSouth = 360f / (40007863 / radiusMeter);
+        final float radiusEastWest = 360f / (40075017 / radiusMeter) / (float) Math.cos(centerLocation.getLatitude() / 180 * Math.PI);
+        latFrom = Math.max(latFrom, centerLocation.getLatitude() - radiusNorthSouth);
+        latTo = Math.min(latTo, centerLocation.getLatitude() + radiusNorthSouth);
+        lonFrom = Math.max(lonFrom, centerLocation.getLongitude() - radiusEastWest);
+        lonTo = Math.min(lonTo, centerLocation.getLongitude() + radiusEastWest);
+
+        sql = sql.replace(":latFrom", Double.toString(latFrom));
+        sql = sql.replace(":latTo", Double.toString(latTo));
+        sql = sql.replace(":lonFrom", Double.toString(lonFrom));
+        sql = sql.replace(":lonTo", Double.toString(lonTo));
 
         /* Load GC codes */
         final Location loc = new Location();
         final Cursor c = database.rawQuery(sql, null);
         while (c.moveToNext()) {
-            if (asyncTask != null && asyncTask.isCancelled()) {
+            if (asyncTask.isCancelled()) {
                 c.close();
                 return;
             }
             final String code = c.getString(c.getColumnIndex("Code"));
-            if (!alreadyLoaded.contains(code)) {
-                alreadyLoaded.add(code);
-                loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
-                loc.setLongitude(c.getDouble(c.getColumnIndex("Longitude")));
-//                if (loc.distanceTo(centerLocation) <= radiusMeter) {
-                    gcCodes.add(new CacheWrapper(loc.distanceTo(centerLocation), code, database));
-//                }
+            loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
+            loc.setLongitude(c.getDouble(c.getColumnIndex("Longitude")));
+            final CacheWrapper cacheWrapper = gcCodes.get(code);
+            final float distance = loc.distanceTo(centerLocation);
+            if (cacheWrapper == null) {
+                if (distance <= radiusMeter) {
+                    gcCodes.put(code, new CacheWrapper(distance, code, database));
+                }
+            } else {
+                // Update the entry if the distance is less
+                if (distance < cacheWrapper.distance) {
+                    cacheWrapper.distance = distance;
+                    cacheWrapper.db = database;
+                }
             }
         }
         c.close();
     }
 
-    private static String buildCacheSQL(final Context context) {
-        final StringBuilder sql = new StringBuilder(256);
-        sql.append("SELECT DISTINCT c.Latitude, c.Longitude, c.Code ");
-        sql.append("FROM Caches c ");
-        sql.append("LEFT JOIN Waypoints w on w.cParent = c.Code ");
-        sql.append("WHERE (c.status = 'A'");
-
-        // Disable geocaches
+    private static String buildGCCodesSQL(final Context context) {
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        final boolean considerWayPoints = sharedPreferences.getBoolean("consider_wps", true);
+        final StringBuilder sql = new StringBuilder(256);
+
+        sql.append("SELECT c.Latitude, c.Longitude, c.Code ");
+        sql.append("FROM Caches c ");
+        appendWhereClause(sharedPreferences, sql);
+        sql.append(" AND (");
+        sql.append("CAST(c.Latitude AS REAL) >= :latFrom AND CAST(c.Latitude AS REAL) <= :latTo AND CAST(c.Longitude AS REAL) >= :lonFrom AND CAST(c.Longitude AS REAL) <= :lonTo");
+        sql.append(" )");
+
+        if (considerWayPoints) {
+                sql.append("UNION ");
+                sql.append("SELECT w.cLat as Latitude, w.cLon as Longitude, c.Code ");
+                sql.append("FROM Caches c ");
+                sql.append("LEFT JOIN Waypoints w on w.cParent = c.Code ");
+                appendWhereClause(sharedPreferences, sql);
+                sql.append(" AND ( (");
+                sql.append("CAST(c.LatOriginal AS REAL) >= :latFrom AND CAST(c.LatOriginal AS REAL) <= :latTo AND CAST(c.LonOriginal AS REAL) >= :lonFrom AND CAST(c.LonOriginal AS REAL) <= :lonTo");
+                sql.append(" ) OR (");
+                sql.append("CAST(w.cLat AS REAL) >= :latFrom AND CAST(w.cLat AS REAL) <= :latTo AND CAST(w.cLon AS REAL) >= :lonFrom AND CAST(w.cLon AS REAL) <= :lonTo");
+            sql.append(") )");
+        }
+
+        return sql.toString();
+    }
+
+    private static void appendWhereClause(final SharedPreferences sharedPreferences, final StringBuilder sql) {
+        sql.append("WHERE (c.status = 'A'");
+        // Disable geocaches
         if (sharedPreferences.getBoolean("disable", false)) {
             sql.append(" OR c.status = 'T'");
         }
@@ -217,17 +250,6 @@ public class GsakReader {
             sql.append(sqlType);
             sql.append(")");
         }
-
-        sql.append(" AND ( (");
-        sql.append("CAST(c.Latitude AS REAL) >= :latFrom AND CAST(c.Latitude AS REAL) <= :latTo AND CAST(c.Longitude AS REAL) >= :lonFrom AND CAST(c.Longitude AS REAL) <= :lonTo");
-        if (sharedPreferences.getBoolean("consider_wps", true)) {
-            sql.append(" ) OR (");
-            sql.append("CAST(c.LatOriginal AS REAL) >= :latFrom AND CAST(c.LatOriginal AS REAL) <= :latTo AND CAST(c.LonOriginal AS REAL) >= :lonFrom AND CAST(c.LonOriginal AS REAL) <= :lonTo");
-            sql.append(" ) OR (");
-            sql.append("CAST(w.cLat AS REAL) >= :latFrom AND CAST(w.cLat AS REAL) <= :latTo AND CAST(w.cLon AS REAL) >= :lonFrom AND CAST(w.cLon AS REAL) <= :lonTo");
-        }
-        sql.append(" ) )");
-        return sql.toString();
     }
 
     @Nullable
