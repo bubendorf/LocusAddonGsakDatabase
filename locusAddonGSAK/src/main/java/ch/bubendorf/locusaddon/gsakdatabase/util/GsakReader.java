@@ -304,8 +304,6 @@ public class GsakReader {
             gcData.setTrackables(Gsak.parseTravelBug(cacheCursor.getString(cacheCursor.getColumnIndex("TravelBugs"))));
         }
 
-        cacheCursor.close();
-
         /* Add waypoints to Geocache */
         final ArrayList<GeocachingWaypoint> pgdws = new ArrayList<>();
 
@@ -329,10 +327,26 @@ public class GsakReader {
         gcData.setWaypoints(pgdws);
 
         if (withDetails && logLimit != null) {
+            final ArrayList<GeocachingLog> pgdls = new ArrayList<>();
+
+            // Add the whole Custom table
+           /* final GeocachingLog logEntry = new GeocachingLog();
+            logEntry.setDate(System.currentTimeMillis());
+            logEntry.setFinder("GSAK for Locus"); // TODO: übersetzen
+            final StringBuilder sb = new StringBuilder();
+            for (int colNum = 76; colNum < cacheCursor.getColumnCount(); colNum++) { // TODO Magic Number vermeiden
+             sb.append(cacheCursor.getColumnName(colNum));
+             sb.append(" = ");
+             sb.append(cacheCursor.getString(colNum));
+             sb.append("\n");
+            }
+            logEntry.setLogText(sb.toString());
+            logEntry.setType(GeocachingLog.CACHE_LOG_TYPE_UNKNOWN);
+            pgdls.add(logEntry);*/
+
             // Add logsCursor to Geocache
             final Cursor logsCursor = database.rawQuery("SELECT * FROM LogsAll WHERE lParent = ? ORDER BY lDate DESC LIMIT ?",
                     new String[]{gcData.getCacheID(), logLimit});
-            final ArrayList<GeocachingLog> pgdls = new ArrayList<>();
 
             while (logsCursor.moveToNext()) {
                 final GeocachingLog pgdl = new GeocachingLog();
@@ -345,6 +359,8 @@ public class GsakReader {
             logsCursor.close();
             gcData.setLogs(pgdls);
         }
+
+        cacheCursor.close();
 
         if (withDetails) {
             // Add attributes to Geocache

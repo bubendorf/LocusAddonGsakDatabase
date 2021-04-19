@@ -39,8 +39,7 @@ import locus.api.objects.extra.Location;
 public class LocationReceiver extends BroadcastReceiver {
 
     private static final long MIN_INTERVALL = 2 * 1000L;
-    private static final long MIN_DISTANCE = 100;
-    public static final int OVERSCAN_PERCENT = 20;
+    public static final int MOVE_PERCENT = 20;
 
     private static LocusVersion locusVersion;
     private static long lastUpdate;
@@ -52,7 +51,7 @@ public class LocationReceiver extends BroadcastReceiver {
             return;
         }
         if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("livemap", false)) {
-            // Live Map is switch off in GSAk for Locus ==> Do nothing
+            // Live Map is switched off in GSAK for Locus ==> Do nothing
             return;
         }
 
@@ -62,16 +61,19 @@ public class LocationReceiver extends BroadcastReceiver {
                 if (lastMapCenter == null) {
                     update(context, updateContainer);
                 } else {
-                    if (lastMapCenter.distanceTo(updateContainer.getLocMapCenter()) >= MIN_DISTANCE) {
-                        final double height = updateContainer.getMapTopLeft().getLatitude() - updateContainer.getMapBottomRight().getLatitude();
-                        final double width = updateContainer.getMapBottomRight().getLongitude() - updateContainer.getMapTopLeft().getLongitude();
+                    final Location bottomRight = updateContainer.getMapBottomRight();
+                    final Location topLeft = updateContainer.getMapTopLeft();
+                    final Location center = updateContainer.getLocMapCenter();
+                    if (bottomRight != null && topLeft != null && center != null) {
+                        final double latFromTo = topLeft.getLatitude() - bottomRight.getLatitude();
+                        final double lonFromTo = bottomRight.getLongitude() - topLeft.getLongitude();
 
-                        final double heightCut = height * OVERSCAN_PERCENT / 100;
-                        final double widthCut = width * OVERSCAN_PERCENT / 100;
-                        final double heightChange = Math.abs(lastMapCenter.getLatitude() - updateContainer.getLocMapCenter().getLatitude());
-                        final double widthChange = Math.abs(lastMapCenter.getLongitude() - updateContainer.getLocMapCenter().getLongitude());
+                        final double latCut = latFromTo * MOVE_PERCENT / 100;
+                        final double lonCut = lonFromTo * MOVE_PERCENT / 100;
+                        final double latChange = Math.abs(lastMapCenter.getLatitude() - center.getLatitude());
+                        final double lonChange = Math.abs(lastMapCenter.getLongitude() - center.getLongitude());
 
-                        if (heightChange >= heightCut || widthChange >= widthCut) {
+                        if (latChange >= latCut || lonChange >= lonCut) {
                             update(context, updateContainer);
                         }
                     }
