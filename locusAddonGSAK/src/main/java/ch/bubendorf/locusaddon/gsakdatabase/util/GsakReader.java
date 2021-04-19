@@ -93,17 +93,16 @@ public class GsakReader {
     @NonNull
     public static PackPoints readGeocaches(final GeocacheAsyncTask asyncTask, final List<CacheWrapper> gcCodes) throws ParseException {
         int count = 0;
+        final int reportStepSize = gcCodes.size() >= 500 ? 50 : 10;
         final PackPoints packPoints = new PackPoints("GSAK data");
         for (final CacheWrapper cacheWrapper : gcCodes) {
             if (asyncTask.isCancelled()) {
                 return packPoints;
             }
-            final String gcCode = cacheWrapper.gcCode;
-            if (count % 10 == 0) {
+            if (count % reportStepSize == 0) {
                 asyncTask.myPublishProgress(count);
             }
-            final SQLiteDatabase database = cacheWrapper.db;
-            final Point p = GsakReader.readGeocache(database, gcCode, false, null);
+            final Point p = GsakReader.readGeocache(cacheWrapper.db, cacheWrapper.gcCode, false, null);
             if (p != null) {
                 count++;
                 packPoints.addPoint(p);
@@ -254,7 +253,8 @@ public class GsakReader {
 
     @Nullable
     public static Point readGeocache(final SQLiteDatabase database, final String gcCode, final boolean withDetails, final String logLimit) throws ParseException {
-        final Cursor cacheCursor = database.rawQuery("SELECT * FROM CachesAll WHERE Code = ?", new String[]{gcCode});
+        final String table = withDetails ? "CachesAll" : "Caches";
+        final Cursor cacheCursor = database.rawQuery("SELECT * FROM " + table + " WHERE Code = ?", new String[]{gcCode});
         if (!cacheCursor.moveToNext()) {
             return null;
         }
@@ -288,8 +288,8 @@ public class GsakReader {
 
         //gcData.setexported = dateFormat.format(date);
         gcData.setDateUpdated(getDate(cacheCursor, "LastUserDate"));
-        gcData.setDateHidden(getDate(cacheCursor, "PlacedDate")); //TODO
-        gcData.setDatePublished(getDate(cacheCursor, "PlacedDate")); // TODO
+        gcData.setDateHidden(getDate(cacheCursor, "Created"));
+        gcData.setDatePublished(getDate(cacheCursor, "PlacedDate"));
 
         if (withDetails) {
             // More!

@@ -27,8 +27,8 @@
     <string name="pref_radius_sum">Afstand voor de straal in km om geocaches in Locus te laden</string>
     <string name="pref_radius_error">Straal moet een getal zijn tussen 1 en 9999</string>
     <string name="pref_limit_title">Aantal geocaches</string>
-    <string name="pref_limit_sum">Aantal te laden geocaches.</string>
-    <string name="pref_limit_error">Limiet moet een getal zijn tussen 1 en 99999</string>
+    <string name="pref_limit_sum">Aantal te laden geocaches. Bij het getal 0 wordt geen limiet gesteld (ongelimiteerd).</string>
+    <string name="pref_limit_error">Limiet moet een getal zijn tussen 0 (ongelimiteerd) en 99999</string>
     <string name="pref_locus">Locus instellingen</string>
     <string name="pref_import_title">Importeren toestaan</string>
     <string name="pref_import_sum">Maakt het mogelijk om geocaches te importeren in Locus</string>

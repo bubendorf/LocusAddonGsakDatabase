@@ -36,8 +36,8 @@
     <string name="pref_radius_sum">Distance radius in km for load geocaches to Locus</string>
     <string name="pref_radius_error">Radius must be number between 1 and 9999</string>
     <string name="pref_limit_title">Geocache count</string>
-    <string name="pref_limit_sum">Count of geocaches to load.</string>
-    <string name="pref_limit_error">Limit must be number between 1 and 99999</string>
+    <string name="pref_limit_sum">Count of geocaches to load. If value equals 0, limit will not be applied (unlimited).</string>
+    <string name="pref_limit_error">Limit must be number between 0 (no limit) and 99999</string>
     <string name="pref_locus">Locus settings</string>
     <string name="pref_import_title">Show import dialog in Locus</string>
     <string name="pref_import_sum">Allow import geocaches to Locus</string>

@@ -41,6 +41,25 @@
             android:title="@string/pref_import_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_filter">
+        <EditTextPreference
+            android:defaultValue="250"
+            android:inputType="number"
+            android:key="limit"
+            android:maxLength="5"
+            android:summary="@string/pref_limit_sum"
+            android:title="@string/pref_limit_title" />
+        <EditTextPreference
+            android:defaultValue="25"
+            android:inputType="number"
+            android:key="radius"
+            android:maxLength="4"
+            android:summary="@string/pref_radius_sum"
+            android:title="@string/pref_radius_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="consider_wps"
+            android:summary="@string/pref_consider_wps_summary"
+            android:title="@string/pref_consider_wps" />
         <PreferenceScreen
             android:key="pref_type_screen"
             android:summary="@string/pref_type_screen_sum"
@@ -166,25 +185,6 @@
             android:key="archive"
             android:summary="@string/pref_archive_sum"
             android:title="@string/pref_archive_title" />
-        <EditTextPreference
-            android:defaultValue="250"
-            android:inputType="number"
-            android:key="limit"
-            android:maxLength="5"
-            android:summary="@string/pref_limit_sum"
-            android:title="@string/pref_limit_title" />
-        <EditTextPreference
-            android:defaultValue="25"
-            android:inputType="number"
-            android:key="radius"
-            android:maxLength="4"
-            android:summary="@string/pref_radius_sum"
-            android:title="@string/pref_radius_title" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="consider_wps"
-            android:summary="@string/pref_consider_wps_summary"
-            android:title="@string/pref_consider_wps" />
         <EditTextPreference
             android:defaultValue="20"
             android:inputType="number"
