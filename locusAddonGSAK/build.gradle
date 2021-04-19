@@ -9,8 +9,8 @@ android {
         applicationId "ch.bubendorf.locusaddon.gsakdatabase"
         minSdkVersion 24
         targetSdkVersion 29 // Do not use another number without a very good reason!
-        versionCode 20
-        versionName "3.2.4"
+        versionCode 22
+        versionName "3.2.5"
         //archivesBaseName = "LocusAddonGSAK-$versionName"
         archivesBaseName = "LocusAddonGSAK-${versionName}-${versionCode}-${targetSdkVersion.apiLevel}"
     }
@@ -38,6 +38,6 @@ android {
 }
 
 dependencies {
-   implementation 'com.asamm:locus-api-android:0.9.28'
+   implementation 'com.asamm:locus-api-android:0.9.32'
    implementation "androidx.activity:activity:1.2.2"
 }

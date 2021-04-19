@@ -6,7 +6,7 @@
     <application
         android:name=".GsakApplication"
         android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true" >
         <meta-data android:name="com.google.android.backup.api_key"
