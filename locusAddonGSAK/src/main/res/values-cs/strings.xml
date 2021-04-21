@@ -9,7 +9,7 @@
     <string name="pref_filter">Nastavení filtru</string>
     <string name="pref_type_screen_title">Typy keší</string>
     <string name="pref_type_screen_sum">Budou filtrovány pouze zatrhlé keše</string>
-    <string name="pref_nick_title">Uživatelské jméno na Geocaching.com</string>
+    <string name="pref_nick_title">Uživatelské jméno na geocaching.com</string>
     <string name="pref_nick_sum">Pro rozpoznání vlastních keší</string>
     <string name="pref_disable_title">Neaktivní (disable) keše</string>
     <string name="pref_disable_sum">Načte do Locusu neaktivní (disable) keše</string>
@@ -17,7 +17,7 @@
     <string name="pref_found_sum">Načte do Locusu nalezené keše</string>
     <string name="pref_own_title">Vlastní keše</string>
     <string name="pref_own_sum">Načte do Locusu vlastní keše</string>
-    <string name="pref_own_fill">Pro aktivaci vyplňte uživatelské jméno na geocaching.com.</string>
+    <string name="pref_own_fill">Pro aktivaci vyplňte uživatelské jméno na geocaching.com</string>
     <string name="pref_archive_title">Archivované keše</string>
     <string name="pref_archive_sum">Načte do Locusu archivované keše</string>
     <string name="pref_logs_title">Počet logů</string>
@@ -27,7 +27,7 @@
     <string name="pref_radius_sum">Maximální vzdálenost pro načtení keší do Locusu</string>
     <string name="pref_radius_error">Vzdálenost musí být číslo od 1 do 9999</string>
     <string name="pref_limit_title">Počet keší</string>
-    <string name="pref_limit_sum">Počet keší pro načtení. Pokud je hodnota rovna 0, limit není aplikován (neomezeno).</string>
+    <string name="pref_limit_sum">Počet keší pro načtení. Pokud je hodnota rovna 0, limit není aplikován (neomezeno)</string>
     <string name="pref_limit_error">Počet keší musí být číslo od 0 (neomezeno) do 99999</string>
     <string name="pref_locus">Nastavení Locusu</string>
     <string name="pref_import_title">Importovat</string>

@@ -16,7 +16,7 @@
     <string name="pref_filter">Filter settings</string>
     <string name="pref_type_screen_title">Geocache type</string>
     <string name="pref_type_screen_sum">Filter checked types</string>
-    <string name="pref_nick_title">Nick on Geocaching.com</string>
+    <string name="pref_nick_title">Nick on geocaching.com</string>
     <string name="pref_nick_sum">For recognize own geocaches</string>
     <string name="pref_disable_title">Disabled geocaches</string>
     <string name="pref_disable_sum">Load disabled geocaches to Locus</string>
@@ -25,8 +25,8 @@
     <string name="pref_found_sum">Load my found geocaches to Locus</string>
     <string name="pref_notfound_sum">Load my not (yet) found geocaches to Locus</string>
     <string name="pref_own_title">My own geocaches</string>
-    <string name="pref_own_sum">Load my own geocaches to Locus.</string>
-    <string name="pref_own_fill">Fill geocaching.com nick to enable.</string>
+    <string name="pref_own_sum">Load my own geocaches to Locus</string>
+    <string name="pref_own_fill">Fill geocaching.com nick to enable</string>
     <string name="pref_archive_title">Archived geocaches</string>
     <string name="pref_archive_sum">Load archived geocaches to Locus</string>
     <string name="pref_logs_title">Logs count</string>
@@ -36,7 +36,7 @@
     <string name="pref_radius_sum">Distance radius in km for load geocaches to Locus</string>
     <string name="pref_radius_error">Radius must be number between 1 and 9999</string>
     <string name="pref_limit_title">Geocache count</string>
-    <string name="pref_limit_sum">Count of geocaches to load. If value equals 0, limit will not be applied (unlimited).</string>
+    <string name="pref_limit_sum">Count of geocaches to load. If value equals 0, limit will not be applied (unlimited)</string>
     <string name="pref_limit_error">Limit must be number between 0 (no limit) and 99999</string>
     <string name="pref_locus">Locus settings</string>
     <string name="pref_import_title">Show import dialog in Locus</string>
