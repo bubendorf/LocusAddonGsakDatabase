@@ -54,6 +54,10 @@
     <string name="unable_to_load_geocaches">Unable to load geocaches!</string>
     <string name="unable_to_load_detail">Unable to load geocache detail!</string>
     <string name="canceled">Loading canceled!</string>
+    <string name="pref_columns_sum">Additional details to send to Locus in a separate log entry</string>
+    <string name="pref_type_columns_title">Details</string>
+    <string name="permission_needed_title">Permission necessary</string>
+    <string name="permission_needed_text">This Add-on will not work if the permission to read external files is not granted. Please grant the permission.</string>
 
     <string name="pref_type_corrected" translatable="false">Corrected coordinates</string>
     <string name="pref_type_traditional" translatable="false">Traditional Cache</string>

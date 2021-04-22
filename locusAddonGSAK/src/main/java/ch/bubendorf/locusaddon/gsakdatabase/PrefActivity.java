@@ -26,11 +26,20 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.text.Html;
 import android.text.Spanned;
 import android.widget.Toast;
 
+import java.util.Collection;
+
+import ch.bubendorf.locusaddon.gsakdatabase.lova.Lova;
+import ch.bubendorf.locusaddon.gsakdatabase.util.ColumnMetaData;
+import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
+import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
 import locus.api.android.ActionFiles;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
  * MainActivity
@@ -60,6 +69,9 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
 
     private void showPreferences() {
         addPreferencesFromResource(R.xml.prefs);
+
+        poulateColumnsPref();
+
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
         own = (CheckBoxPreference) getPreferenceScreen().findPreference("own");
@@ -69,21 +81,21 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
 
         dbPick = getPreferenceScreen().findPreference("db_pick");
         dbPick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(0));
-        String dbPath = PreferenceManager.getDefaultSharedPreferences(this).getString("db", "");
+        final String dbPath = PreferenceManager.getDefaultSharedPreferences(this).getString("db", "");
         dbPick.setSummary(editPreferenceSummary(dbPath, getText(R.string.pref_db_sum)));
-        useDb.setEnabled(dbPath != null && dbPath.length() > 0);
+        useDb.setEnabled(dbPath.length() > 0);
 
         db2Pick = getPreferenceScreen().findPreference("db2_pick");
         db2Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(1));
-        String db2Path = PreferenceManager.getDefaultSharedPreferences(this).getString("db2", "");
+        final String db2Path = PreferenceManager.getDefaultSharedPreferences(this).getString("db2", "");
         db2Pick.setSummary(editPreferenceSummary(db2Path, getText(R.string.pref_db2_sum)));
-        useDb2.setEnabled(db2Path != null && db2Path.length() > 0);
+        useDb2.setEnabled(db2Path.length() > 0);
 
         db3Pick = getPreferenceScreen().findPreference("db3_pick");
         db3Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(2));
-        String db3Path = PreferenceManager.getDefaultSharedPreferences(this).getString("db3", "");
+        final String db3Path = PreferenceManager.getDefaultSharedPreferences(this).getString("db3", "");
         db3Pick.setSummary(editPreferenceSummary(db3Path, getText(R.string.pref_db3_sum)));
-        useDb3.setEnabled(db3Path != null && db3Path.length() > 0);
+        useDb3.setEnabled(db3Path.length() > 0);
 
         nick = (EditTextPreference) getPreferenceScreen().findPreference("nick");
         nick.setSummary(editPreferenceSummary(nick.getText(), getText(R.string.pref_nick_sum)));
@@ -101,12 +113,42 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
         if (!own.isEnabled()) {
             own.setSummary(Html.fromHtml(getString(R.string.pref_own_sum) + " <b>" + getString(R.string.pref_own_fill) + "</b>"));
         }
+    }
 
-        if (PreferenceManager.getDefaultSharedPreferences(this).getInt("count", 0) < 3) {
-            final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-            final SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt("count", PreferenceManager.getDefaultSharedPreferences(this).getInt("count", 0) + 1);
-            editor.apply();
+    private void poulateColumnsPref() {
+        final SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
+        final String path = sharedPreferences.getString("db", "");
+        final String path2 = sharedPreferences.getString("db2", "");
+        final String path3 = sharedPreferences.getString("db3", "");
+
+        if (!Gsak.isGsakDatabase(path) && !Gsak.isGsakDatabase(path2) && !Gsak.isGsakDatabase(path3)) {
+            // No paths set ==> Disable the Columns Preference
+            final PreferenceScreen columnsPref = (PreferenceScreen) getPreferenceScreen().findPreference("pref_columns");
+            columnsPref.setEnabled(false);
+            return;
+        }
+
+        // We need the permission to access the file system. Check and ask for the permission if necessary
+        PermissionActivity.checkPermission(this, () -> {
+            new Lova<>(GsakReader::getAllColumns)
+                    .onSuccess(this::poulateColumnsPref)
+                    //.onError(this::displayError)
+                    .execute(this);
+        });
+    }
+
+    private void poulateColumnsPref(final Collection<ColumnMetaData> columnNames) {
+        final PreferenceScreen columnsPref = (PreferenceScreen) getPreferenceScreen().findPreference("pref_columns");
+
+        columnsPref.setEnabled(true);
+        columnsPref.removeAll();
+        for (final ColumnMetaData column : columnNames) {
+            final CheckBoxPreference checkBox = new CheckBoxPreference(this);
+            checkBox.setTitle(GsakReader.deCamelize(column.getName()));
+            final String key = "column_" + column.getName();
+            checkBox.setKey(key);
+            //checkBox.setChecked(false);
+            columnsPref.addPreference(checkBox);
         }
     }
 
@@ -211,6 +253,8 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
                     useDb3.setEnabled(filename != null && filename.length() > 0);
                 }
                 editor.apply();
+
+                poulateColumnsPref();
             }
         }
     }

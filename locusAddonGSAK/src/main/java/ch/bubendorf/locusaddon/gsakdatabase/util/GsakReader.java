@@ -26,14 +26,21 @@ import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import ch.bubendorf.locusaddon.gsakdatabase.DetailActivity;
+import ch.bubendorf.locusaddon.gsakdatabase.R;
 import locus.api.android.objects.PackPoints;
 import locus.api.objects.extra.Location;
 import locus.api.objects.geoData.Point;
@@ -51,11 +58,11 @@ import static java.lang.Integer.parseInt;
  */
 public class GsakReader {
 
-    public static SQLiteDatabase openDatabase(final Context context, final String dbId) {
+    public static SQLiteDatabase openDatabase(final Context context, final String dbId, final boolean ignorePrefs) {
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
-        if (sharedPreferences.getBoolean("pref_use_" + dbId, false)) {
+        if (ignorePrefs || sharedPreferences.getBoolean("pref_use_" + dbId, false)) {
             final String path = sharedPreferences.getString(dbId, "");
-            if (Gsak.isGsakDatabase(path)) {
+            if (Gsak.isReadableGsakDatabase(path)) {
                 return SQLiteDatabase.openDatabase(path,
                         null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
             }
@@ -63,11 +70,89 @@ public class GsakReader {
         return null;
     }
 
+
+    private static final Set<String> columnBlackList = new HashSet<>();
+
+    static {
+        columnBlackList.add("Code:1");
+        columnBlackList.add("CacheType");
+        columnBlackList.add("Container");
+        columnBlackList.add("Difficulty");
+        columnBlackList.add("Latitude");
+        columnBlackList.add("LOCK");
+        columnBlackList.add("LongHtm");
+        columnBlackList.add("Longitude");
+        columnBlackList.add("LongDescription");
+        columnBlackList.add("ShortHtm");
+        columnBlackList.add("ShortDescription");
+        columnBlackList.add("Terrain");
+        columnBlackList.add("LatOriginal");
+        columnBlackList.add("LonOriginal");
+        columnBlackList.add("Status");
+        columnBlackList.add("GCV_AverageVote");
+        columnBlackList.add("GCV_MedianVote");
+        columnBlackList.add("GCV_UserVote");
+        columnBlackList.add("GCV_VoteCount");
+        columnBlackList.add("GCV_VoteDistribution");
+        columnBlackList.add("GCV_VoteDistributionFull");
+        columnBlackList.add("GCV_AverageQualified");
+        columnBlackList.add("GCV_MedianQualified");
+        columnBlackList.add("v2Owned");
+        columnBlackList.add("ErUpdater");
+        columnBlackList.add("cCode");
+        columnBlackList.add("rowid");
+    }
+
+    /**
+     * Returns the column names of the database table
+     *
+     * @param db Database connection
+     * @param tableName Name of the table
+     * @return Unsorted list of column names
+     */
+    public static List<ColumnMetaData> getColumns(final SQLiteDatabase db, final String tableName) {
+        final String sql = "pragma table_info(" + tableName + ")";
+
+        final List<ColumnMetaData> columns = new ArrayList<>();
+        final Cursor c = db.rawQuery(sql, null);
+        while (c.moveToNext()) {
+            final String name = c.getString(c.getColumnIndex("name"));
+            if (!columnBlackList.contains(name)) {
+                final String type = c.getString(c.getColumnIndex("type"));
+                final String defaultValue = c.getString(c.getColumnIndex("dflt_value"));
+                columns.add(new ColumnMetaData(name, type, defaultValue));
+            }
+        }
+        c.close();
+        return columns;
+    }
+
+    public static Collection<ColumnMetaData> getColumns(final SQLiteDatabase database) {
+        final TreeSet<ColumnMetaData> allColumnNames = new TreeSet<>(ColumnMetaData.NAME_COMPARATOR);
+        for (final String tableName : new String[]{"Caches", "CacheMemo", "Custom"}) {
+            final List<ColumnMetaData> columnMetaDatas = getColumns(database, tableName);
+            allColumnNames.addAll(columnMetaDatas);
+        }
+        return allColumnNames;
+    }
+
+    public static Collection<ColumnMetaData> getAllColumns(final Context context) {
+        final TreeSet<ColumnMetaData> allColumnNames = new TreeSet<>(ColumnMetaData.NAME_COMPARATOR);
+        for (final String dbId : new String[]{"db", "db2", "db3"}) {
+            final SQLiteDatabase database = openDatabase(context, dbId, true);
+            if (database != null) {
+                allColumnNames.addAll(getColumns(database));
+                database.close();
+            }
+        }
+        return allColumnNames;
+    }
+
     @NonNull
     public static List<CacheWrapper> readGCCodes(final Context context, final GeocacheAsyncTask asyncTask,
-                                                       final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3,
-                                                       final Location centerLocation, final Location topLeftLocation,
-                                                       final Location bottomRightLocation) {
+                                                 final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3,
+                                                 final Location centerLocation, final Location topLeftLocation,
+                                                 final Location bottomRightLocation) {
         final Map<String, CacheWrapper> gcCodes = new HashMap<>(256);
 
         if (db != null && !asyncTask.isCancelled()) {
@@ -91,7 +176,7 @@ public class GsakReader {
     }
 
     @NonNull
-    public static PackPoints readGeocaches(final GeocacheAsyncTask asyncTask, final List<CacheWrapper> gcCodes) throws ParseException {
+    public static PackPoints readGeocaches(final Context context, final GeocacheAsyncTask asyncTask, final List<CacheWrapper> gcCodes) throws ParseException {
         int count = 0;
         final int reportStepSize = gcCodes.size() >= 500 ? 50 : 10;
         final PackPoints packPoints = new PackPoints("GSAK data");
@@ -102,7 +187,7 @@ public class GsakReader {
             if (count % reportStepSize == 0) {
                 asyncTask.myPublishProgress(count);
             }
-            final Point p = GsakReader.readGeocache(cacheWrapper.db, cacheWrapper.gcCode, false, null);
+            final Point p = GsakReader.readGeocache(context, cacheWrapper.db, cacheWrapper.gcCode, false, null);
             if (p != null) {
                 count++;
                 packPoints.addPoint(p);
@@ -186,15 +271,15 @@ public class GsakReader {
         sql.append(" )");
 
         if (considerWayPoints) {
-                sql.append("UNION ");
-                sql.append("SELECT w.cLat as Latitude, w.cLon as Longitude, c.Code ");
-                sql.append("FROM Caches c ");
-                sql.append("LEFT JOIN Waypoints w on w.cParent = c.Code ");
-                appendWhereClause(sharedPreferences, sql);
-                sql.append(" AND ( (");
-                sql.append("CAST(c.LatOriginal AS REAL) >= :latFrom AND CAST(c.LatOriginal AS REAL) <= :latTo AND CAST(c.LonOriginal AS REAL) >= :lonFrom AND CAST(c.LonOriginal AS REAL) <= :lonTo");
-                sql.append(" ) OR (");
-                sql.append("CAST(w.cLat AS REAL) >= :latFrom AND CAST(w.cLat AS REAL) <= :latTo AND CAST(w.cLon AS REAL) >= :lonFrom AND CAST(w.cLon AS REAL) <= :lonTo");
+            sql.append("UNION ");
+            sql.append("SELECT w.cLat as Latitude, w.cLon as Longitude, c.Code ");
+            sql.append("FROM Caches c ");
+            sql.append("LEFT JOIN Waypoints w on w.cParent = c.Code ");
+            appendWhereClause(sharedPreferences, sql);
+            sql.append(" AND ( (");
+            sql.append("CAST(c.LatOriginal AS REAL) >= :latFrom AND CAST(c.LatOriginal AS REAL) <= :latTo AND CAST(c.LonOriginal AS REAL) >= :lonFrom AND CAST(c.LonOriginal AS REAL) <= :lonTo");
+            sql.append(" ) OR (");
+            sql.append("CAST(w.cLat AS REAL) >= :latFrom AND CAST(w.cLat AS REAL) <= :latTo AND CAST(w.cLon AS REAL) >= :lonFrom AND CAST(w.cLon AS REAL) <= :lonTo");
             sql.append(") )");
         }
 
@@ -252,7 +337,8 @@ public class GsakReader {
     }
 
     @Nullable
-    public static Point readGeocache(final SQLiteDatabase database, final String gcCode, final boolean withDetails, final String logLimit) throws ParseException {
+    public static Point readGeocache(final Context context, final SQLiteDatabase database,
+                                     final String gcCode, final boolean withDetails, final String logLimit) throws ParseException {
         final String table = withDetails ? "CachesAll" : "Caches";
         final Cursor cacheCursor = database.rawQuery("SELECT * FROM " + table + " WHERE Code = ?", new String[]{gcCode});
         if (!cacheCursor.moveToNext()) {
@@ -309,10 +395,7 @@ public class GsakReader {
 
         final Cursor wpCursor = database.rawQuery("SELECT * FROM WayAll WHERE cParent = ?", new String[]{gcData.getCacheID()});
         while (wpCursor.moveToNext()) {
-/*            if (this.isCancelled()) {
-                wpCursor.close();
-                return null;
-            }*/
+
             final GeocachingWaypoint waypoint = new GeocachingWaypoint();
             waypoint.setLat(wpCursor.getDouble(wpCursor.getColumnIndex("cLat")));
             waypoint.setLon(wpCursor.getDouble(wpCursor.getColumnIndex("cLon")));
@@ -329,20 +412,30 @@ public class GsakReader {
         if (withDetails && logLimit != null) {
             final ArrayList<GeocachingLog> pgdls = new ArrayList<>();
 
-            // Add the whole Custom table
-           /* final GeocachingLog logEntry = new GeocachingLog();
-            logEntry.setDate(System.currentTimeMillis());
-            logEntry.setFinder("GSAK for Locus"); // TODO: übersetzen
-            final StringBuilder sb = new StringBuilder();
-            for (int colNum = 76; colNum < cacheCursor.getColumnCount(); colNum++) { // TODO Magic Number vermeiden
-             sb.append(cacheCursor.getColumnName(colNum));
-             sb.append(" = ");
-             sb.append(cacheCursor.getString(colNum));
-             sb.append("\n");
+            // Add the additional columns
+            final List<ColumnMetaData> columns = new ArrayList<>(getColumns(database));
+            columns.sort(ColumnMetaData.NAME_COMPARATOR);
+            final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+            columns.removeIf(column -> !sharedPreferences.getBoolean("column_" + column.getName(), false));
+
+            if (columns.size() > 0) {
+                final GeocachingLog logEntry = new GeocachingLog();
+                logEntry.setDate(System.currentTimeMillis());
+                logEntry.setFinder(context.getText(R.string.app_name).toString());
+                final StringBuilder sb = new StringBuilder();
+                for (final ColumnMetaData column : columns) {
+                    final String text = cacheCursor.getString(cacheCursor.getColumnIndex(column.getName()));
+                    if (text != null && text.length() > 0 && !"0".equals(text)) {
+                        sb.append(deCamelize(column.getName()));
+                        sb.append(": ");
+                        sb.append(format(text, column));
+                        sb.append("\n");
+                    }
+                }
+                logEntry.setLogText(sb.toString());
+                logEntry.setType(GeocachingLog.CACHE_LOG_TYPE_UNKNOWN);
+                pgdls.add(logEntry);
             }
-            logEntry.setLogText(sb.toString());
-            logEntry.setType(GeocachingLog.CACHE_LOG_TYPE_UNKNOWN);
-            pgdls.add(logEntry);*/
 
             // Add logsCursor to Geocache
             final Cursor logsCursor = database.rawQuery("SELECT * FROM LogsAll WHERE lParent = ? ORDER BY lDate DESC LIMIT ?",
@@ -384,9 +477,50 @@ public class GsakReader {
         return point;
     }
 
+    private static String format(final String text, final ColumnMetaData columnMetaData) {
+        final String type = columnMetaData.getType().toLowerCase();
+        switch (type) {
+            case "text":
+                final String columnName = columnMetaData.getName().toLowerCase();
+                if (columnName.contains("date") || "changed".equals(columnName) ||
+                        "created".equals(columnName) || "lastlog".equals(columnName)) {
+                    try {
+                        final long value = getDate(text);
+                        return DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date(value));
+                    } catch (final ParseException pe) {
+                        return text;
+                    }
+                }
+                return text.trim();
+            case "integer":
+                return text.trim();
+            case "real":
+                try {
+                    final double value = Double.parseDouble(text);
+                    return Double.toString(value);
+                } catch (final NumberFormatException nfe) {
+                    return text;
+                }
+        }
+        return text.trim();
+    }
+
+    /**
+     * Inserts a space between all lowercase and uppercase letters
+     * @param text Input text
+     * @return Text with additional spaces
+     */
+    public  static String deCamelize(final String text) {
+        return text.replaceAll("([a-z])([A-Z0-9])", "$1 $2").replace('_', ' ');
+    }
+
     private static long getDate(final Cursor c, final String columnName) throws ParseException {
-        @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         final String text = c.getString(c.getColumnIndex(columnName));
+        return getDate(text);
+    }
+
+    private static long getDate(final String text) throws ParseException {
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if (text.length() == 10) {
             return dateFormat.parse(text).getTime();
         }

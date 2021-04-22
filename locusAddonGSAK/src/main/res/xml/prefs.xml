@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/app_name">
+
     <PreferenceCategory
         android:title="@string/pref_path">
         <Preference
@@ -28,6 +29,13 @@
             android:key="pref_use_db3"
             android:title="@string/pref_use_db3" />
     </PreferenceCategory>
+
+    <PreferenceScreen
+        android:key="pref_columns"
+        android:summary="@string/pref_columns_sum"
+        android:title="@string/pref_type_columns_title">
+    </PreferenceScreen>
+
     <PreferenceCategory android:title="@string/pref_locus">
         <CheckBoxPreference
             android:defaultValue="false"

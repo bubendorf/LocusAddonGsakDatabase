@@ -56,7 +56,7 @@ public class DetailActivity extends Activity {
         final Intent intent = getIntent();
 
         final File fd = new File(PreferenceManager.getDefaultSharedPreferences(this).getString("db", ""));
-        if (!Gsak.isGsakDatabase(fd)) {
+        if (!Gsak.isReadableGsakDatabase(fd)) {
             Toast.makeText(this, R.string.no_db_file, Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -66,11 +66,11 @@ public class DetailActivity extends Activity {
             final String value = intent.getStringExtra("cacheId");
 
             try {
-                Point point = readGeocacheFromDatabase("db", value);
+                Point point = readGeocacheFromDatabase(this, "db", value);
                 if (point == null) {
-                    point = readGeocacheFromDatabase("db2", value);
+                    point = readGeocacheFromDatabase(this, "db2", value);
                     if (point == null) {
-                        point = readGeocacheFromDatabase("db3", value);
+                        point = readGeocacheFromDatabase(this, "db3", value);
                     }
                 }
                 if (point != null) {
@@ -89,14 +89,14 @@ public class DetailActivity extends Activity {
     }
 
     @Nullable
-    private Point readGeocacheFromDatabase(final String dbId, final String gcCode) throws ParseException {
+    private Point readGeocacheFromDatabase(final Context context, final String dbId, final String gcCode) throws ParseException {
         final String dbPath = PreferenceManager.getDefaultSharedPreferences(this).getString(dbId, "");
         if (dbPath.length() == 0) {
             return null;
         }
         final SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);
         final String logLimit = PreferenceManager.getDefaultSharedPreferences(this).getString("logs_count", "20");
-        final Point p = GsakReader.readGeocache(database, gcCode, true, logLimit);
+        final Point p = GsakReader.readGeocache(context, database, gcCode, true, logLimit);
         database.close();
         return p;
     }

@@ -44,9 +44,9 @@ public abstract class GeocacheAsyncTask extends AsyncTask<Location, Integer, Exc
     }
 
     protected void openDatabases(final Context context) {
-        db = GsakReader.openDatabase(context, "db");
-        db2 = GsakReader.openDatabase(context, "db2");
-        db3 = GsakReader.openDatabase(context, "db3");
+        db = GsakReader.openDatabase(context, "db", false);
+        db2 = GsakReader.openDatabase(context, "db2", false);
+        db3 = GsakReader.openDatabase(context, "db3", false);
     }
 
     protected void closeDatabases() {

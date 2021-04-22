@@ -61,7 +61,7 @@ public class LoadActivity extends Activity  {
         final String dbPath = sharedPreferences.getString("db", "");
         final File fd = new File(dbPath);
         if (sharedPreferences.getBoolean("pref_use_db", false) &&
-                !Gsak.isGsakDatabase(fd)) {
+                !Gsak.isReadableGsakDatabase(fd)) {
             final String text = getResources().getString(R.string.no_db_file);
             Toast.makeText(LoadActivity.this, text + " " + dbPath, Toast.LENGTH_LONG).show();
             finish();
@@ -69,7 +69,7 @@ public class LoadActivity extends Activity  {
         }
         final String db2Path = sharedPreferences.getString("db2", "");
         if (sharedPreferences.getBoolean("pref_use_db2", false) &&
-                !Gsak.isGsakDatabase(new File(db2Path))) {
+                !Gsak.isReadableGsakDatabase(new File(db2Path))) {
             final String text = getResources().getString(R.string.no_db_file);
             Toast.makeText(LoadActivity.this, text + " " + db2Path, Toast.LENGTH_LONG).show();
             finish();
@@ -77,7 +77,7 @@ public class LoadActivity extends Activity  {
         }
         final String db3Path = sharedPreferences.getString("db3", "");
         if (sharedPreferences.getBoolean("pref_use_db3", false) &&
-                !Gsak.isGsakDatabase(new File(db3Path))) {
+                !Gsak.isReadableGsakDatabase(new File(db3Path))) {
             final String text = getResources().getString(R.string.no_db_file);
             Toast.makeText(LoadActivity.this, text + " " + db3Path, Toast.LENGTH_LONG).show();
             finish();

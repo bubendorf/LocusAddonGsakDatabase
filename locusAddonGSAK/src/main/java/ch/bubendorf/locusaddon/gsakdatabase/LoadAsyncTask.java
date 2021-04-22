@@ -71,7 +71,7 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
 //            myPublishProgress(0);
             final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(activity, this,
                     db, db2, db3, locations[0], null, null);
-            packPoints = GsakReader.readGeocaches(this, gcCodes);
+            packPoints = GsakReader.readGeocaches(activity,this, gcCodes);
             return null;
         } catch (final Exception e) {
             return e;

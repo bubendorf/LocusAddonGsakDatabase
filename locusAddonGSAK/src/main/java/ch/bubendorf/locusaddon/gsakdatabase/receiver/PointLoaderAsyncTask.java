@@ -55,7 +55,7 @@ public class PointLoaderAsyncTask extends GeocacheAsyncTask {
 
             final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(context, this,
                     db, db2, db3, locations[0], locations[1], locations[2]);
-            packPoints = GsakReader.readGeocaches(this, gcCodes);
+            packPoints = GsakReader.readGeocaches(context,this, gcCodes);
             return null;
         } catch (final Exception e) {
             return e;

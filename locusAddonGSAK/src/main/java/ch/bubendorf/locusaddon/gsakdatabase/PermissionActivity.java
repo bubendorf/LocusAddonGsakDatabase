@@ -31,6 +31,8 @@ import androidx.core.content.ContextCompat;
 
 import java.util.function.BiConsumer;
 
+import ch.bubendorf.locusaddon.gsakdatabase.util.SimpleAlertDialog;
+
 /**
  * Activity to ask the user for a permission.
  *
@@ -40,7 +42,8 @@ public class PermissionActivity extends ComponentActivity {
 
     private final static String PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
 
-    private static BiConsumer<Context, Object> runnable;
+    private static BiConsumer<Context, Object> biConsumer;
+    private static Runnable runnable;
     private static Object data;
 
     public static <T> void checkPermission(final Context context, final BiConsumer<Context, T> callback, final T data) {
@@ -49,10 +52,20 @@ public class PermissionActivity extends ComponentActivity {
             callback.accept(context, data);
         } else {
             //noinspection unchecked
-            runnable = (BiConsumer<Context, Object>) callback;
+            biConsumer = (BiConsumer<Context, Object>) callback;
             PermissionActivity.data = data;
-            final Intent intent = new Intent(context, PermissionActivity.class);
-            context.startActivity(intent);
+            context.startActivity(new Intent(context, PermissionActivity.class));
+        }
+    }
+
+    public static <T> void checkPermission(final Context context, final Runnable callback) {
+        if (ContextCompat.checkSelfPermission(context, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
+            // Everything OK ==> Go On
+            callback.run();
+        } else {
+            //noinspection unchecked
+            runnable = callback;
+            context.startActivity(new Intent(context, PermissionActivity.class));
         }
     }
 
@@ -77,7 +90,7 @@ public class PermissionActivity extends ComponentActivity {
                         // same time, respect the user's decision. Don't link to system
                         // settings in an effort to convince the user to change their
                         // decision.
-                        //Toast.makeText(this, "So geht das aber nicht!", Toast.LENGTH_LONG).show();
+                        SimpleAlertDialog.show(this, R.string.permission_needed_title, R.string.permission_needed_text, true);
                         finish();
                         goToAppSettings(this);
                     }
@@ -92,6 +105,7 @@ public class PermissionActivity extends ComponentActivity {
             // include a "cancel" or "no thanks" button that allows the user to
             // continue using your app without granting the permission.
             /*showAlert(this, "Erlaubnis", "Ohne Erlaubnis geht es nicht!");*/
+            SimpleAlertDialog.show(this, R.string.permission_needed_title, R.string.permission_needed_text, true);
             requestPermissionLauncher.launch(PERMISSION);
         } else {
             // You can directly ask for the permission.
@@ -119,8 +133,12 @@ public class PermissionActivity extends ComponentActivity {
 
     private void goOn() {
         finish();
+        if (biConsumer != null) {
+            biConsumer.accept(getParent(), data);
+            biConsumer = null;
+        }
         if (runnable != null) {
-            runnable.accept(getParent(), data);
+            runnable.run();
             runnable = null;
         }
     }

@@ -38,12 +38,20 @@ import locus.api.objects.geocaching.GeocachingWaypoint;
  */
 public class Gsak {
 
-    public static Boolean isGsakDatabase(final String file) {
+    public static boolean isReadableGsakDatabase(final String file) {
+        return isReadableGsakDatabase(new File(file));
+    }
+
+    public static boolean isReadableGsakDatabase(final File file) {
+        return file.exists() && file.canRead() && file.isFile() && file.getName().endsWith("db3");
+    }
+
+    public static boolean isGsakDatabase(final String file) {
         return isGsakDatabase(new File(file));
     }
 
-    public static Boolean isGsakDatabase(final File file) {
-        return file.exists() && file.canRead() && file.isFile() && file.getName().endsWith("db3");
+    public static boolean isGsakDatabase(final File file) {
+        return file.exists() && file.isFile() && file.getName().endsWith("db3");
     }
 
     public static int convertContainer(final String size) {
