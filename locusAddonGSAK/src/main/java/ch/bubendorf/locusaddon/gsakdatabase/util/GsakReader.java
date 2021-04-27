@@ -103,6 +103,26 @@ public class GsakReader {
         columnBlackList.add("rowid");
     }
 
+    public static final Collection<String> preselectList = new ArrayList<>();
+
+    static {
+        preselectList.add("AnzahlInGemeinde"); // Only MB
+        preselectList.add("AnzahlInOrtschaft"); // Only MB
+        preselectList.add("Country");
+        preselectList.add("County");
+        preselectList.add("DNFDate");
+        preselectList.add("FavPoints");
+        preselectList.add("FavRatio");
+        preselectList.add("GefundenVon"); // Only MB
+        preselectList.add("LastFoundDate");
+        preselectList.add("LastLog");
+        preselectList.add("Ortschaft"); // Only MB
+        preselectList.add("UserNote");
+        preselectList.add("User2");
+        preselectList.add("User3");
+        preselectList.add("User4");
+    }
+
     /**
      * Returns the column names of the database table
      *
@@ -425,7 +445,7 @@ public class GsakReader {
                 final StringBuilder sb = new StringBuilder();
                 for (final ColumnMetaData column : columns) {
                     final String text = cacheCursor.getString(cacheCursor.getColumnIndex(column.getName()));
-                    if (text != null && text.length() > 0 && !"0".equals(text)) {
+                    if (text != null && text.length() > 0 /*&& !"0".equals(text)*/) {
                         sb.append(deCamelize(column.getName()));
                         sb.append(": ");
                         sb.append(format(text, column));

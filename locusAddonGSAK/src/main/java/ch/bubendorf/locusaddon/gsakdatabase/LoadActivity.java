@@ -47,13 +47,17 @@ public class LoadActivity extends Activity  {
 
 //    private static final String TAG = "LoadActivity";
     private Point point;
+    //private int numberOfInstalledLocus = 0;
+    //private LocusVersion locusVersion;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //numberOfInstalledLocus = LocusUtils.INSTANCE.getAvailableVersions(this).size()     ;
+
         // We need the permission to access the file system. Check and ask for the permission if necessary
-        PermissionActivity.checkPermission(this, this::goOn, null);
+        PermissionActivity.checkPermission(this, this::goOn, null, false);
     }
 
     private void goOn(final Context context, final Void  data) {
@@ -91,9 +95,10 @@ public class LoadActivity extends Activity  {
             } else if (IntentHelper.INSTANCE.isIntentMainFunctionGc(fromIntent)) {
                 IntentHelper.INSTANCE.handleIntentMainFunctionGc(LoadActivity.this, fromIntent, new IntentHelper.OnIntentReceived() {
                     @Override
-                    public void onReceived(@NotNull final LocusVersion locusVersion, @Nullable final Location gpsLocation, @Nullable final Location mapCenterlocation) {
+                    public void onReceived(@NotNull final LocusVersion lv, @Nullable final Location gpsLocation, @Nullable final Location mapCenterlocation) {
                         if (mapCenterlocation != null) {
                             point = new Point("Map center", mapCenterlocation);
+//                            locusVersion = lv;
                         }
                     }
 
@@ -110,4 +115,12 @@ public class LoadActivity extends Activity  {
             Toast.makeText(LoadActivity.this, "Error: " + rvme.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
+    //public LocusVersion getLocusVersion() {
+    //    return locusVersion;
+    //}
+
+    //public int getNumberOfInstalledLocus() {
+    //    return numberOfInstalledLocus;
+    //}
 }

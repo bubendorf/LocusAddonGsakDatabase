@@ -1,7 +1,6 @@
 package ch.bubendorf.locusaddon.gsakdatabase;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,11 +30,11 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.OnDismissListener {
 
     @SuppressLint("StaticFieldLeak")
-    private final Activity activity;
+    private final LoadActivity activity;
 
     private final ProgressDialog progress;
 
-    public LoadAsyncTask(final Activity activity) {
+    public LoadAsyncTask(final LoadActivity activity) {
         this.activity = activity;
 
         progress = new ProgressDialog(activity);
@@ -91,18 +90,21 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
 
         if (packPoints != null && packPoints.getPoints().length > 0) {
             try {
-                final int size = packPoints.getAsBytes().length;
-                Log.i("LoadAsyncTask", "Size of data: " + size);
+//                Log.i("LoadAsyncTask");
                 final ActionDisplayVarious.ExtraAction action = getDefaultSharedPreferences(activity).getBoolean("import", true) ?
                         ActionDisplayVarious.ExtraAction.IMPORT :
                         ActionDisplayVarious.ExtraAction.CENTER;
-                if (size > 524288) {
-                    final LocusVersion activeVersion = LocusUtils.INSTANCE.getActiveVersion(activity, 3);
+                if (packPoints.getPoints().length > 700 /*|| activity.getNumberOfInstalledLocus() > 1*/) {
+                    // Use the 'Storge' method and send the PackPoints to one specific Locus
+                    final LocusVersion activeVersion = /*activity.getLocusVersion() != null ?
+                            activity.getLocusVersion() :*/
+                            LocusUtils.INSTANCE.getActiveVersion(activity, 3);
                     final File file = getCacheFile(activity);
                     final Uri uri = FileProvider.getUriForFile(activity, activity.getString(R.string.file_provider_authority), file);
                     ActionDisplayPoints.INSTANCE.sendPacksFile(activity, activeVersion,
                             Collections.singletonList(packPoints), file, uri, action);
                 } else {
+                    // Use the 'Memory' method and send the PackPoints to the active(?) Locus
                     ActionDisplayPoints.INSTANCE.sendPack(activity, packPoints, action);
                 }
             } catch (final OutOfMemoryError e) {

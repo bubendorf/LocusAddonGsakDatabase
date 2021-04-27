@@ -84,7 +84,7 @@ public class LocationReceiver extends BroadcastReceiver {
 
     private void update(final Context context, final UpdateContainer updateContainer) {
         // We need the permission to access the file system. Check and ask for the permission if necessary
-        PermissionActivity.checkPermission(context, this::goOn, updateContainer);
+        PermissionActivity.checkPermission(context, this::goOn, updateContainer, true);
     }
 
     private void goOn(final Context context, final UpdateContainer updateContainer) {

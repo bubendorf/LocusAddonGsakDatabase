@@ -49,7 +49,7 @@ public class DetailActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         // We need the permission to access the file system. Check and ask for the permission if necessary
-        PermissionActivity.checkPermission(this, this::goOn, null);
+        PermissionActivity.checkPermission(this, this::goOn, null, false);
     }
 
     private void goOn(final Context context, final Void data) {

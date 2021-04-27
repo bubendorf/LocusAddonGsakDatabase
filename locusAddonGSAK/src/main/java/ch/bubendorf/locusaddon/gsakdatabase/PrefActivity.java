@@ -67,47 +67,65 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
         showPreferences();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        poulateColumnsPref();
+    }
+
+
     private void showPreferences() {
         addPreferencesFromResource(R.xml.prefs);
 
-        poulateColumnsPref();
+        final PreferenceScreen preferenceScreen = getPreferenceScreen();
+        final SharedPreferences sharedPreferences = preferenceScreen.getSharedPreferences();
 
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        // Preselect some details column
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (final String columnName : GsakReader.preselectList) {
+            final String key = "column_" + columnName;
+            editor.putBoolean(key, sharedPreferences.getBoolean(key, true));
+        }
+        editor.apply();
 
-        own = (CheckBoxPreference) getPreferenceScreen().findPreference("own");
-        useDb = (CheckBoxPreference) getPreferenceScreen().findPreference("pref_use_db");
-        useDb2 = (CheckBoxPreference) getPreferenceScreen().findPreference("pref_use_db2");
-        useDb3 = (CheckBoxPreference) getPreferenceScreen().findPreference("pref_use_db3");
+//        poulateColumnsPref();
 
-        dbPick = getPreferenceScreen().findPreference("db_pick");
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
+        own = (CheckBoxPreference) preferenceScreen.findPreference("own");
+        useDb = (CheckBoxPreference) preferenceScreen.findPreference("pref_use_db");
+        useDb2 = (CheckBoxPreference) preferenceScreen.findPreference("pref_use_db2");
+        useDb3 = (CheckBoxPreference) preferenceScreen.findPreference("pref_use_db3");
+
+        dbPick = preferenceScreen.findPreference("db_pick");
         dbPick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(0));
         final String dbPath = PreferenceManager.getDefaultSharedPreferences(this).getString("db", "");
         dbPick.setSummary(editPreferenceSummary(dbPath, getText(R.string.pref_db_sum)));
         useDb.setEnabled(dbPath.length() > 0);
 
-        db2Pick = getPreferenceScreen().findPreference("db2_pick");
+        db2Pick = preferenceScreen.findPreference("db2_pick");
         db2Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(1));
         final String db2Path = PreferenceManager.getDefaultSharedPreferences(this).getString("db2", "");
         db2Pick.setSummary(editPreferenceSummary(db2Path, getText(R.string.pref_db2_sum)));
         useDb2.setEnabled(db2Path.length() > 0);
 
-        db3Pick = getPreferenceScreen().findPreference("db3_pick");
+        db3Pick = preferenceScreen.findPreference("db3_pick");
         db3Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(2));
         final String db3Path = PreferenceManager.getDefaultSharedPreferences(this).getString("db3", "");
         db3Pick.setSummary(editPreferenceSummary(db3Path, getText(R.string.pref_db3_sum)));
         useDb3.setEnabled(db3Path.length() > 0);
 
-        nick = (EditTextPreference) getPreferenceScreen().findPreference("nick");
+        nick = (EditTextPreference) preferenceScreen.findPreference("nick");
         nick.setSummary(editPreferenceSummary(nick.getText(), getText(R.string.pref_nick_sum)));
         own.setEnabled(nick.getText().trim().length() != 0);
 
-        radius = (EditTextPreference) getPreferenceScreen().findPreference("radius");
+        radius = (EditTextPreference) preferenceScreen.findPreference("radius");
         radius.setSummary(editPreferenceSummary(radius.getText() + " km", getText(R.string.pref_radius_sum)));
 
-        logsCount = (EditTextPreference) getPreferenceScreen().findPreference("logs_count");
+        logsCount = (EditTextPreference) preferenceScreen.findPreference("logs_count");
         logsCount.setSummary(editPreferenceSummary(logsCount.getText(), getText(R.string.pref_logs_sum)));
 
-        limit = (EditTextPreference) getPreferenceScreen().findPreference("limit");
+        limit = (EditTextPreference) preferenceScreen.findPreference("limit");
         limit.setSummary(editPreferenceSummary(limit.getText(), getText(R.string.pref_limit_sum)));
 
         if (!own.isEnabled()) {
@@ -134,7 +152,7 @@ public class PrefActivity extends PreferenceActivity implements OnSharedPreferen
                     .onSuccess(this::poulateColumnsPref)
                     //.onError(this::displayError)
                     .execute(this);
-        });
+        }, false);
     }
 
     private void poulateColumnsPref(final Collection<ColumnMetaData> columnNames) {
