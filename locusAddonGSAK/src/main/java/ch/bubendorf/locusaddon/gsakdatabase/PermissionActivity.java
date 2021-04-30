@@ -49,45 +49,41 @@ public class PermissionActivity extends ComponentActivity {
     private static Runnable runnable;
     private static Object data;
 
-    public static <T> void checkPermission(final Context context, final BiConsumer<Context, T> callback, final T data, final boolean newTask) {
-        Log.i(TAG, "checkPermission: BiConsumer, " + newTask);
+    public static <T> void checkPermission(final Context context, final BiConsumer<Context, T> callback, final T data, final boolean ignoreOnNoPermission) {
+        Log.i(TAG, "checkPermission: BiConsumer, " + ignoreOnNoPermission);
         if (ContextCompat.checkSelfPermission(context, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
             // Everything OK ==> Go On
-            Log.i(TAG, "checkPermission: Everything OK ==> Go On");
+            Log.i(TAG, "checkPermission: BiConsumer: Everything OK ==> Go On");
             callback.accept(context, data);
-        } else {
+        } else if (!ignoreOnNoPermission) {
             //noinspection unchecked
             biConsumer = (BiConsumer<Context, Object>) callback;
             PermissionActivity.data = data;
-            Intent intent = new Intent(context, PermissionActivity.class);
-            if (newTask) {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            }
-            Log.i(TAG, "checkPermission: Not granted ==> Start PermissionActivity");
+            final Intent intent = new Intent(context, PermissionActivity.class);
+            Log.i(TAG, "checkPermission: BiConsumer: Not granted ==> Start PermissionActivity");
             context.startActivity(intent);
+        } else {
+            Log.i(TAG, "checkPermission: BiConsumer: Do nothing");
         }
     }
 
-    public static <T> void checkPermission(final Context context, final Runnable callback, final boolean newTask) {
-        Log.i(TAG, "checkPermission: Runnable, " + newTask);
+    public static void checkPermission(final Context context, final Runnable callback, final boolean ignoreOnNoPermission) {
+        Log.i(TAG, "checkPermission: Runnable, " + ignoreOnNoPermission);
         if (ContextCompat.checkSelfPermission(context, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
             // Everything OK ==> Go On
-            Log.i(TAG, "checkPermission: Everything OK ==> Go On");
+            Log.i(TAG, "checkPermission: Runnable: Everything OK ==> Go On");
             callback.run();
-        } else {
-            //noinspection unchecked
+        } else if (!ignoreOnNoPermission) {
             runnable = callback;
-            Intent intent = new Intent(context, PermissionActivity.class);
-            if (newTask) {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            }
-            Log.i(TAG, "checkPermission: Not granted ==> Start PermissionActivity");
+            final Intent intent = new Intent(context, PermissionActivity.class);
+            Log.i(TAG, "checkPermission: Runnable: Not granted ==> Start PermissionActivity");
             context.startActivity(intent);
         }
     }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         checkPermission();
     }
@@ -110,10 +106,13 @@ public class PermissionActivity extends ComponentActivity {
                         // settings in an effort to convince the user to change their
                         // decision.
                         Log.i(TAG, "checkPermission: Show educational UI");
-                        SimpleAlertDialog.show(this, R.string.permission_needed_title, R.string.permission_needed_text, true);
-                        finish();
-                        Log.i(TAG, "checkPermission: Go to app settings");
-                        goToAppSettings(this);
+                        SimpleAlertDialog.show(this, R.string.permission_needed_title,
+                                R.string.permission_needed_text,
+                                () ->{
+                                    Log.i(TAG, "checkPermission: Go to app settings");
+                                    goToAppSettings(this);
+                                    finish();
+                                }, null);
                     }
                 });
 
@@ -126,11 +125,12 @@ public class PermissionActivity extends ComponentActivity {
             // permission for a specific feature to behave as expected. In this UI,
             // include a "cancel" or "no thanks" button that allows the user to
             // continue using your app without granting the permission.
-            /*showAlert(this, "Erlaubnis", "Ohne Erlaubnis geht es nicht!");*/
             Log.i(TAG, "checkPermission: Show educational UI");
-            SimpleAlertDialog.show(this, R.string.permission_needed_title, R.string.permission_needed_text, true);
-            Log.i(TAG, "checkPermission: Ask for permission");
-            requestPermissionLauncher.launch(PERMISSION);
+            SimpleAlertDialog.show(this, R.string.permission_needed_title,
+                    R.string.permission_needed_text, () -> {
+                        Log.i(TAG, "checkPermission: Ask for permission");
+                        requestPermissionLauncher.launch(PERMISSION);
+                    }, null);
         } else {
             // You can directly ask for the permission.
             // The registered ActivityResultCallback gets the result of this request.
@@ -138,15 +138,6 @@ public class PermissionActivity extends ComponentActivity {
             requestPermissionLauncher.launch(PERMISSION);
         }
     }
-
-    /*private void showAlert(final Context context, final String title, final String text) {
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(text);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                (dialog, which) -> dialog.dismiss());
-        alertDialog.show();
-    }*/
 
     private void goToAppSettings(final Context context) {
         final Intent intent = new Intent();

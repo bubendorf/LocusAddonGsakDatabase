@@ -51,6 +51,7 @@
     <string name="error">Error!</string>
     <string name="out_of_memory">Out of memory! Change filter to decrease geocache count!</string>
     <string name="no_db_file">GSAK database not found! Set it!</string>
+    <string name="no_db_activated">GSAK for Locus: No database selected!</string>
     <string name="unable_to_load_geocaches">Unable to load geocaches!</string>
     <string name="unable_to_load_detail">Unable to load geocache detail!</string>
     <string name="canceled">Loading canceled!</string>

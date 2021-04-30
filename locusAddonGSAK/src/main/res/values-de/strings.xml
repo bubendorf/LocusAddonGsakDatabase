@@ -58,4 +58,5 @@
     <string name="permission_needed_title">Berechtigung erforderlich</string>
     <string name="pref_columns_sum">Zusätzliche Details die als Log Eintrag an Locus gesendet werden</string>
     <string name="permission_needed_text">GSAK für Locus kann ohne die Berechtigung zum Lesen des externen Speichers nicht funktionieren. Bitte erteile die Berechtigung.</string>
+    <string name="no_db_activated">GSAK für Locus: Es ist keine einzige Datenbank ausgewählt</string>
 </resources>

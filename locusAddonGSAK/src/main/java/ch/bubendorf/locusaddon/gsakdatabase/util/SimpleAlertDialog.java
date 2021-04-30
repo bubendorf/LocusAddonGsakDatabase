@@ -19,40 +19,29 @@ package ch.bubendorf.locusaddon.gsakdatabase.util;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Looper;
+
+import ch.bubendorf.locusaddon.gsakdatabase.R;
 
 /**
- * A simple, optionally modal, Alert Dialog with a title, a text and a single OK button.
+ * A simple Alert Dialog with a title, an icon , a text and one or two buttons.
  */
 public class SimpleAlertDialog {
-    public static void show(final Context context, final int titleId, final int textId, final boolean modal) {
+    public static void show(final Context context, final int titleId, final int textId, final Runnable okCallback, final Runnable cancelCallback) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         final Resources resources = context.getResources();
         builder.setTitle(resources.getText(titleId));
         builder.setMessage(resources.getText(textId));
+        builder.setIcon(R.mipmap.ic_launcher);
 
-        builder.setPositiveButton(resources.getText(android.R.string.ok), (dialog, which) -> {
-            if (modal) {
-                Looper.getMainLooper().quitSafely();
-            }
-            dialog.dismiss();
-        });
-        /*builder.setNegativeButton(resources.getText(android.R.string.cancel), (dialog, which) -> {
-            if (modal) {
-                Looper.getMainLooper().quitSafely();
-            }
-            dialog.cancel();
-        });*/
-
-        builder.show();
-
-        if (modal) {
-            try {
-                Looper.loop();
-            } catch (final RuntimeException ignored) {
-                // Ignored
-            }
+        if (okCallback != null) {
+            builder.setPositiveButton(resources.getText(android.R.string.ok), (dialog, which) -> dialog.dismiss());
+            builder.setOnDismissListener(dlg -> okCallback.run());
         }
+        if (cancelCallback != null) {
+            builder.setNegativeButton(resources.getText(android.R.string.cancel), (dialog, which) -> dialog.cancel());
+            builder.setOnCancelListener(dlg -> cancelCallback.run());
+        }
+        builder.show();
     }
 }

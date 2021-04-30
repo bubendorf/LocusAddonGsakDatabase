@@ -38,6 +38,8 @@ import locus.api.objects.extra.Location;
  */
 public class LocationReceiver extends BroadcastReceiver {
 
+    private static final String TAG = "LocationReceiver";
+
     private static final long MIN_INTERVALL = 2 * 1000L;
     public static final int MOVE_PERCENT = 20;
 
@@ -83,16 +85,22 @@ public class LocationReceiver extends BroadcastReceiver {
     }
 
     private void update(final Context context, final UpdateContainer updateContainer) {
+        Log.i(TAG, "update start");
         // We need the permission to access the file system. Check and ask for the permission if necessary
         PermissionActivity.checkPermission(context, this::goOn, updateContainer, true);
+        lastMapCenter = updateContainer.getLocMapCenter();
+        lastUpdate = System.currentTimeMillis();
+        Log.i(TAG, "update ende");
     }
 
     private void goOn(final Context context, final UpdateContainer updateContainer) {
+        Log.i(TAG, "goOn start");
         lastMapCenter = updateContainer.getLocMapCenter();
         lastUpdate = System.currentTimeMillis();
 
         final PointLoader pointLoader = PointLoader.getInstance();
         pointLoader.run(context, updateContainer.getLocMapCenter(), updateContainer.getMapTopLeft(), updateContainer.getMapBottomRight());
+        Log.i(TAG, "goOn ende");
     }
 
     private UpdateContainer getContent(final Context context) {

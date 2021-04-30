@@ -17,8 +17,11 @@
 package ch.bubendorf.locusaddon.gsakdatabase;
 
 import android.app.Application;
+import android.content.Context;
 
 public class GsakApplication extends Application {
+
+    private static Context appContext;
 
     public static String PACKAGE_NAME;
 
@@ -26,5 +29,10 @@ public class GsakApplication extends Application {
     public void onCreate() {
         super.onCreate();
         PACKAGE_NAME = getApplicationContext().getPackageName();
+        appContext = getApplicationContext();
+    }
+
+    public static Context getAppContext() {
+        return appContext;
     }
 }
