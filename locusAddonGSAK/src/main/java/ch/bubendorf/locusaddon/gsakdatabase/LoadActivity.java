@@ -57,7 +57,7 @@ public class LoadActivity extends Activity {
         //numberOfInstalledLocus = LocusUtils.INSTANCE.getAvailableVersions(this).size()     ;
 
         // We need the permission to access the file system. Check and ask for the permission if necessary
-        PermissionActivity.checkPermission(this, this::goOn, null, false);
+        PermissionActivity.checkPermission(this, this::goOn, null, null, false);
     }
 
     private void goOn(final Context context, final Void data) {
