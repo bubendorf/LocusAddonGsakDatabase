@@ -54,10 +54,11 @@
     <string name="pref_db3_sum">Speicherort der dritten GSAK Datenbank (*.db3 Datei)</string>
     <string name="pref_consider_wps">Wegpunkte und original Koordinaten</string>
     <string name="pref_consider_wps_summary">Koordinaten der Wegpunkte und die original Koordinaten ebenfalls berücksichtigen</string>
-    <string name="pref_type_columns_title">Details</string>
+    <string name="pref_details_cat">Details</string>
     <string name="permission_needed_title">Berechtigung erforderlich</string>
     <string name="pref_columns_sum">Zusätzliche Details die als Log Eintrag an Locus gesendet werden</string>
     <string name="permission_needed_text">GSAK für Locus kann ohne die Berechtigung zum Lesen des externen Speichers nicht funktionieren. Bitte erteile die Berechtigung.</string>
     <string name="no_db_activated">GSAK für Locus: Es ist keine einzige Datenbank ausgewählt!</string>
     <string name="no_permission">GSAK für Locus kann die Datenbank nicht lesen. Berechtigung fehlt!</string>
+    <string name="pref_columns_cat">Datenbank Spalten</string>
 </resources>

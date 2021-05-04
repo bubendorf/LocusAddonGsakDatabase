@@ -56,10 +56,11 @@
     <string name="unable_to_load_detail">Unable to load geocache detail!</string>
     <string name="canceled">Loading canceled!</string>
     <string name="pref_columns_sum">Additional details to send to Locus in a separate log entry</string>
-    <string name="pref_type_columns_title">Details</string>
+    <string name="pref_details_cat">Details</string>
     <string name="permission_needed_title">Permission necessary</string>
     <string name="permission_needed_text">GSAK for Locus will not work if the permission to read external files is not granted. Please grant the permission.</string>
     <string name="no_permission">GSAK for Locus cannot read database. Permission required!</string>
+    <string name="pref_columns_cat">Database columns</string>
 
     <string name="pref_type_corrected" translatable="false">Corrected coordinates</string>
     <string name="pref_type_traditional" translatable="false">Traditional Cache</string>
@@ -81,4 +82,73 @@
     <string name="pref_type_lab" translatable="false">Adventure LAB Cache</string>
 
     <string name="file_provider_authority" translatable="false">ch.bubendorf.locusaddon.gsakdatabase.provider</string>
+
+    <string name="column_Bearing" translatable="false">Bearing (NW, SW, etc) from current centre point</string>
+    <string name="column_CacheID" translatable="false">Unique cache ID</string>
+    <string name="column_CacheType" translatable="false">A 1 character" translatable="false">representing the cache type </string>
+    <string name="column_Code" translatable="false">Unique Waypoint code</string>
+    <string name="column_Changed" translatable="false">Date data was actually changed in this waypoint</string>
+    <string name="column_Container" translatable="false">Container size</string>
+    <!--<string name="column_County" translatable="false">County</string>-->
+    <!--<string name="column_Country" translatable="false">Country</string>-->
+    <string name="column_Created" translatable="false">Date the waypoint was created in the database</string>
+    <string name="column_Degrees" translatable="false">Bearing in degrees from your current centre point</string>
+    <string name="column_Difficulty" translatable="false">Difficulty rating</string>
+    <string name="column_Distance" translatable="false">Distance from current centre point</string>
+    <string name="column_DNF" translatable="false">Cache currently has the DNF flag</string>
+    <string name="column_DNFDate" translatable="false">Date of most recent DNF</string>
+    <string name="column_Elevation" translatable="false">Elevation (always in meters)</string>
+    <string name="column_FavPoints" translatable="false">Geocaching.com favorite points</string>
+    <string name="column_Found" translatable="false">Found Status</string>
+    <string name="column_FoundCount" translatable="false">Found Count (number of times you have found this cache)</string>
+    <string name="column_FoundByMeDate" translatable="false">Date of your most recent find for a cache</string>
+    <string name="column_FTF" translatable="false">First to find</string>
+    <string name="column_GcNote" translatable="false">Geocaching.com personal note</string>
+    <string name="column_Guid" translatable="false">Geocaching.com cache GUID</string>
+    <string name="column_HasCorrected" translatable="false">Waypoint has corrected coordinates</string>
+    <string name="column_HasTravelBug" translatable="false">Cache has a travel bug</string>
+    <string name="column_HasUserNote" translatable="false">Waypoint has a user note</string>
+    <string name="column_Hints" translatable="false">Hints for this cache (decoded)</string>
+    <string name="column_IsPremium" translatable="false">Geocaching.com member only cache status</string>
+    <string name="column_LastFoundDate" translatable="false">Date the cache was last found (by anybody)</string>
+    <string name="column_LastGPXDate" translatable="false">Date this waypoint was last updated by loading a GPX file</string>
+    <string name="column_LastLog" translatable="false">Date of the last log for this cache (any log)</string>
+    <string name="column_LastUserDate" translatable="false">Date this waypoint was last updated manually by any user action</string>
+    <string name="column_LatOriginal" translatable="false">Original Latitude (before change by corrected coordinates)</string>
+    <string name="column_Latitude" translatable="false">Latitude in decimal degrees format</string>
+    <string name="column_Lock" translatable="false">Waypoint is locked</string>
+    <string name="column_LongDescription" translatable="false">Cache Long description</string>
+    <string name="column_LongHTM" translatable="false">Long description contains HTML code</string>
+    <string name="column_LonOriginal" translatable="false">Original Longitude (before change by corrected coordinates)</string>
+    <string name="column_Longitude" translatable="false">Longitude in decimal degrees format</string>
+    <string name="column_MacroFlag" translatable="false">Macro only "UserFlag"</string>
+    <string name="column_MacroSort" translatable="false">Internal "macro sort" more information</string>
+    <string name="column_Name" translatable="false">Waypoint name</string>
+    <string name="column_NumberOfLogs" translatable="false">Number of logs linked to this cache</string>
+    <string name="column_OwnerId" translatable="false">ID (usually a number) of the owner of this cache (not all source data contains this)</string>
+    <string name="column_OwnerName" translatable="false">Owner name (more information)</string>
+    <string name="column_PlacedBy" translatable="false">Name of cache placer/hider</string>
+    <string name="column_PlacedDate" translatable="false">Date the cache was placed/hidden</string>
+    <string name="column_Resolution" translatable="false">Elevation resolution</string>
+    <string name="column_ShortDescription" translatable="false">Cache Short description</string>
+    <string name="column_ShortHTM" translatable="false">Short description contains HTML code</string>
+    <string name="column_SmartName" translatable="false">Waypoint smart name</string>
+    <string name="column_SmartOverride" translatable="false">Smart name override flag</string>
+    <string name="column_Source" translatable="false">Source of data from GPX/LOC</string>
+    <string name="column_State" translatable="false">State/Province name the cache is in</string>
+    <string name="column_Status" translatable="false">Cache Status</string>
+    <string name="column_Symbol" translatable="false">Symbol name for this waypoint</string>
+    <string name="column_Terrain" translatable="false">Terrain rating</string>
+    <string name="column_TravelBugs" translatable="false">Details of any travel bugs in this cache</string>
+    <string name="column_Url" translatable="false">Waypoint URL</string>
+    <string name="column_UserData" translatable="false">User data</string>
+    <string name="column_User2" translatable="false">User data 2</string>
+    <string name="column_User3" translatable="false">User data 3</string>
+    <string name="column_User4" translatable="false">User data 4</string>
+    <string name="column_UserFlag" translatable="false">User flag</string>
+    <string name="column_UserNote" translatable="false">User Note</string>
+    <string name="column_UserNoteDate" translatable="false">Date the last time the user note was updated</string>
+    <string name="column_UserSort" translatable="false">User sort</string>
+    <string name="column_Watch" translatable="false">Cache is being watched</string>
+
 </resources>

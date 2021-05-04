@@ -1,55 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/app_name">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/app_name"
+    android:key="pref_main" >
 
     <PreferenceCategory
+        app:iconSpaceReserved="false"
         android:title="@string/pref_path">
         <Preference
+            app:iconSpaceReserved="false"
             android:key="db_pick"
             android:summary="@string/pref_db_sum"
             android:title="@string/pref_db_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="pref_use_db"
             android:title="@string/pref_use_db" />
         <Preference
+            app:iconSpaceReserved="false"
             android:key="db2_pick"
             android:summary="@string/pref_db2_sum"
             android:title="@string/pref_db2_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="pref_use_db2"
             android:title="@string/pref_use_db2" />
         <Preference
+            app:iconSpaceReserved="false"
             android:key="db3_pick"
             android:summary="@string/pref_db3_sum"
             android:title="@string/pref_db3_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="pref_use_db3"
             android:title="@string/pref_use_db3" />
     </PreferenceCategory>
 
-    <PreferenceScreen
-        android:key="pref_columns"
-        android:summary="@string/pref_columns_sum"
-        android:title="@string/pref_type_columns_title">
-    </PreferenceScreen>
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:title="@string/pref_details_cat" >
+        <PreferenceScreen
+            app:iconSpaceReserved="false"
+            android:key="pref_details"
+            android:summary="@string/pref_columns_sum"
+            android:title="@string/pref_details_cat">
 
-    <PreferenceCategory android:title="@string/pref_locus">
-        <CheckBoxPreference
+            <Preference
+                app:iconSpaceReserved="false"
+                app:title="@string/pref_details_cat"
+                app:summary="@string/pref_columns_sum"/>
+
+            <PreferenceCategory
+                app:iconSpaceReserved="false"
+                android:key="pref_columns"
+                android:title="@string/pref_columns_cat" >
+            </PreferenceCategory>
+
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:title="@string/pref_locus">
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="livemap"
             android:summary="@string/pref_livemap_sum"
             android:title="@string/pref_livemap_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="import"
             android:summary="@string/pref_import_sum"
             android:title="@string/pref_import_title" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_filter">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:title="@string/pref_filter">
         <EditTextPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="250"
             android:inputType="number"
             android:key="limit"
@@ -57,143 +91,173 @@
             android:summary="@string/pref_limit_sum"
             android:title="@string/pref_limit_title" />
         <EditTextPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="25"
             android:inputType="number"
             android:key="radius"
             android:maxLength="4"
             android:summary="@string/pref_radius_sum"
             android:title="@string/pref_radius_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="consider_wps"
             android:summary="@string/pref_consider_wps_summary"
             android:title="@string/pref_consider_wps" />
+
         <PreferenceScreen
+            app:iconSpaceReserved="false"
             android:key="pref_type_screen"
             android:summary="@string/pref_type_screen_sum"
             android:title="@string/pref_type_screen_title">
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="false"
                 android:icon="@drawable/gc_type_corrected"
                 android:key="gc_type_corrected"
                 android:title="@string/pref_type_corrected" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_tradi"
                 android:key="gc_type_tradi"
                 android:title="@string/pref_type_traditional" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_multi"
                 android:key="gc_type_multi"
                 android:title="@string/pref_type_multi" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_mystery"
                 android:key="gc_type_mystery"
                 android:title="@string/pref_type_mystery" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_earth"
                 android:key="gc_type_earth"
                 android:title="@string/pref_type_earth" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_letter"
                 android:key="gc_type_letter"
                 android:title="@string/pref_type_letter" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_event"
                 android:key="gc_type_event"
                 android:title="@string/pref_type_event" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_cito"
                 android:key="gc_type_cito"
                 android:title="@string/pref_type_cito" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_lab"
                 android:key="gc_type_lab"
                 android:title="@string/pref_type_lab" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_wig"
                 android:key="gc_type_wig"
                 android:title="@string/pref_type_wig" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_virtual"
                 android:key="gc_type_virtual"
                 android:title="@string/pref_type_virtual" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_webcam"
                 android:key="gc_type_webcam"
                 android:title="@string/pref_type_webcam" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_loc"
                 android:key="gc_type_loc"
                 android:title="@string/pref_type_loc" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_hq"
                 android:key="gc_type_hq"
                 android:title="@string/pref_type_hq" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_gps"
                 android:key="gc_type_gps"
                 android:title="@string/pref_type_gps" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_10years"
                 android:key="gc_type_10years"
                 android:title="@string/pref_type_10years" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_benchmark"
                 android:key="gc_type_benchmark"
                 android:title="@string/pref_type_benchmark" />
-            <CheckBoxPreference
+            <SwitchPreference
+                app:iconSpaceReserved="false"
                 android:defaultValue="true"
                 android:icon="@drawable/gc_type_ape"
                 android:key="gc_type_ape"
                 android:title="@string/pref_type_ape" />
         </PreferenceScreen>
+
         <EditTextPreference
+            app:iconSpaceReserved="false"
             android:defaultValue=""
             android:key="nick"
             android:summary="@string/pref_nick_sum"
             android:title="@string/pref_nick_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="disable"
             android:summary="@string/pref_disable_sum"
             android:title="@string/pref_disable_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="found"
             android:summary="@string/pref_found_sum"
             android:title="@string/pref_found_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="notfound"
             android:summary="@string/pref_notfound_sum"
             android:title="@string/pref_notfound_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="own"
             android:summary="@string/pref_own_sum"
             android:title="@string/pref_own_title" />
-        <CheckBoxPreference
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="archive"
             android:summary="@string/pref_archive_sum"
             android:title="@string/pref_archive_title" />
         <EditTextPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="20"
             android:inputType="number"
             android:key="logs_count"
