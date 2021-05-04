@@ -16,6 +16,7 @@
 
 package ch.bubendorf.locusaddon.gsakdatabase;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
@@ -29,6 +30,8 @@ import androidx.fragment.app.FragmentTransaction;
  */
 public class PrefActivity extends FragmentActivity {
 
+    private PreferenceFragment preferenceFragment;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,16 +40,18 @@ public class PrefActivity extends FragmentActivity {
             // Display the fragment as the main content.
             final FragmentManager fragmentManager = getSupportFragmentManager();
             final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(android.R.id.content, new PreferenceFragment());
+            preferenceFragment = new PreferenceFragment();
+            fragmentTransaction.replace(android.R.id.content, preferenceFragment);
             fragmentTransaction.commit();
         }
     }
 
-    /*@Override
-    public void onResume() {
-        super.onResume();
-        poulateColumnsPref();
-    }*/
-
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (preferenceFragment != null) {
+            preferenceFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
 }

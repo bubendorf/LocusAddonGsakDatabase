@@ -1,3 +1,19 @@
+/*
+ * DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+ * Version 2, December 2004
+ *
+ * Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+ *
+ * Everyone is permitted to copy and distribute verbatim or modified
+ * copies of this license document, and changing it is allowed as long
+ * as the name is changed.
+ *
+ * DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+ * TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+ *
+ * 0. You just DO WHAT THE FUCK YOU WANT TO.
+ */
+
 package ch.bubendorf.locusaddon.gsakdatabase;
 
 
@@ -7,6 +23,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
@@ -77,8 +94,6 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     @Override
     public Fragment getCallbackFragment() {
         return this;
-        // or you can return the parent fragment if it's handling the screen navigation,
-        // however, in that case you need to traverse to the implementing parent fragment
     }
 
     @Override
@@ -138,7 +153,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
             limit.setSummary(editPreferenceSummary(limit.getText(), getText(R.string.pref_limit_sum)));
 
             if (!own.isEnabled()) {
-                own.setSummary(Html.fromHtml(getString(R.string.pref_own_sum) + " <b>" + getString(R.string.pref_own_fill) + "</b>"));
+                own.setSummary(Html.fromHtml(getString(R.string.pref_own_sum) + " <b>" + getString(R.string.pref_own_fill) + "</b>", 0));
             }
         }
     }
@@ -158,12 +173,10 @@ public class PreferenceFragment extends PreferenceFragmentCompat
 
         if ("pref_details".equals(rootKey)) {
             // We need the permission to access the file system. Check and ask for the permission if necessary
-            PermissionActivity.checkPermission(getActivity(), () -> {
-                new Lova<>(GsakReader::getAllColumns)
-                        .onSuccess(this::poulateColumnsPref)
-                        //.onError(this::displayError)
-                        .execute(getActivity());
-            }, false);
+            PermissionActivity.checkPermission(getActivity(), () -> new Lova<>(GsakReader::getAllColumns)
+                    .onSuccess(this::poulateColumnsPref)
+                    //.onError(this::displayError)
+                    .execute(getActivity()), false);
         }
     }
 
@@ -219,7 +232,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
             nick.setSummary(editPreferenceSummary(sharedPreferences.getString(key, ""), getText(R.string.pref_nick_sum)));
             if (nick.getText().trim().length() == 0) {
                 own.setEnabled(false);
-                own.setSummary(Html.fromHtml(getString(R.string.pref_own_sum) + " <b>" + getString(R.string.pref_own_fill) + "</b>"));
+                own.setSummary(Html.fromHtml(getString(R.string.pref_own_sum) + " <b>" + getString(R.string.pref_own_fill) + "</b>" ,0));
             } else {
                 own.setEnabled(true);
                 own.setSummary(getString(R.string.pref_own_sum));
@@ -258,34 +271,37 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     }
     private Spanned editPreferenceSummary(final String value, final CharSequence summary) {
         if (!value.equals("")) {
-            return Html.fromHtml("<font color=\"#FF8000\"><b>(" + value + ")</b></font><br/> " + summary);
+            return Html.fromHtml("<font color=\"#FF8000\"><b>(" + value + ")</b></font><br/> " + summary, 0);
         } else {
-            return Html.fromHtml(summary.toString());
+            return Html.fromHtml(summary.toString(), 0);
         }
     }
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode >= 0 && requestCode <= 2) {
             if (resultCode == Activity.RESULT_OK && data != null) {
-                final String filename = data.getData().toString().replace("file://", "");
+
+                final String filename = Uri.parse(data.getData().toString()).getPath();
                 final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 final SharedPreferences.Editor editor = sharedPref.edit();
                 if (requestCode == 0) {
                     editor.putString("db", filename);
                     dbPick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db_sum)));
-                    useDb.setChecked(filename != null && filename.length() > 0);
-                    useDb.setEnabled(filename != null && filename.length() > 0);
+                    useDb.setChecked(filename.length() > 0);
+                    useDb.setEnabled(filename.length() > 0);
                 } else if (requestCode == 1) {
                     editor.putString("db2", filename);
                     db2Pick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db2_sum)));
-                    useDb2.setChecked(filename != null && filename.length() > 0);
-                    useDb2.setEnabled(filename != null && filename.length() > 0);
+                    useDb2.setChecked(filename.length() > 0);
+                    useDb2.setEnabled(filename.length() > 0);
                 } else {
                     editor.putString("db3", filename);
                     db3Pick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db3_sum)));
-                    useDb3.setChecked(filename != null && filename.length() > 0);
-                    useDb3.setEnabled(filename != null && filename.length() > 0);
+                    useDb3.setChecked(filename.length() > 0);
+                    useDb3.setEnabled(filename.length() > 0);
                 }
                 editor.apply();
 
@@ -301,14 +317,9 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         final Bundle args = new Bundle();
         args.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, preferenceScreen.getKey());
         fragment.setArguments(args);
-//        ft.add(R.id.fragment_container, fragment, preferenceScreen.getKey());
         ft.add(android.R.id.content, fragment, preferenceScreen.getKey());
         ft.addToBackStack(preferenceScreen.getKey());
         ft.commit();
         return true;
-
-        //setPreferenceScreen(preferenceScreen);
-        //setPreferencesFromResource(R.xml.prefs, pref.getKey());
-        //return true;
     }
 }

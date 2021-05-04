@@ -20,7 +20,7 @@ import java.util.Comparator;
 
 public class ColumnMetaData {
 
-    public static Comparator<ColumnMetaData> NAME_COMPARATOR = Comparator.comparing(ColumnMetaData::getName);
+    public static final Comparator<ColumnMetaData> NAME_COMPARATOR = Comparator.comparing(ColumnMetaData::getName);
 
     private final String name;
     private final String type;
