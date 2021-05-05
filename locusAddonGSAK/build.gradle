@@ -38,7 +38,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.asamm:locus-api-android:0.9.34'
-    implementation "androidx.activity:activity:1.2.2"
-    implementation "androidx.preference:preference:1.1.1"
+    implementation 'com.asamm:locus-api-android:0.9.35'
+    implementation 'androidx.activity:activity:1.2.2'
+    implementation 'androidx.preference:preference:1.1.1'
 }

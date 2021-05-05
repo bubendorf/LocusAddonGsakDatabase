@@ -61,26 +61,23 @@ public class LoadActivity extends Activity {
     private void goOn(final Context context, final Void data) {
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(LoadActivity.this);
 
-        String dbPath = sharedPreferences.getString("db", "");
-        String error = Gsak.checkDatabase(context, dbPath);
+        String error = Gsak.checkDatabase(context, "db");
         if (error != null) {
-            Toast.makeText(LoadActivity.this, error + " " + dbPath, Toast.LENGTH_LONG).show();
+            Toast.makeText(LoadActivity.this, error, Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        dbPath = sharedPreferences.getString("db2", "");
-        error = Gsak.checkDatabase(context, dbPath);
+        error = Gsak.checkDatabase(context, "db2");
         if (error != null) {
-            Toast.makeText(LoadActivity.this, error + " " + dbPath, Toast.LENGTH_LONG).show();
+            Toast.makeText(LoadActivity.this, error, Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        dbPath = sharedPreferences.getString("db3", "");
-        error = Gsak.checkDatabase(context, dbPath);
+        error = Gsak.checkDatabase(context, "db3");
         if (error != null) {
-            Toast.makeText(LoadActivity.this, error + " " + dbPath, Toast.LENGTH_LONG).show();
+            Toast.makeText(LoadActivity.this, error, Toast.LENGTH_LONG).show();
             finish();
             return;
         }

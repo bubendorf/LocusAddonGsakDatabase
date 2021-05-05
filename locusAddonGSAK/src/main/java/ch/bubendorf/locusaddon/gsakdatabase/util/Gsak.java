@@ -56,8 +56,8 @@ public class Gsak {
         return file.exists() && file.canRead() && file.isFile() && file.getName().endsWith("db3");
     }
 
-    public static boolean isGsakDatabase(final String file) {
-        return isGsakDatabase(new File(file));
+    public static boolean isNotAGsakDatabase(final String file) {
+        return !isGsakDatabase(new File(file));
     }
 
     public static boolean isGsakDatabase(final File file) {
@@ -68,8 +68,8 @@ public class Gsak {
         if (!file.exists() || file.length() < 16) {
             return false;
         }
-        try {
-            final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+
+        try (final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")){
             final byte[] b = new byte[16];
             randomAccessFile.readFully(b);
             return b[0] == 'S' &&
@@ -90,11 +90,11 @@ public class Gsak {
             if (dbPath != null) {
                 final File fd = new File(dbPath);
                 if (!isReadableGsakDatabase(fd)) {
-                    return context.getResources().getString(R.string.no_db_file);
+                    return context.getResources().getString(R.string.no_db_file) + "\n" + dbPath;
                 }
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                         !hasSQLiteMagic(fd)) {
-                    return context.getResources().getString(R.string.no_sqlite_database);
+                    return context.getResources().getString(R.string.no_sqlite_database) + "\n" + dbPath;
                 }
             }
         }
@@ -193,19 +193,16 @@ public class Gsak {
             case "Parking Area":
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PARKING;
             case "Question to Answer":
+            case "Virtual Stage":
                 //return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_QUESTION;
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
             case "Stages of a Multicache":
+            case "Physical Stage":
                 //return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_STAGES;
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
             case "Trailhead":
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_TRAILHEAD;
-            case "Physical Stage":
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
-            case "Virtual Stage":
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
             case "Original Coordinates":
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_REFERENCE;
             case "Reference Point":
             default:
                 return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_REFERENCE;

@@ -30,6 +30,16 @@ public class GsakApplication extends Application {
         super.onCreate();
         PACKAGE_NAME = getApplicationContext().getPackageName();
         appContext = getApplicationContext();
+
+        // Enable CloseGuard
+        try {
+            Class.forName("dalvik.system.CloseGuard")
+                    .getMethod("setEnabled", boolean.class)
+                    .invoke(null, true);
+        } catch (final ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public static Context getAppContext() {

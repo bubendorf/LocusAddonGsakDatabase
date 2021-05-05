@@ -26,7 +26,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
-import java.io.File;
 import java.text.ParseException;
 
 import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
@@ -54,13 +53,6 @@ public class DetailActivity extends Activity {
 
     private void goOn(final Context context, final Void data) {
         final Intent intent = getIntent();
-
-        final File fd = new File(PreferenceManager.getDefaultSharedPreferences(this).getString("db", ""));
-        if (!Gsak.isReadableGsakDatabase(fd)) {
-            Toast.makeText(this, R.string.no_db_file, Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
 
         if (intent.hasExtra("cacheId")) {
             final String value = intent.getStringExtra("cacheId");
@@ -91,7 +83,7 @@ public class DetailActivity extends Activity {
     @Nullable
     private Point readGeocacheFromDatabase(final Context context, final String dbId, final String gcCode) throws ParseException {
         final String dbPath = PreferenceManager.getDefaultSharedPreferences(this).getString(dbId, "");
-        if (dbPath.length() == 0) {
+        if (dbPath.length() == 0 || !Gsak.isReadableGsakDatabase(dbPath)) {
             return null;
         }
         final SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS + SQLiteDatabase.OPEN_READONLY);

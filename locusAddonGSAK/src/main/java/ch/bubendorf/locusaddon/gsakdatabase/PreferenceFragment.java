@@ -164,7 +164,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         final String path2 = sharedPreferences.getString("db2", "");
         final String path3 = sharedPreferences.getString("db3", "");
 
-        if (!Gsak.isGsakDatabase(path) && !Gsak.isGsakDatabase(path2) && !Gsak.isGsakDatabase(path3)) {
+        if (Gsak.isNotAGsakDatabase(path) && Gsak.isNotAGsakDatabase(path2) && Gsak.isNotAGsakDatabase(path3)) {
             // No paths set ==> Disable the Columns Preference
             final PreferenceCategory columnsPref =  getPreferenceScreen().findPreference("pref_columns");
             columnsPref.setEnabled(false);
@@ -208,7 +208,9 @@ public class PreferenceFragment extends PreferenceFragmentCompat
             final int resId  = resources.getIdentifier(key, "string", getContext().getPackageName());
             if (resId != 0) {
                 checkBox.setSummary(resId);
-            }
+            } /*else {
+                checkBox.setSummary(column.getType());
+            }*/
             checkBox.setIconSpaceReserved(false);
             prefCategory.addPreference(checkBox);
         }

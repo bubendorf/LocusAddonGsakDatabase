@@ -42,7 +42,7 @@ import locus.api.objects.extra.Location;
  */
 public class LocationReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "LocationReceiver";
+    //private static final String TAG = "LocationReceiver";
 
     private static final long MIN_INTERVALL = 2 * 1000L;
     public static final int MOVE_PERCENT = 20;
@@ -91,7 +91,7 @@ public class LocationReceiver extends BroadcastReceiver {
     }
 
     private void update(final Context context, final UpdateContainer updateContainer) {
-        Log.d(TAG, "update start");
+        //Log.d(TAG, "update start");
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean pref_use_db = sharedPreferences.getBoolean("pref_use_db", false);
@@ -110,11 +110,11 @@ public class LocationReceiver extends BroadcastReceiver {
         }
         lastMapCenter = updateContainer.getLocMapCenter();
         lastUpdate = System.currentTimeMillis();
-        Log.d(TAG, "update ende");
+        //Log.d(TAG, "update ende");
     }
 
     private void noPermission(final Context context, final UpdateContainer updateContainer) {
-        Log.d(TAG, "noPermission");
+        //Log.d(TAG, "noPermission");
         if (System.currentTimeMillis() >= lastNoPermissionComplain + 60 * 1000L) {
             Toast.makeText(context, context.getString(R.string.no_permission), Toast.LENGTH_LONG).show();
             lastNoPermissionComplain = System.currentTimeMillis();
@@ -122,10 +122,10 @@ public class LocationReceiver extends BroadcastReceiver {
     }
 
     private void goOn(final Context context, final UpdateContainer updateContainer) {
-        Log.d(TAG, "goOn start");
+        //Log.d(TAG, "goOn start");
         final PointLoader pointLoader = PointLoader.getInstance();
         pointLoader.run(context, updateContainer.getLocMapCenter(), updateContainer.getMapTopLeft(), updateContainer.getMapBottomRight());
-        Log.d(TAG, "goOn ende");
+        //Log.d(TAG, "goOn ende");
     }
 
     private UpdateContainer getContent(final Context context) {
