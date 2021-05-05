@@ -136,11 +136,11 @@ public class GsakReader {
         final List<ColumnMetaData> columns = new ArrayList<>();
         final Cursor c = db.rawQuery(sql, null);
         while (c.moveToNext()) {
-            final String name = c.getString(c.getColumnIndex("name"));
-            if (!columnBlackList.contains(name)) {
+            final String columnName = c.getString(c.getColumnIndex("name"));
+            if (!columnBlackList.contains(columnName)) {
                 final String type = c.getString(c.getColumnIndex("type"));
                 final String defaultValue = c.getString(c.getColumnIndex("dflt_value"));
-                columns.add(new ColumnMetaData(name, type, defaultValue));
+                columns.add(new ColumnMetaData(tableName, columnName, type, defaultValue));
             }
         }
         c.close();
@@ -148,7 +148,7 @@ public class GsakReader {
     }
 
     public static Collection<ColumnMetaData> getColumns(final SQLiteDatabase database) {
-        final TreeSet<ColumnMetaData> allColumnNames = new TreeSet<>(ColumnMetaData.NAME_COMPARATOR);
+        final TreeSet<ColumnMetaData> allColumnNames = new TreeSet<>(ColumnMetaData.COMPARATOR);
         for (final String tableName : new String[]{"Caches", "CacheMemo", "Custom"}) {
             final List<ColumnMetaData> columnMetaDatas = getColumns(database, tableName);
             allColumnNames.addAll(columnMetaDatas);
@@ -157,8 +157,14 @@ public class GsakReader {
     }
 
     public static Collection<ColumnMetaData> getAllColumns(final Context context) {
-        final TreeSet<ColumnMetaData> allColumnNames = new TreeSet<>(ColumnMetaData.NAME_COMPARATOR);
+        final TreeSet<ColumnMetaData> allColumnNames = new TreeSet<>(ColumnMetaData.COMPARATOR);
         for (final String dbId : new String[]{"db", "db2", "db3"}) {
+
+            final String error = Gsak.checkDatabase(context, dbId);
+            if (error != null) {
+                throw new RuntimeException(error);
+            }
+
             final SQLiteDatabase database = openDatabase(context, dbId, true);
             if (database != null) {
                 allColumnNames.addAll(getColumns(database));
@@ -434,9 +440,9 @@ public class GsakReader {
 
             // Add the additional columns
             final List<ColumnMetaData> columns = new ArrayList<>(getColumns(database));
-            columns.sort(ColumnMetaData.NAME_COMPARATOR);
+            columns.sort(ColumnMetaData.COMPARATOR);
             final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
-            columns.removeIf(column -> !sharedPreferences.getBoolean("column_" + column.getName(), false));
+            columns.removeIf(column -> !sharedPreferences.getBoolean("column_" + column.getColumnName(), false));
 
             if (columns.size() > 0) {
                 final GeocachingLog logEntry = new GeocachingLog();
@@ -444,9 +450,9 @@ public class GsakReader {
                 logEntry.setFinder(context.getText(R.string.app_name).toString());
                 final StringBuilder sb = new StringBuilder();
                 for (final ColumnMetaData column : columns) {
-                    final String text = cacheCursor.getString(cacheCursor.getColumnIndex(column.getName()));
+                    final String text = cacheCursor.getString(cacheCursor.getColumnIndex(column.getColumnName()));
                     if (text != null && text.length() > 0 /*&& !"0".equals(text)*/) {
-                        sb.append(deCamelize(column.getName()));
+                        sb.append(deCamelize(column.getColumnName()));
                         sb.append(": ");
                         sb.append(format(text, column));
                         sb.append("\n");
@@ -501,7 +507,7 @@ public class GsakReader {
         final String type = columnMetaData.getType().toLowerCase();
         switch (type) {
             case "text":
-                final String columnName = columnMetaData.getName().toLowerCase();
+                final String columnName = columnMetaData.getColumnName().toLowerCase();
                 if (columnName.contains("date") || "changed".equals(columnName) ||
                         "created".equals(columnName) || "lastlog".equals(columnName)) {
                     try {

@@ -16,19 +16,29 @@
 
 package ch.bubendorf.locusaddon.gsakdatabase.util;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ch.bubendorf.locusaddon.gsakdatabase.R;
 import locus.api.objects.geocaching.GeocachingData;
 import locus.api.objects.geocaching.GeocachingLog;
 import locus.api.objects.geocaching.GeocachingTrackable;
 import locus.api.objects.geocaching.GeocachingWaypoint;
+
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
  * Gsak
@@ -52,6 +62,43 @@ public class Gsak {
 
     public static boolean isGsakDatabase(final File file) {
         return file.exists() && file.isFile() && file.getName().endsWith("db3");
+    }
+
+    public static boolean hasSQLiteMagic(final File file) {
+        if (!file.exists() || file.length() < 16) {
+            return false;
+        }
+        try {
+            final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+            final byte[] b = new byte[16];
+            randomAccessFile.readFully(b);
+            return b[0] == 'S' &&
+                    b[1] == 'Q'&&
+                    b[2] == 'L'&&
+                    b[3] == 'i'&&
+                    b[4] == 't'&&
+                    b[5] == 'e';
+        } catch (final IOException e) {
+            return false;
+        }
+    }
+
+    public static String checkDatabase(final Context context, final String dbId) {
+        final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean("pref_use_" + dbId, false)) {
+            final String dbPath = sharedPreferences.getString(dbId, "");
+            if (dbPath != null) {
+                final File fd = new File(dbPath);
+                if (!isReadableGsakDatabase(fd)) {
+                    return context.getResources().getString(R.string.no_db_file);
+                }
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                        !hasSQLiteMagic(fd)) {
+                    return context.getResources().getString(R.string.no_sqlite_database);
+                }
+            }
+        }
+        return null;
     }
 
     public static int convertContainer(final String size) {

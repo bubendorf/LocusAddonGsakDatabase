@@ -51,6 +51,7 @@
     <string name="error">Error!</string>
     <string name="out_of_memory">Out of memory! Change filter to decrease geocache count!</string>
     <string name="no_db_file">GSAK database not found! Set it!</string>
+    <string name="no_sqlite_database">File is not a GSAK database!</string>
     <string name="no_db_activated">GSAK for Locus: No database selected!</string>
     <string name="unable_to_load_geocaches">Unable to load geocaches!</string>
     <string name="no_geocaches_loaded">No geocaches match the filter criteria!</string>
@@ -61,7 +62,7 @@
     <string name="permission_needed_title">Permission necessary</string>
     <string name="permission_needed_text">GSAK for Locus will not work if the permission to read external files is not granted. Please grant the permission.</string>
     <string name="no_permission">GSAK for Locus cannot read database. Permission required!</string>
-    <string name="pref_columns_cat">Database columns</string>
+    <string name="pref_columns_cat">Database tables and columns</string>
 
     <string name="pref_type_corrected" translatable="false">Corrected coordinates</string>
     <string name="pref_type_traditional" translatable="false">Traditional Cache</string>

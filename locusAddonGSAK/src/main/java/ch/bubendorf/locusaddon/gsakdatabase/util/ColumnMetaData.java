@@ -20,20 +20,28 @@ import java.util.Comparator;
 
 public class ColumnMetaData {
 
-    public static final Comparator<ColumnMetaData> NAME_COMPARATOR = Comparator.comparing(ColumnMetaData::getName);
+    public static final Comparator<ColumnMetaData> COLUMN_NAME_COMPARATOR = Comparator.comparing(ColumnMetaData::getColumnName);
+    public static final Comparator<ColumnMetaData> TABLE_NAME_COMPARATOR = Comparator.comparing(ColumnMetaData::getTableName);
+    public static final Comparator<ColumnMetaData> COMPARATOR = TABLE_NAME_COMPARATOR.reversed().thenComparing(COLUMN_NAME_COMPARATOR);
 
-    private final String name;
+    private final String tableName;
+    private final String columnName;
     private final String type;
     private final String defaultValue;
 
-    public ColumnMetaData(final String name, final String type, final String defaultValue) {
-        this.name = name;
+    public ColumnMetaData(final String tableName, final String columnName, final String type, final String defaultValue) {
+        this.tableName = tableName;
+        this.columnName = columnName;
         this.type = type;
         this.defaultValue = defaultValue;
     }
 
-    public String getName() {
-        return name;
+    public String getTableName() {
+        return tableName;
+    }
+
+    public String getColumnName() {
+        return columnName;
     }
 
     public String getType() {

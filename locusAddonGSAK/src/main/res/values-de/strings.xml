@@ -60,6 +60,7 @@
     <string name="permission_needed_text">GSAK für Locus kann ohne die Berechtigung zum Lesen des externen Speichers nicht funktionieren. Bitte erteile die Berechtigung.</string>
     <string name="no_db_activated">GSAK für Locus: Es ist keine einzige Datenbank ausgewählt!</string>
     <string name="no_permission">GSAK für Locus kann die Datenbank nicht lesen. Berechtigung fehlt!</string>
-    <string name="pref_columns_cat">Datenbank Spalten</string>
+    <string name="pref_columns_cat">Datenbank Tabellen und Spalten</string>
     <string name="no_geocaches_loaded">Keine Geocaches gefunden welche den Filterkriterien entsprechen!</string>
+    <string name="no_sqlite_database">Die Datei ist keine GSAK Datenbank!</string>
 </resources>

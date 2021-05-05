@@ -79,7 +79,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     @Override
     public void onResume() {
         super.onResume();
-        poulateColumnsPref();
+        populateColumnsPref();
     }
 
     @Override
@@ -158,7 +158,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         }
     }
 
-    private void poulateColumnsPref() {
+    private void populateColumnsPref() {
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(getActivity());
         final String path = sharedPreferences.getString("db", "");
         final String path2 = sharedPreferences.getString("db2", "");
@@ -174,29 +174,43 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if ("pref_details".equals(rootKey)) {
             // We need the permission to access the file system. Check and ask for the permission if necessary
             PermissionActivity.checkPermission(getActivity(), () -> new Lova<>(GsakReader::getAllColumns)
-                    .onSuccess(this::poulateColumnsPref)
-                    //.onError(this::displayError)
+                    .onSuccess(this::populateColumnsPref)
+                    .onError(this::showError)
                     .execute(getActivity()), false);
         }
     }
 
-    private void poulateColumnsPref(final Collection<ColumnMetaData> columnNames) {
+    private void showError(final Exception e) {
+        Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    private void populateColumnsPref(final Collection<ColumnMetaData> columnMetaDatas) {
         final PreferenceCategory columnsPref =  getPreferenceScreen().findPreference("pref_columns");
 
         columnsPref.setEnabled(true);
         columnsPref.removeAll();
+        String currentTable = null;
+        PreferenceCategory prefCategory = null;
         final Resources resources = getResources();
-        for (final ColumnMetaData column : columnNames) {
+        for (final ColumnMetaData column : columnMetaDatas) {
+            if (!column.getTableName().equals(currentTable)) {
+                currentTable = column.getTableName();
+                prefCategory = new PreferenceCategory(getActivity());
+                prefCategory.setTitle(currentTable);
+                prefCategory.setIconSpaceReserved(false);
+                columnsPref.addPreference(prefCategory);
+            }
+
             final SwitchPreference checkBox = new SwitchPreference(getActivity());
-            checkBox.setTitle(GsakReader.deCamelize(column.getName()));
-            final String key = "column_" + column.getName();
+            checkBox.setTitle(GsakReader.deCamelize(column.getColumnName()));
+            final String key = "column_" + column.getColumnName();
             checkBox.setKey(key);
             final int resId  = resources.getIdentifier(key, "string", getContext().getPackageName());
             if (resId != 0) {
                 checkBox.setSummary(resId);
             }
             checkBox.setIconSpaceReserved(false);
-            columnsPref.addPreference(checkBox);
+            prefCategory.addPreference(checkBox);
         }
     }
 
@@ -305,7 +319,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
                 }
                 editor.apply();
 
-                poulateColumnsPref();
+                populateColumnsPref();
             }
         }
     }
