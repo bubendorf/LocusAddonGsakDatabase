@@ -49,7 +49,7 @@ import locus.api.objects.geocaching.GeocachingData;
 import locus.api.objects.geocaching.GeocachingLog;
 import locus.api.objects.geocaching.GeocachingWaypoint;
 
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 

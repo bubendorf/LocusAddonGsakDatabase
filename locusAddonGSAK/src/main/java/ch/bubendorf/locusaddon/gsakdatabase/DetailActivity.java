@@ -21,10 +21,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import java.io.File;
 import java.text.ParseException;

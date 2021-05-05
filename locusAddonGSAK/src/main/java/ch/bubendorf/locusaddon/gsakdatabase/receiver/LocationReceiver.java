@@ -20,9 +20,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.preference.PreferenceManager;
 
 import ch.bubendorf.locusaddon.gsakdatabase.PermissionActivity;
 import ch.bubendorf.locusaddon.gsakdatabase.R;

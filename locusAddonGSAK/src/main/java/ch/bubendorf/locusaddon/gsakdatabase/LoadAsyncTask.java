@@ -41,7 +41,7 @@ import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Location;
 
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.OnDismissListener {
 
@@ -86,7 +86,7 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
 //            myPublishProgress(0);
             final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(activity, this,
                     db, db2, db3, locations[0], null, null);
-            packPoints = GsakReader.readGeocaches(activity,this, gcCodes);
+            packPoints = GsakReader.readGeocaches(activity, this, gcCodes);
             return null;
         } catch (final Exception e) {
             return e;
@@ -115,10 +115,12 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
                     final LocusVersion activeVersion = /*activity.getLocusVersion() != null ?
                             activity.getLocusVersion() :*/
                             LocusUtils.INSTANCE.getActiveVersion(activity, 3);
-                    final File file = getCacheFile(activity);
-                    final Uri uri = FileProvider.getUriForFile(activity, activity.getString(R.string.file_provider_authority), file);
-                    ActionDisplayPoints.INSTANCE.sendPacksFile(activity, activeVersion,
-                            Collections.singletonList(packPoints), file, uri, action);
+                    if (activeVersion != null) {
+                        final File file = getCacheFile(activity);
+                        final Uri uri = FileProvider.getUriForFile(activity, activity.getString(R.string.file_provider_authority), file);
+                        ActionDisplayPoints.INSTANCE.sendPacksFile(activity, activeVersion,
+                                Collections.singletonList(packPoints), file, uri, action);
+                    }
                 } else {
                     // Use the 'Memory' method and send the PackPoints to the active(?) Locus
                     ActionDisplayPoints.INSTANCE.sendPack(activity, packPoints, action);
@@ -136,6 +138,8 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
                 Toast.makeText(activity, "Error: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 Log.e("LoadAsyncTask", e.getMessage(), e);
             }
+        } else {
+            Toast.makeText(activity, activity.getString(R.string.no_geocaches_loaded), Toast.LENGTH_LONG).show();
         }
         activity.finish();
     }
@@ -151,6 +155,7 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
     private File getCacheFile(final Context ctx) {
         // get filepath
         final File dir = new File(ctx.getCacheDir(), "shared");
+        //noinspection ResultOfMethodCallIgnored
         dir.mkdirs();
 
         // return generated file

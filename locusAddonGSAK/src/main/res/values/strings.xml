@@ -53,7 +53,8 @@
     <string name="no_db_file">GSAK database not found! Set it!</string>
     <string name="no_db_activated">GSAK for Locus: No database selected!</string>
     <string name="unable_to_load_geocaches">Unable to load geocaches!</string>
-    <string name="unable_to_load_detail">Unable to load geocache detail!</string>
+    <string name="no_geocaches_loaded">No geocaches match the filter criteria!</string>
+    <string name="unable_to_load_detail">Unable to load geocache details!</string>
     <string name="canceled">Loading canceled!</string>
     <string name="pref_columns_sum">Additional details to send to Locus in a separate log entry</string>
     <string name="pref_details_cat">Details</string>

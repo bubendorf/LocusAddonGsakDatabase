@@ -35,7 +35,7 @@ import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Location;
 import locus.api.objects.geoData.Point;
 
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
  * LoadActivity
