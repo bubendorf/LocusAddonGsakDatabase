@@ -42,6 +42,9 @@ import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Location;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
+import static locus.api.android.ActionDisplayVarious.ExtraAction.CENTER;
+import static locus.api.android.ActionDisplayVarious.ExtraAction.IMPORT;
+import static locus.api.android.ActionDisplayVarious.ExtraAction.NONE;
 
 public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.OnDismissListener {
 
@@ -107,11 +110,13 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
         if (packPoints != null && packPoints.getPoints().length > 0) {
             try {
 //                Log.i("LoadAsyncTask");
-                final ActionDisplayVarious.ExtraAction action = getDefaultSharedPreferences(activity).getBoolean("import", true) ?
-                        ActionDisplayVarious.ExtraAction.IMPORT :
-                        ActionDisplayVarious.ExtraAction.CENTER;
+                boolean importAction = getDefaultSharedPreferences(activity).getBoolean("import", true);
+                boolean centerAction = getDefaultSharedPreferences(activity).getBoolean("center", true);
+                final ActionDisplayVarious.ExtraAction action = importAction ?
+                        IMPORT :
+                        centerAction ? CENTER : NONE;
                 if (packPoints.getPoints().length > 700 /*|| activity.getNumberOfInstalledLocus() > 1*/) {
-                    // Use the 'Storge' method and send the PackPoints to one specific Locus
+                    // Use the 'Storage' method and send the PackPoints to one specific Locus
                     final LocusVersion activeVersion = /*activity.getLocusVersion() != null ?
                             activity.getLocusVersion() :*/
                             LocusUtils.INSTANCE.getActiveVersion(activity, 3);

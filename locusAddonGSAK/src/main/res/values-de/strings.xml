@@ -31,7 +31,7 @@
     <string name="pref_limit_error">Begrenzung muss eine Zahl zwischen 0 und 99999 sein</string>
     <string name="pref_locus">Locus Einstellungen</string>
     <string name="pref_import_title">Import Dialog in Locus anzeigen</string>
-    <string name="pref_import_sum">Erlaubt Import von Geocaches in Locus</string>
+    <string name="pref_import_sum">Erlaubt den Import der Geocaches in Locus</string>
     <string name="pref_livemap_title">Live Karte</string>
     <string name="pref_livemap_sum">Direktes laden der Caches auf die Karte (aktiviere in Locus: Einstellungen → Verschiedenes → Verbinde mit AddOns)</string>
     <string name="loading">Lädt</string>
@@ -63,4 +63,7 @@
     <string name="pref_columns_cat">Datenbank Tabellen und Spalten</string>
     <string name="no_geocaches_loaded">Keine Geocaches gefunden welche den Filterkriterien entsprechen!</string>
     <string name="no_sqlite_database">Die Datei ist keine GSAK Datenbank!</string>
+    <string name="pref_type_corrected">Geocaches mit korrigierten Koordinaten immer laden</string>
+    <string name="pref_center_title">Karte nach dem Import zentrieren</string>
+    <string name="pref_center_sum">Zentrieren der Karte in Locus nach dem Import der Geocaches</string>
 </resources>

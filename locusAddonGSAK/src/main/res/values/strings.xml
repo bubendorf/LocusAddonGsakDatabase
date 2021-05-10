@@ -41,6 +41,8 @@
     <string name="pref_locus">Locus settings</string>
     <string name="pref_import_title">Show import dialog in Locus</string>
     <string name="pref_import_sum">Allow import geocaches to Locus</string>
+    <string name="pref_center_title">Center map on imported geocaches</string>
+    <string name="pref_center_sum">Center the map in Locus after importing the geocaches</string>
     <string name="pref_livemap_title">Live map</string>
     <string name="pref_livemap_sum">Live loading caches to map (enable in Locus: Settings → Miscellaneous → Connect with add-ons)</string>
     <string name="pref_consider_wps">Consider WPs and original coordinates</string>
@@ -64,13 +66,13 @@
     <string name="no_permission">GSAK for Locus cannot read database. Permission required!</string>
     <string name="pref_columns_cat">Database tables and columns</string>
 
-    <string name="pref_type_corrected" translatable="false">Corrected coordinates</string>
+    <string name="pref_type_corrected">Always load caches with corrected coordinates</string>
     <string name="pref_type_traditional" translatable="false">Traditional Cache</string>
     <string name="pref_type_multi" translatable="false">Multi-Cache</string>
     <string name="pref_type_mystery" translatable="false">Mystery Cache</string>
     <string name="pref_type_earth" translatable="false">Earth Cache</string>
     <string name="pref_type_letter" translatable="false">Letterbox Hybrid</string>
-    <string name="pref_type_event" translatable="false">Event Caches</string>
+    <string name="pref_type_event" translatable="false">Event Cache</string>
     <string name="pref_type_cito" translatable="false">Cache In Trash Out Event</string>
     <string name="pref_type_wig" translatable="false">Wherigo™ Cache</string>
     <string name="pref_type_virtual" translatable="false">Virtual Cache</string>

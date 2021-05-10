@@ -44,8 +44,8 @@ public class LocationReceiver extends BroadcastReceiver {
 
     //private static final String TAG = "LocationReceiver";
 
-    private static final long MIN_INTERVALL = 2 * 1000L;
-    public static final int MOVE_PERCENT = 20;
+    private static final long MIN_INTERVALL = 1200L;
+    public static final int MOVE_PERCENT = 10;
 
     private static LocusVersion locusVersion;
     private static long lastUpdate;
@@ -92,6 +92,8 @@ public class LocationReceiver extends BroadcastReceiver {
 
     private void update(final Context context, final UpdateContainer updateContainer) {
         //Log.d(TAG, "update start");
+        lastMapCenter = updateContainer.getLocMapCenter();
+        lastUpdate = System.currentTimeMillis();
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean pref_use_db = sharedPreferences.getBoolean("pref_use_db", false);
@@ -108,8 +110,6 @@ public class LocationReceiver extends BroadcastReceiver {
             // We need the permission to access the file system. Check and ask for the permission if necessary
             PermissionActivity.checkPermission(context, this::goOn, this::noPermission, updateContainer, true);
         }
-        lastMapCenter = updateContainer.getLocMapCenter();
-        lastUpdate = System.currentTimeMillis();
         //Log.d(TAG, "update ende");
     }
 

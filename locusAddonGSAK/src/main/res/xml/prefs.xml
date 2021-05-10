@@ -77,6 +77,12 @@
             android:key="import"
             android:summary="@string/pref_import_sum"
             android:title="@string/pref_import_title" />
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:defaultValue="true"
+            android:key="center"
+            android:summary="@string/pref_center_sum"
+            android:title="@string/pref_center_title" />
     </PreferenceCategory>
 
     <PreferenceCategory

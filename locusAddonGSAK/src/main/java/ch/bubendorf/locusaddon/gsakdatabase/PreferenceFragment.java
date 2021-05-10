@@ -67,6 +67,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     private SwitchPreference useDb;
     private SwitchPreference useDb2;
     private SwitchPreference useDb3;
+    private SwitchPreference center;
 
     private String rootKey;
 
@@ -120,6 +121,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
             useDb = preferenceScreen.findPreference("pref_use_db");
             useDb2 = preferenceScreen.findPreference("pref_use_db2");
             useDb3 = preferenceScreen.findPreference("pref_use_db3");
+            center = preferenceScreen.findPreference("center");
 
             dbPick = preferenceScreen.findPreference("db_pick");
             dbPick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(0));
@@ -283,6 +285,11 @@ public class PreferenceFragment extends PreferenceFragmentCompat
                 limit.setText(value);
             }
             limit.setSummary(editPreferenceSummary(value, getText(R.string.pref_limit_sum)));
+        }
+
+        if (key.equals("import")) {
+            final boolean value = sharedPreferences.getBoolean("import", true);
+            center.setEnabled(!value);
         }
     }
     private Spanned editPreferenceSummary(final String value, final CharSequence summary) {
