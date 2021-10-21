@@ -17,6 +17,8 @@
 package ch.bubendorf.locusaddon.gsakdatabase;
 
 
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -31,6 +33,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
@@ -49,8 +52,6 @@ import ch.bubendorf.locusaddon.gsakdatabase.util.ColumnMetaData;
 import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
 import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
 import locus.api.android.ActionFiles;
-
-import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class PreferenceFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener,
@@ -161,7 +162,11 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     }
 
     private void populateColumnsPref() {
-        final SharedPreferences sharedPreferences = getDefaultSharedPreferences(getActivity());
+        final FragmentActivity activity = getActivity();
+        if (activity == null) {
+            return;
+        }
+        final SharedPreferences sharedPreferences = getDefaultSharedPreferences(activity);
         final String path = sharedPreferences.getString("db", "");
         final String path2 = sharedPreferences.getString("db2", "");
         final String path3 = sharedPreferences.getString("db3", "");
@@ -175,10 +180,10 @@ public class PreferenceFragment extends PreferenceFragmentCompat
 
         if ("pref_details".equals(rootKey)) {
             // We need the permission to access the file system. Check and ask for the permission if necessary
-            PermissionActivity.checkPermission(getActivity(), () -> new Lova<>(GsakReader::getAllColumns)
+            PermissionActivity.checkPermission(activity, () -> new Lova<>(GsakReader::getAllColumns)
                     .onSuccess(this::populateColumnsPref)
                     .onError(this::showError)
-                    .execute(getActivity()), false);
+                    .execute(activity), false);
         }
     }
 

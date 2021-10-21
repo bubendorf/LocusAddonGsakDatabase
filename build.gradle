@@ -6,12 +6,12 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0'
+        classpath 'com.android.tools.build:gradle:7.0.3'
     }
 }
 
 plugins {
-    id "com.github.ben-manes.versions" version "0.38.0"
+    id "com.github.ben-manes.versions" version "0.39.0"
     // Usage: gradle dependencyUpdates -Drevision=release
 }
 
