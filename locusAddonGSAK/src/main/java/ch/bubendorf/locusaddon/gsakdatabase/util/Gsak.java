@@ -136,7 +136,7 @@ public class Gsak {
     /**
      * Checks if the database exists
      * @param context The context
-     * @param dbId The Id of the database
+     * @param dbId The Id of the database. "db", "db2" or "db3"
      * @return null if everything is OK; an error text otherwise
      */
     public static String checkDatabase(final Context context, final String dbId) {

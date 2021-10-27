@@ -16,7 +16,6 @@
 
 package ch.bubendorf.locusaddon.gsakdatabase;
 
-
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
 import android.app.Activity;
@@ -46,6 +45,7 @@ import androidx.preference.SwitchPreference;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import ch.bubendorf.locusaddon.gsakdatabase.lova.Lova;
 import ch.bubendorf.locusaddon.gsakdatabase.util.ColumnMetaData;
@@ -125,34 +125,41 @@ public class PreferenceFragment extends PreferenceFragmentCompat
             center = preferenceScreen.findPreference("center");
 
             dbPick = preferenceScreen.findPreference("db_pick");
+            assert dbPick != null;
             dbPick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(0));
-            final String dbPath = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("db", "");
+            final String dbPath = sharedPreferences.getString("db", "");
             dbPick.setSummary(editPreferenceSummary(dbPath, getText(R.string.pref_db_sum)));
             useDb.setEnabled(dbPath.length() > 0);
 
             db2Pick = preferenceScreen.findPreference("db2_pick");
+            assert db2Pick != null;
             db2Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(1));
-            final String db2Path = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("db2", "");
+            final String db2Path = sharedPreferences.getString("db2", "");
             db2Pick.setSummary(editPreferenceSummary(db2Path, getText(R.string.pref_db2_sum)));
             useDb2.setEnabled(db2Path.length() > 0);
 
             db3Pick = preferenceScreen.findPreference("db3_pick");
+            assert db3Pick != null;
             db3Pick.setOnPreferenceClickListener(getOnDBPreferenceClickListener(2));
-            final String db3Path = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("db3", "");
+            final String db3Path = sharedPreferences.getString("db3", "");
             db3Pick.setSummary(editPreferenceSummary(db3Path, getText(R.string.pref_db3_sum)));
             useDb3.setEnabled(db3Path.length() > 0);
 
             nick = preferenceScreen.findPreference("nick");
+            assert nick != null;
             nick.setSummary(editPreferenceSummary(nick.getText(), getText(R.string.pref_nick_sum)));
             own.setEnabled(nick.getText().trim().length() != 0);
 
             radius = preferenceScreen.findPreference("radius");
+            assert radius != null;
             radius.setSummary(editPreferenceSummary(radius.getText() + " km", getText(R.string.pref_radius_sum)));
 
             logsCount = preferenceScreen.findPreference("logs_count");
+            assert logsCount != null;
             logsCount.setSummary(editPreferenceSummary(logsCount.getText(), getText(R.string.pref_logs_sum)));
 
             limit = preferenceScreen.findPreference("limit");
+            assert limit != null;
             limit.setSummary(editPreferenceSummary(limit.getText(), getText(R.string.pref_limit_sum)));
 
             if (!own.isEnabled()) {
@@ -174,6 +181,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (Gsak.isNotAGsakDatabase(path) && Gsak.isNotAGsakDatabase(path2) && Gsak.isNotAGsakDatabase(path3)) {
             // No paths set ==> Disable the Columns Preference
             final PreferenceCategory columnsPref =  getPreferenceScreen().findPreference("pref_columns");
+            assert columnsPref != null;
             columnsPref.setEnabled(false);
             return;
         }
@@ -188,12 +196,13 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     }
 
     private void showError(final Exception e) {
-        Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(requireActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
     }
 
     private void populateColumnsPref(final Collection<ColumnMetaData> columnMetaDatas) {
         final PreferenceCategory columnsPref =  getPreferenceScreen().findPreference("pref_columns");
 
+        assert columnsPref != null;
         columnsPref.setEnabled(true);
         columnsPref.removeAll();
         String currentTable = null;
@@ -202,17 +211,17 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         for (final ColumnMetaData column : columnMetaDatas) {
             if (!column.getTableName().equals(currentTable)) {
                 currentTable = column.getTableName();
-                prefCategory = new PreferenceCategory(getActivity());
+                prefCategory = new PreferenceCategory(requireActivity());
                 prefCategory.setTitle(currentTable);
                 prefCategory.setIconSpaceReserved(false);
                 columnsPref.addPreference(prefCategory);
             }
 
-            final SwitchPreference checkBox = new SwitchPreference(getActivity());
+            final SwitchPreference checkBox = new SwitchPreference(requireActivity());
             checkBox.setTitle(GsakReader.deCamelize(column.getColumnName()));
             final String key = "column_" + column.getColumnName();
             checkBox.setKey(key);
-            final int resId  = resources.getIdentifier(key, "string", getContext().getPackageName());
+            final int resId  = resources.getIdentifier(key, "string", requireActivity().getPackageName());
             if (resId != 0) {
                 checkBox.setSummary(resId);
             } /*else {
@@ -226,9 +235,9 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     private Preference.OnPreferenceClickListener getOnDBPreferenceClickListener(final int requestCode) {
         return pref -> {
             try {
-                ActionFiles.INSTANCE.actionPickFile(getActivity(), requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
+                ActionFiles.INSTANCE.actionPickFile(requireActivity(), requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
             } catch (final ActivityNotFoundException anfe) {
-                Toast.makeText(getActivity(), "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
             return true;
         };
@@ -238,17 +247,17 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (key.equals("db")) {
             final String path = sharedPreferences.getString(key, "");
             dbPick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db_sum)));
-            useDb.setEnabled(path != null && path.length() > 0);
+            useDb.setEnabled(path.length() > 0);
         }
         if (key.equals("db2")) {
             final String path = sharedPreferences.getString(key, "");
             db2Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db2_sum)));
-            useDb2.setEnabled(path != null && path.length() > 0);
+            useDb2.setEnabled(path.length() > 0);
         }
         if (key.equals("db3")) {
             final String path = sharedPreferences.getString(key, "");
             db3Pick.setSummary(editPreferenceSummary(path, getText(R.string.pref_db3_sum)));
-            useDb3.setEnabled(path != null && path.length() > 0);
+            useDb3.setEnabled(path.length() > 0);
         }
 
         if (key.equals("nick")) {
@@ -265,7 +274,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (key.equals("logs_count")) {
             String value = sharedPreferences.getString(key, "20");
             if (value.equals("") || !value.matches("[0-9]+")) {
-                Toast.makeText(getActivity(), getString(R.string.pref_logs_error), Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), getString(R.string.pref_logs_error), Toast.LENGTH_LONG).show();
                 value = "20";
                 logsCount.setText(value);
             }
@@ -275,7 +284,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (key.equals("radius")) {
             String value = sharedPreferences.getString(key, "1");
             if (value.equals("") || !value.matches("[0-9]+") || value.equals("0") || value.equals("00")) {
-                Toast.makeText(getActivity(), getString(R.string.pref_radius_error), Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), getString(R.string.pref_radius_error), Toast.LENGTH_LONG).show();
                 value = "1";
                 radius.setText(value);
             }
@@ -285,7 +294,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (key.equals("limit")) {
             String value = sharedPreferences.getString(key, "0");
             if (value.equals("") || !value.matches("[0-9]+")) {
-                Toast.makeText(getActivity(), getString(R.string.pref_limit_error), Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), getString(R.string.pref_limit_error), Toast.LENGTH_LONG).show();
                 value = "100";
                 limit.setText(value);
             }
@@ -313,7 +322,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
             if (resultCode == Activity.RESULT_OK && data != null) {
 
                 final String filename = Uri.parse(data.getData().toString()).getPath();
-                final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());
                 final SharedPreferences.Editor editor = sharedPref.edit();
                 if (requestCode == 0) {
                     editor.putString("db", filename);
