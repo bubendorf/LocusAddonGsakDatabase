@@ -362,6 +362,11 @@ public class GsakReader {
         }
     }
 
+    public static String getNonNullString(final Cursor cacheCursor, final String fieldName) {
+        String value = cacheCursor.getString(cacheCursor.getColumnIndex(fieldName));
+        return value == null ? "" : value;
+    }
+
     @Nullable
     public static Point readGeocache(final Context context, final SQLiteDatabase database,
                                      final String gcCode, final boolean withDetails, final String logLimit) throws ParseException {
@@ -371,17 +376,17 @@ public class GsakReader {
             return null;
         }
         final Location loc = new Location(cacheCursor.getDouble(cacheCursor.getColumnIndex("Latitude")), cacheCursor.getDouble(cacheCursor.getColumnIndex("Longitude")));
-        final Point point = new Point(cacheCursor.getString(cacheCursor.getColumnIndex("Name")), loc);
+        final Point point = new Point(getNonNullString(cacheCursor,"Name"), loc);
 
         final GeocachingData gcData = new GeocachingData();
-        gcData.setCacheID(cacheCursor.getString(cacheCursor.getColumnIndex("Code")));
-        gcData.setName(cacheCursor.getString(cacheCursor.getColumnIndex("Name")));
-        gcData.setOwner(cacheCursor.getString(cacheCursor.getColumnIndex("OwnerName")));
-        gcData.setPlacedBy(cacheCursor.getString(cacheCursor.getColumnIndex("PlacedBy")));
+        gcData.setCacheID(getNonNullString(cacheCursor,"Code"));
+        gcData.setName(getNonNullString(cacheCursor,"Name"));
+        gcData.setOwner(getNonNullString(cacheCursor,"OwnerName"));
+        gcData.setPlacedBy(getNonNullString(cacheCursor,"PlacedBy"));
         gcData.setDifficulty(cacheCursor.getFloat(cacheCursor.getColumnIndex("Difficulty")));
         gcData.setTerrain(cacheCursor.getFloat(cacheCursor.getColumnIndex("Terrain")));
-        gcData.setCountry(cacheCursor.getString(cacheCursor.getColumnIndex("Country")));
-        gcData.setState(cacheCursor.getString(cacheCursor.getColumnIndex("State")));
+        gcData.setCountry(getNonNullString(cacheCursor,"Country"));
+        gcData.setState(getNonNullString(cacheCursor,"State"));
         gcData.setContainer(Gsak.convertContainer(cacheCursor.getString(cacheCursor.getColumnIndex("Container"))));
         gcData.setType(Gsak.convertCacheType(cacheCursor.getString(cacheCursor.getColumnIndex("CacheType"))));
         gcData.setAvailable(Gsak.isAvailable(cacheCursor.getString(cacheCursor.getColumnIndex("Status"))));
@@ -405,11 +410,11 @@ public class GsakReader {
 
         if (withDetails) {
             // More!
-            gcData.setNotes(cacheCursor.getString(cacheCursor.getColumnIndex("UserNote")));
-            gcData.setEncodedHints(cacheCursor.getString(cacheCursor.getColumnIndex("Hints")));
-            gcData.setDescriptions(cacheCursor.getString(cacheCursor.getColumnIndex("ShortDescription")),
+            gcData.setNotes(getNonNullString(cacheCursor,"UserNote"));
+            gcData.setEncodedHints(getNonNullString(cacheCursor,"Hints"));
+            gcData.setDescriptions(getNonNullString(cacheCursor,"ShortDescription"),
                     cacheCursor.getInt(cacheCursor.getColumnIndex("ShortHtm")) == 1,
-                    cacheCursor.getString(cacheCursor.getColumnIndex("LongDescription")),
+                    getNonNullString(cacheCursor,"LongDescription"),
                     cacheCursor.getInt(cacheCursor.getColumnIndex("LongHtm")) == 1);
 
             // TB & GC
@@ -425,10 +430,10 @@ public class GsakReader {
             final GeocachingWaypoint waypoint = new GeocachingWaypoint();
             waypoint.setLat(wpCursor.getDouble(wpCursor.getColumnIndex("cLat")));
             waypoint.setLon(wpCursor.getDouble(wpCursor.getColumnIndex("cLon")));
-            waypoint.setName(wpCursor.getString(wpCursor.getColumnIndex("cName")));
+            waypoint.setName(getNonNullString(wpCursor,"cName"));
             waypoint.setType(Gsak.convertWaypointType(wpCursor.getString(wpCursor.getColumnIndex("cType"))));
-            waypoint.setDesc(wpCursor.getString(wpCursor.getColumnIndex("cComment")));
-            waypoint.setCode(wpCursor.getString(wpCursor.getColumnIndex("cCode")));
+            waypoint.setDesc(getNonNullString(wpCursor, "cComment"));
+            waypoint.setCode(getNonNullString(wpCursor,"cCode"));
 //            waypoint.setDescModified();
             pgdws.add(waypoint);
         }
