@@ -16,10 +16,11 @@
 
 package ch.bubendorf.locusaddon.gsakdatabase.util;
 
-import android.Manifest;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 
 import androidx.core.content.ContextCompat;
 
@@ -28,17 +29,64 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.bubendorf.locusaddon.gsakdatabase.R;
-import locus.api.objects.geocaching.GeocachingData;
-import locus.api.objects.geocaching.GeocachingLog;
 import locus.api.objects.geocaching.GeocachingTrackable;
 import locus.api.objects.geocaching.GeocachingWaypoint;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_SIZE_LARGE;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_SIZE_MICRO;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_SIZE_NOT_CHOSEN;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_SIZE_OTHER;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_SIZE_REGULAR;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_SIZE_SMALL;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_BENCHMARK;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_CACHE_IN_TRASH_OUT;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_COMMUNITY_CELEBRATION;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_EARTH;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_EVENT;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_GC_HQ;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_GC_HQ_BLOCK_PARTY;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_GIGA_EVENT;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_LAB_CACHE;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_LETTERBOX;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_LOCATIONLESS;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_MAZE_EXHIBIT;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_MEGA_EVENT;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_MULTI;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_MYSTERY;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_PROJECT_APE;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_TRADITIONAL;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_VIRTUAL;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_WAYMARK;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_WEBCAM;
+import static locus.api.objects.geocaching.GeocachingData.CACHE_TYPE_WHERIGO;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_ANNOUNCEMENT;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_ATTENDED;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_ENABLE_LISTING;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_FOUND;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_NEEDS_ARCHIVED;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_NEEDS_MAINTENANCE;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_NOT_FOUND;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_OWNER_MAINTENANCE;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_POST_REVIEWER_NOTE;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_PUBLISH_LISTING;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_TEMPORARILY_DISABLE_LISTING;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_UNKNOWN;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_UPDATE_COORDINATES;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_WEBCAM_PHOTO_TAKEN;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_WILL_ATTEND;
+import static locus.api.objects.geocaching.GeocachingLog.CACHE_LOG_TYPE_WRITE_NOTE;
+import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_FINAL;
+import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PARKING;
+import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
+import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_REFERENCE;
+import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
 
 /**
  * Gsak
@@ -66,9 +114,11 @@ public class Gsak {
 
     public static boolean hasSQLiteMagic(final File file) {
         if (!file.exists() || file.length() < 16) {
+            // No file or the file is too short for a SQLite database ==> No GSAK database
             return false;
         }
 
+        // Read the first 16 bytes of the file and check for the SQLite magic number
         try (final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")){
             final byte[] b = new byte[16];
             randomAccessFile.readFully(b);
@@ -83,6 +133,12 @@ public class Gsak {
         }
     }
 
+    /**
+     * Checks if the database exists
+     * @param context The context
+     * @param dbId The Id of the database
+     * @return null if everything is OK; an error text otherwise
+     */
     public static String checkDatabase(final Context context, final String dbId) {
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         if (sharedPreferences.getBoolean("pref_use_" + dbId, false)) {
@@ -92,7 +148,7 @@ public class Gsak {
                 if (!isReadableGsakDatabase(fd)) {
                     return context.getResources().getString(R.string.no_db_file) + "\n" + dbPath;
                 }
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                if (ContextCompat.checkSelfPermission(context, READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED &&
                         !hasSQLiteMagic(fd)) {
                     return context.getResources().getString(R.string.no_sqlite_database) + "\n" + dbPath;
                 }
@@ -104,69 +160,69 @@ public class Gsak {
     public static int convertContainer(final String size) {
         switch (size) {
             case "Small":
-                return GeocachingData.CACHE_SIZE_SMALL;
+                return CACHE_SIZE_SMALL;
             case "Large":
-                return GeocachingData.CACHE_SIZE_LARGE;
+                return CACHE_SIZE_LARGE;
             case "Micro":
-                return GeocachingData.CACHE_SIZE_MICRO;
+                return CACHE_SIZE_MICRO;
             case "Other":
-                return GeocachingData.CACHE_SIZE_OTHER;
+                return CACHE_SIZE_OTHER;
             case "Regular":
-                return GeocachingData.CACHE_SIZE_REGULAR;
+                return CACHE_SIZE_REGULAR;
             case "Not chosen":
             case "Unknown":
             default:
-                return GeocachingData.CACHE_SIZE_NOT_CHOSEN;
+                return CACHE_SIZE_NOT_CHOSEN;
         }
     }
 
     public static int convertCacheType(final String type) {
         switch (type) {
             case "C":
-                return GeocachingData.CACHE_TYPE_CACHE_IN_TRASH_OUT;
+                return CACHE_TYPE_CACHE_IN_TRASH_OUT;
             case "R":
-                return GeocachingData.CACHE_TYPE_EARTH;
+                return CACHE_TYPE_EARTH;
             case "E":
-                return GeocachingData.CACHE_TYPE_EVENT;
+                return CACHE_TYPE_EVENT;
             case "B":
-                return GeocachingData.CACHE_TYPE_LETTERBOX;
+                return CACHE_TYPE_LETTERBOX;
             case "Q":
-                return GeocachingData.CACHE_TYPE_LAB_CACHE;
+                return CACHE_TYPE_LAB_CACHE;
             case "Z":
-                return GeocachingData.CACHE_TYPE_MEGA_EVENT;
+                return CACHE_TYPE_MEGA_EVENT;
             case "J":
-                return GeocachingData.CACHE_TYPE_GIGA_EVENT;
+                return CACHE_TYPE_GIGA_EVENT;
             case "M":
-                return GeocachingData.CACHE_TYPE_MULTI;
+                return CACHE_TYPE_MULTI;
             case "U":
-                return GeocachingData.CACHE_TYPE_MYSTERY;
+                return CACHE_TYPE_MYSTERY;
             case "V":
-                return GeocachingData.CACHE_TYPE_VIRTUAL;
+                return CACHE_TYPE_VIRTUAL;
             case "W":
-                return GeocachingData.CACHE_TYPE_WEBCAM;
+                return CACHE_TYPE_WEBCAM;
             case "I":
-                return GeocachingData.CACHE_TYPE_WHERIGO;
+                return CACHE_TYPE_WHERIGO;
             case "A":
-                return GeocachingData.CACHE_TYPE_PROJECT_APE;
+                return CACHE_TYPE_PROJECT_APE;
             case "L":
-                return GeocachingData.CACHE_TYPE_LOCATIONLESS;
+                return CACHE_TYPE_LOCATIONLESS;
             case "G":
-                return GeocachingData.CACHE_TYPE_BENCHMARK;
+                return CACHE_TYPE_BENCHMARK;
             case "H":
                 //return GeocachingData.CACHE_TYPE_GROUNDSPEAK;
-                return GeocachingData.CACHE_TYPE_GC_HQ;
+                return CACHE_TYPE_GC_HQ;
             case "X":
-                return GeocachingData.CACHE_TYPE_MAZE_EXHIBIT;
+                return CACHE_TYPE_MAZE_EXHIBIT;
             case "Y":
-                return GeocachingData.CACHE_TYPE_WAYMARK;
+                return CACHE_TYPE_WAYMARK;
             case "F":
                 //return GeocachingData.CACHE_TYPE_LF_EVENT;
-                return GeocachingData.CACHE_TYPE_COMMUNITY_CELEBRATION;
+                return CACHE_TYPE_COMMUNITY_CELEBRATION;
             case "D":
-                return GeocachingData.CACHE_TYPE_GC_HQ_BLOCK_PARTY;
+                return CACHE_TYPE_GC_HQ_BLOCK_PARTY;
             case "T":
             default:
-                return GeocachingData.CACHE_TYPE_TRADITIONAL;
+                return CACHE_TYPE_TRADITIONAL;
         }
     }
 
@@ -189,60 +245,60 @@ public class Gsak {
     public static String convertWaypointType(final String waypointType) {
         switch (waypointType) {
             case "Final Location":
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_FINAL;
+                return CACHE_WAYPOINT_TYPE_FINAL;
             case "Parking Area":
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PARKING;
+                return CACHE_WAYPOINT_TYPE_PARKING;
             case "Question to Answer":
             case "Virtual Stage":
                 //return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_QUESTION;
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
+                return CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
             case "Stages of a Multicache":
             case "Physical Stage":
                 //return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_STAGES;
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
+                return CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
             case "Trailhead":
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_TRAILHEAD;
+                return Objects.requireNonNull(GeocachingWaypoint.CACHE_WAYPOINT_TYPE_TRAILHEAD);
             case "Original Coordinates":
             case "Reference Point":
             default:
-                return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_REFERENCE;
+                return CACHE_WAYPOINT_TYPE_REFERENCE;
         }
     }
 
     public static int convertLogType(final String logType) {
         switch (logType) {
             case "Announcement":
-                return GeocachingLog.CACHE_LOG_TYPE_ANNOUNCEMENT;
+                return CACHE_LOG_TYPE_ANNOUNCEMENT;
             case "Attended":
-                return GeocachingLog.CACHE_LOG_TYPE_ATTENDED;
+                return CACHE_LOG_TYPE_ATTENDED;
             case "Didn't find it":
-                return GeocachingLog.CACHE_LOG_TYPE_NOT_FOUND;
+                return CACHE_LOG_TYPE_NOT_FOUND;
             case "Enable Listing":
-                return GeocachingLog.CACHE_LOG_TYPE_ENABLE_LISTING;
+                return CACHE_LOG_TYPE_ENABLE_LISTING;
             case "Found it":
-                return GeocachingLog.CACHE_LOG_TYPE_FOUND;
+                return CACHE_LOG_TYPE_FOUND;
             case "Needs Archived":
-                return GeocachingLog.CACHE_LOG_TYPE_NEEDS_ARCHIVED;
+                return CACHE_LOG_TYPE_NEEDS_ARCHIVED;
             case "Needs Maintenance":
-                return GeocachingLog.CACHE_LOG_TYPE_NEEDS_MAINTENANCE;
+                return CACHE_LOG_TYPE_NEEDS_MAINTENANCE;
             case "Owner Maintenance":
-                return GeocachingLog.CACHE_LOG_TYPE_OWNER_MAINTENANCE;
+                return CACHE_LOG_TYPE_OWNER_MAINTENANCE;
             case "Post Reviewer Note":
-                return GeocachingLog.CACHE_LOG_TYPE_POST_REVIEWER_NOTE;
+                return CACHE_LOG_TYPE_POST_REVIEWER_NOTE;
             case "Publish Listing":
-                return GeocachingLog.CACHE_LOG_TYPE_PUBLISH_LISTING;
+                return CACHE_LOG_TYPE_PUBLISH_LISTING;
             case "Temporarily Disable Listing":
-                return GeocachingLog.CACHE_LOG_TYPE_TEMPORARILY_DISABLE_LISTING;
+                return CACHE_LOG_TYPE_TEMPORARILY_DISABLE_LISTING;
             case "Update Coordinates":
-                return GeocachingLog.CACHE_LOG_TYPE_UPDATE_COORDINATES;
+                return CACHE_LOG_TYPE_UPDATE_COORDINATES;
             case "Webcam Photo Taken":
-                return GeocachingLog.CACHE_LOG_TYPE_WEBCAM_PHOTO_TAKEN;
+                return CACHE_LOG_TYPE_WEBCAM_PHOTO_TAKEN;
             case "Will Attend":
-                return GeocachingLog.CACHE_LOG_TYPE_WILL_ATTEND;
+                return CACHE_LOG_TYPE_WILL_ATTEND;
             case "Write note":
-                return GeocachingLog.CACHE_LOG_TYPE_WRITE_NOTE;
+                return CACHE_LOG_TYPE_WRITE_NOTE;
             default:
-                return GeocachingLog.CACHE_LOG_TYPE_UNKNOWN;
+                return CACHE_LOG_TYPE_UNKNOWN;
         }
     }
 
