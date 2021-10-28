@@ -27,13 +27,11 @@ public class ColumnMetaData {
     private final String tableName;
     private final String columnName;
     private final String type;
-    private final String defaultValue;
 
-    public ColumnMetaData(final String tableName, final String columnName, final String type, final String defaultValue) {
+    public ColumnMetaData(final String tableName, final String columnName, final String type) {
         this.tableName = tableName;
         this.columnName = columnName;
         this.type = type;
-        this.defaultValue = defaultValue;
     }
 
     public String getTableName() {
@@ -48,7 +46,4 @@ public class ColumnMetaData {
         return type;
     }
 
-    public String getDefaultValue() {
-        return defaultValue;
-    }
 }

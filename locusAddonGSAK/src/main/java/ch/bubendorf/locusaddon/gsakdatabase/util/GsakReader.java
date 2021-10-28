@@ -139,8 +139,7 @@ public class GsakReader {
             final String columnName = c.getString(c.getColumnIndex("name"));
             if (!columnBlackList.contains(columnName)) {
                 final String type = c.getString(c.getColumnIndex("type"));
-                final String defaultValue = c.getString(c.getColumnIndex("dflt_value"));
-                columns.add(new ColumnMetaData(tableName, columnName, type, defaultValue));
+                columns.add(new ColumnMetaData(tableName, columnName, type));
             }
         }
         c.close();
@@ -501,8 +500,9 @@ public class GsakReader {
         }
 
         point.setGcData(gcData);
+        final Package pkg = DetailActivity.class.getPackage();
         point.setExtraOnDisplay(
-                DetailActivity.class.getPackage().getName(),
+                pkg == null ? "" : pkg.getName(),
                 DetailActivity.class.getName(),
                 "cacheId", gcData.getCacheID());
         return point;
@@ -553,7 +553,8 @@ public class GsakReader {
     private static long getDate(final String text) throws ParseException {
         @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if (text.length() == 10) {
-            return dateFormat.parse(text).getTime();
+            final Date date = dateFormat.parse(text);
+            return date == null ? 0L : date.getTime();
         }
         return 0L;
     }

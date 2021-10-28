@@ -45,7 +45,6 @@ import androidx.preference.SwitchPreference;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Objects;
 
 import ch.bubendorf.locusaddon.gsakdatabase.lova.Lova;
 import ch.bubendorf.locusaddon.gsakdatabase.util.ColumnMetaData;
@@ -71,12 +70,6 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     private SwitchPreference center;
 
     private String rootKey;
-
-    /*@Override
-    public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        showPreferences();
-    }*/
 
     @Override
     public void onResume() {
