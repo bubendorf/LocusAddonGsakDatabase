@@ -173,9 +173,11 @@ public class PreferenceFragment extends PreferenceFragmentCompat
 
         if (Gsak.isNotAGsakDatabase(path) && Gsak.isNotAGsakDatabase(path2) && Gsak.isNotAGsakDatabase(path3)) {
             // No paths set ==> Disable the Columns Preference
-            final PreferenceCategory columnsPref =  getPreferenceScreen().findPreference("pref_columns");
-            assert columnsPref != null;
-            columnsPref.setEnabled(false);
+            final Preference columnsPref =  getPreferenceScreen().findPreference("pref_columns");
+            if (columnsPref != null) {
+                // Googles Pre-launch report complains otherwise
+                columnsPref.setEnabled(false);
+            }
             return;
         }
 
