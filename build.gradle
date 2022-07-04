@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.3'
+        classpath 'com.android.tools.build:gradle:7.0.4'
     }
 }
 
@@ -19,6 +19,7 @@ allprojects {
     repositories {
         mavenCentral()
         google()
+        maven { url 'https://jitpack.io' }
     }
     /*tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xlint:unchecked" //<< "-Xlint:deprecation"

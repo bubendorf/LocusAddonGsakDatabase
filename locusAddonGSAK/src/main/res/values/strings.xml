@@ -16,7 +16,7 @@
     <string name="pref_filter">Filter settings</string>
     <string name="pref_type_screen_title">Geocache type</string>
     <string name="pref_type_screen_sum">Filter checked types</string>
-    <string name="pref_nick_title">Nick on geocaching.com</string>
+    <string name="pref_nick_title">Nickname on geocaching.com</string>
     <string name="pref_nick_sum">For recognize own geocaches</string>
     <string name="pref_disable_title">Disabled geocaches</string>
     <string name="pref_disable_sum">Load disabled geocaches to Locus</string>
@@ -26,7 +26,7 @@
     <string name="pref_notfound_sum">Load my not (yet) found geocaches to Locus</string>
     <string name="pref_own_title">My own geocaches</string>
     <string name="pref_own_sum">Load my own geocaches to Locus</string>
-    <string name="pref_own_fill">Fill geocaching.com nick to enable</string>
+    <string name="pref_own_fill">Fill geocaching.com nickname to enable</string>
     <string name="pref_archive_title">Archived geocaches</string>
     <string name="pref_archive_sum">Load archived geocaches to Locus</string>
     <string name="pref_logs_title">Logs count</string>

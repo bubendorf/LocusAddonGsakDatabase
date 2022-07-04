@@ -16,6 +16,8 @@
 
 package ch.bubendorf.locusaddon.gsakdatabase.util;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,6 +25,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +52,6 @@ import locus.api.objects.geocaching.GeocachingData;
 import locus.api.objects.geocaching.GeocachingLog;
 import locus.api.objects.geocaching.GeocachingWaypoint;
 
-import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 
@@ -59,7 +61,7 @@ import static java.lang.Integer.parseInt;
 public class GsakReader {
 
     public static SQLiteDatabase openDatabase(final Context context, final String dbId, final boolean ignorePrefs) {
-        final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (ignorePrefs || sharedPreferences.getBoolean("pref_use_" + dbId, false)) {
             final String path = sharedPreferences.getString(dbId, "");
             if (Gsak.isReadableGsakDatabase(path)) {
@@ -130,6 +132,7 @@ public class GsakReader {
      * @param tableName Name of the table
      * @return Unsorted list of column names
      */
+    @SuppressLint("Range")
     public static List<ColumnMetaData> getColumns(final SQLiteDatabase db, final String tableName) {
         final String sql = "pragma table_info(" + tableName + ")";
 
@@ -221,6 +224,7 @@ public class GsakReader {
         return packPoints;
     }
 
+    @SuppressLint("Range")
     public static void loadGCCodes(@NonNull final Context context,
                                    @NonNull final GeocacheAsyncTask asyncTask,
                                    @NonNull final SQLiteDatabase database,
@@ -361,12 +365,14 @@ public class GsakReader {
         }
     }
 
+    @SuppressLint("Range")
     public static String getNonNullString(final Cursor cacheCursor, final String fieldName) {
         String value = cacheCursor.getString(cacheCursor.getColumnIndex(fieldName));
         return value == null ? "" : value;
     }
 
     @Nullable
+    @SuppressLint("Range")
     public static Point readGeocache(final Context context, final SQLiteDatabase database,
                                      final String gcCode, final boolean withDetails, final String logLimit) throws ParseException {
         final String table = withDetails ? "CachesAll" : "Caches";
@@ -545,6 +551,7 @@ public class GsakReader {
         return text.replaceAll("([a-z])([A-Z0-9])", "$1 $2").replace('_', ' ');
     }
 
+    @SuppressLint("Range")
     private static long getDate(final Cursor c, final String columnName) throws ParseException {
         final String text = c.getString(c.getColumnIndex(columnName));
         return getDate(text);

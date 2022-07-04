@@ -18,6 +18,7 @@ package ch.bubendorf.locusaddon.gsakdatabase;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -42,8 +44,12 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 
+import com.hbisoft.pickit.PickiT;
+import com.hbisoft.pickit.PickiTCallbacks;
+
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import ch.bubendorf.locusaddon.gsakdatabase.lova.Lova;
@@ -54,7 +60,8 @@ import locus.api.android.ActionFiles;
 
 public class PreferenceFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener,
-        PreferenceFragmentCompat.OnPreferenceStartScreenCallback  {
+        PreferenceFragmentCompat.OnPreferenceStartScreenCallback,
+        PickiTCallbacks {
 
     private Preference dbPick;
     private Preference db2Pick;
@@ -71,6 +78,9 @@ public class PreferenceFragment extends PreferenceFragmentCompat
 
     private String rootKey;
 
+    private PickiT pickiT;
+    private String pickiTPath;
+
     @Override
     public void onResume() {
         super.onResume();
@@ -84,8 +94,11 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         // Set the default background in the view so as to avoid transparency
         //view.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.background_dark));
         view.setBackgroundColor(Color.DKGRAY);
+
+        pickiT = new PickiT(getContext(), this, getActivity());
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public Fragment getCallbackFragment() {
         return this;
@@ -229,11 +242,16 @@ public class PreferenceFragment extends PreferenceFragmentCompat
 
     private Preference.OnPreferenceClickListener getOnDBPreferenceClickListener(final int requestCode) {
         return pref -> {
-            try {
+            Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+            chooseFile.setType("*/*");
+            chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+            startActivityForResult(chooseFile, requestCode);
+
+ /*           try {
                 ActionFiles.INSTANCE.actionPickFile(requireActivity(), requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
             } catch (final ActivityNotFoundException anfe) {
                 Toast.makeText(requireActivity(), "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
+            }*/
             return true;
         };
     }
@@ -316,7 +334,10 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (requestCode >= 0 && requestCode <= 2) {
             if (resultCode == Activity.RESULT_OK && data != null) {
 
-                final String filename = Uri.parse(data.getData().toString()).getPath();
+//                final String filename = Uri.parse(data.getData().toString()).getPath();
+                pickiT.getPath(data.getData(), Build.VERSION.SDK_INT);
+                final String filename = pickiTPath;
+
                 final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());
                 final SharedPreferences.Editor editor = sharedPref.edit();
                 if (requestCode == 0) {
@@ -353,5 +374,30 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         ft.addToBackStack(preferenceScreen.getKey());
         ft.commit();
         return true;
+    }
+
+    @Override
+    public void PickiTonUriReturned() {
+
+    }
+
+    @Override
+    public void PickiTonStartListener() {
+
+    }
+
+    @Override
+    public void PickiTonProgressUpdate(int progress) {
+
+    }
+
+    @Override
+    public void PickiTonCompleteListener(String path, boolean wasDriveFile, boolean wasUnknownProvider, boolean wasSuccessful, String Reason) {
+        pickiTPath = wasSuccessful ? path : null;
+    }
+
+    @Override
+    public void PickiTonMultipleCompleteListener(ArrayList<String> paths, boolean wasSuccessful, String Reason) {
+
     }
 }

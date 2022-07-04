@@ -7,7 +7,7 @@
     <string name="pref_db_sum">Speicherort der ersten GSAK Datenbank (*.db3 Datei)</string>
     <string name="pref_db_pick_title">Wählen Sie die Datenbank Datei</string>
     <string name="pref_filter">Filtereinstellungen</string>
-    <string name="pref_type_screen_title">Geocache Typ</string>
+    <string name="pref_type_screen_title">Geocache Typen</string>
     <string name="pref_type_screen_sum">Gefilterte Typen</string>
     <string name="pref_nick_title">Accountname bei geocaching.com</string>
     <string name="pref_nick_sum">Um eigene Geocaches zu erkennen</string>
