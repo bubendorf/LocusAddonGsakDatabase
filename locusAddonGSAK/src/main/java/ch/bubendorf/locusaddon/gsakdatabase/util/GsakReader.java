@@ -234,9 +234,9 @@ public class GsakReader {
                                    @Nullable final Location bottomRightLocation) {
         String sql = buildGCCodesSQL(context);
 
-        double latFrom = Double.MIN_VALUE;
+        double latFrom = -Double.MAX_VALUE;
         double latTo = Double.MAX_VALUE;
-        double lonFrom = Double.MIN_VALUE;
+        double lonFrom = -Double.MAX_VALUE;
         double lonTo = Double.MAX_VALUE;
 
         final float radiusMeter = parseFloat(getDefaultSharedPreferences(context).getString("radius", "25")) * 1000;

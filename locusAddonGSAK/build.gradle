@@ -45,7 +45,7 @@ android {
 
 dependencies {
     implementation 'com.asamm:locus-api-android:0.9.46'
-    implementation 'androidx.activity:activity:1.4.0'
+    implementation 'androidx.activity:activity:1.4.0' // Do not use 1.5.0 or newer. It will not work!
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'com.github.HBiSoft:PickiT:2.0.5'
 }

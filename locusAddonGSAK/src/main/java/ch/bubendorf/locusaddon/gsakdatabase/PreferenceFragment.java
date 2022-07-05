@@ -33,6 +33,7 @@ import android.text.Spanned;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -244,14 +245,9 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         return pref -> {
             Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
             chooseFile.setType("*/*");
+            chooseFile.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
             chooseFile = Intent.createChooser(chooseFile, "Choose a file");
             startActivityForResult(chooseFile, requestCode);
-
- /*           try {
-                ActionFiles.INSTANCE.actionPickFile(requireActivity(), requestCode, getText(R.string.pref_db_pick_title).toString(), new String[]{".db3"});
-            } catch (final ActivityNotFoundException anfe) {
-                Toast.makeText(requireActivity(), "Error: " + anfe.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }*/
             return true;
         };
     }
@@ -334,7 +330,6 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (requestCode >= 0 && requestCode <= 2) {
             if (resultCode == Activity.RESULT_OK && data != null) {
 
-//                final String filename = Uri.parse(data.getData().toString()).getPath();
                 pickiT.getPath(data.getData(), Build.VERSION.SDK_INT);
                 final String filename = pickiTPath;
 
@@ -364,7 +359,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public boolean onPreferenceStartScreen(final PreferenceFragmentCompat caller, final PreferenceScreen preferenceScreen) {
+    public boolean onPreferenceStartScreen(@NonNull final PreferenceFragmentCompat caller, final PreferenceScreen preferenceScreen) {
         final FragmentTransaction ft = getParentFragmentManager().beginTransaction();
         final PreferenceFragment fragment = new PreferenceFragment();
         final Bundle args = new Bundle();
