@@ -30,14 +30,12 @@ import org.acra.sender.HttpSender;
 
 public class GsakApplication extends Application {
 
-    private static Context appContext;
-
     public static String PACKAGE_NAME;
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        if (!BuildConfig.DEBUG) {
+//        if (!BuildConfig.DEBUG) {
             ACRA.init(this, new CoreConfigurationBuilder()
                     //core configuration:
                     .withBuildConfigClass(BuildConfig.class)
@@ -70,14 +68,13 @@ public class GsakApplication extends Application {
                                     .build()
                     )
             );
-        }
+//        }
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         PACKAGE_NAME = getApplicationContext().getPackageName();
-        appContext = getApplicationContext();
 
         // Enable CloseGuard
         try {
@@ -87,10 +84,5 @@ public class GsakApplication extends Application {
         } catch (final ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
-
-    }
-
-    public static Context getAppContext() {
-        return appContext;
     }
 }

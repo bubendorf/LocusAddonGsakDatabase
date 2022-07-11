@@ -40,7 +40,6 @@
     <string name="error">Chyba!</string>
     <string name="out_of_memory">Nedostatek paměti! Změntě filtr ke snížení počtu načítaných keší!</string>
     <string name="no_db_file">Nebyla nalezen soubor s GSAK databází! Nastavte ji!</string>
-    <string name="unable_to_load_geocaches">Nepodařilo se načíst kešky!</string>
     <string name="unable_to_load_detail">Nepodařilo se načíst detail kešky!</string>
     <string name="canceled">Načítání zrušeno!</string>
 </resources>

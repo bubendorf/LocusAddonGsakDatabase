@@ -40,7 +40,6 @@
     <string name="error">Fout!</string>
     <string name="out_of_memory">Onvoldoende geheugen! Wijzig filter om het aantal geocaches te verminderen!</string>
     <string name="no_db_file">GSAK database niet gevonden! Graag instellen!</string>
-    <string name="unable_to_load_geocaches">Niet mogelijk om geocaches te laden!</string>
     <string name="unable_to_load_detail">Niet mogelijk om geocache details te laden!</string>
     <string name="canceled">Laden geannuleerd</string>
 </resources>

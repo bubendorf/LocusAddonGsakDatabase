@@ -41,7 +41,6 @@
     <string name="error">Fehler!</string>
     <string name="out_of_memory">Speicherplatz reicht nicht aus! Ändere den Filter um die Geocacheanzahl zu verringern!</string>
     <string name="no_db_file">GSAK Datenbank nicht gefunden! Bitte eingeben!</string>
-    <string name="unable_to_load_geocaches">Laden der Geocaches nicht möglich!</string>
     <string name="unable_to_load_detail">Laden der Geocachedetails nicht möglich!</string>
     <string name="canceled">Laden stornieren!</string>
     <string name="pref_db2_title">Zweite GSAK Datenbank</string>

@@ -26,7 +26,7 @@ import locus.api.objects.extra.Location;
 /**
  * @author Markus Bubendorf <gsakforlocus@bubendorf.net>
  */
-public abstract class GeocacheAsyncTask extends AsyncTask<Location, Integer, Exception> {
+public abstract class GeocacheAsyncTask extends AsyncTask<Location, Integer, Void> {
 
     protected SQLiteDatabase db;
     protected SQLiteDatabase db2;

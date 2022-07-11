@@ -183,10 +183,6 @@ public class GsakReader {
                                                  final Location bottomRightLocation) {
         final Map<String, CacheWrapper> gcCodes = new HashMap<>(256);
 
-        /*if (1 == 1) {
-            throw new RuntimeException("ACRA Test");
-        }*/
-
         int count = 0;
         final int total = (db != null ? 1 : 0) + (db2 != null ? 1 : 0) + (db3 != null ? 1 : 0);
         if (db != null && !asyncTask.isCancelled()) {

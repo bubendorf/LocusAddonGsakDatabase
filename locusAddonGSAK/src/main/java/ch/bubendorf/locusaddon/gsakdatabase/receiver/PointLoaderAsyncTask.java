@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.util.List;
 
 import ch.bubendorf.locusaddon.gsakdatabase.util.CacheWrapper;
@@ -47,31 +48,26 @@ public class PointLoaderAsyncTask extends GeocacheAsyncTask {
     }
 
     @Override
-    protected Exception doInBackground(final Location... locations) {
-        try {
-            if (isCancelled()) {
-                return null;
-            }
-
-            final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(context, this,
-                    db, db2, db3, locations[0], locations[1], locations[2]);
-            packPoints = GsakReader.readGeocaches(context,this, gcCodes);
+    protected Void doInBackground(final Location... locations) {
+        if (isCancelled()) {
             return null;
-        } catch (final Exception e) {
-            return e;
         }
+
+        final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(context, this,
+                db, db2, db3, locations[0], locations[1], locations[2]);
+
+        try {
+            packPoints = GsakReader.readGeocaches(context,this, gcCodes);
+        } catch (final ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
     @Override
-    protected void onPostExecute(final Exception exception) {
-        super.onPostExecute(exception);
+    protected void onPostExecute(final Void v) {
+        super.onPostExecute(v);
         closeDatabases();
-
-        if (exception != null) {
-//                Log.w(TAG, exception);
-            Toast.makeText(context, "Error: " + exception.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            return;
-        }
 
         if (packPoints != null && packPoints.getPoints().length > 0) {
             try {

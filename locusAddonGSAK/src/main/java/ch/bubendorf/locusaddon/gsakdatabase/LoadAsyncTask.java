@@ -28,6 +28,7 @@ import android.widget.Toast;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,6 +46,8 @@ import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static locus.api.android.ActionDisplayVarious.ExtraAction.CENTER;
 import static locus.api.android.ActionDisplayVarious.ExtraAction.IMPORT;
 import static locus.api.android.ActionDisplayVarious.ExtraAction.NONE;
+
+import org.acra.ACRA;
 
 public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.OnDismissListener {
 
@@ -75,6 +78,11 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
         progress.show();
 
         openDatabases(activity);
+
+        //ACRA.getErrorReporter().handleException(new RuntimeException("ACRA TEST"));
+        /*if (1 == 1) {
+            throw new RuntimeException("ACRA Test");
+        }*/
     }
 
     @Override
@@ -88,36 +96,34 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
         }
     }
 
-    protected Exception doInBackground(final Location... locations) {
-        try {
-            if (isCancelled()) {
-                return null;
-            }
+    protected Void doInBackground(final Location... locations) {
+        if (isCancelled()) {
+            return null;
+        }
 
 //            myPublishProgress(0);
-            step = 1;
-            final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(activity, this,
-                    db, db2, db3, locations[0], null, null);
+        step = 1;
+        final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(activity, this,
+                db, db2, db3, locations[0], null, null);
 
-            step = 2;
+//        ACRA.getErrorReporter().handleException(new RuntimeException("ACRA doInBackground"));
+
+        step = 2;
+        try {
             packPoints = GsakReader.readGeocaches(activity, this, gcCodes);
-
-            return null;
-        } catch (final Exception e) {
-            return e;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
+
+        return null;
     }
 
     @Override
-    protected void onPostExecute(final Exception ex) {
+    protected void onPostExecute(final Void v) {
+        super.onPostExecute(v);
+
         closeDatabases();
         progress.dismiss();
-
-        if (ex != null) {
-            Toast.makeText(activity, activity.getString(R.string.unable_to_load_geocaches) + " (" + ex.getLocalizedMessage() + ")", Toast.LENGTH_LONG).show();
-            activity.finish();
-            return;
-        }
 
         if (packPoints != null && packPoints.getPoints().length > 0) {
             try {
