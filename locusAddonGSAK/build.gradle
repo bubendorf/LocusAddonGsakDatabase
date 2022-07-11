@@ -14,8 +14,8 @@ android {
         applicationId "ch.bubendorf.locusaddon.gsakdatabase"
         minSdkVersion 24
         targetSdkVersion 29 // Do not use another number without a very good reason!
-        versionCode 32
-        versionName "3.3.4-${versionCode}"
+        versionCode 33
+        versionName "3.4.0-${versionCode}"
         //archivesBaseName = "LocusAddonGSAK-$versionName"
         archivesBaseName = "LocusAddonGSAK-${versionName}-${targetSdkVersion.apiLevel}"
     }
@@ -43,9 +43,15 @@ android {
     }
 }
 
+def acraVersion = '5.9.5'
+
 dependencies {
     implementation 'com.asamm:locus-api-android:0.9.46'
     implementation 'androidx.activity:activity:1.4.0' // Do not use 1.5.0 or newer. It will not work!
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'com.github.HBiSoft:PickiT:2.0.5'
+
+    implementation "ch.acra:acra-http:$acraVersion"
+    implementation "ch.acra:acra-toast:$acraVersion"
+
 }

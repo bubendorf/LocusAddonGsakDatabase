@@ -183,13 +183,22 @@ public class GsakReader {
                                                  final Location bottomRightLocation) {
         final Map<String, CacheWrapper> gcCodes = new HashMap<>(256);
 
+        /*if (1 == 1) {
+            throw new RuntimeException("ACRA Test");
+        }*/
+
+        int count = 0;
+        final int total = (db != null ? 1 : 0) + (db2 != null ? 1 : 0) + (db3 != null ? 1 : 0);
         if (db != null && !asyncTask.isCancelled()) {
+            asyncTask.myPublishProgress(++count, total);
             GsakReader.loadGCCodes(context, asyncTask, db, gcCodes, centerLocation, topLeftLocation, bottomRightLocation);
         }
         if (db2 != null && !asyncTask.isCancelled()) {
+            asyncTask.myPublishProgress(++count, total);
             GsakReader.loadGCCodes(context, asyncTask, db2, gcCodes, centerLocation, topLeftLocation, bottomRightLocation);
         }
         if (db3 != null && !asyncTask.isCancelled()) {
+            asyncTask.myPublishProgress(++count, total);
             GsakReader.loadGCCodes(context, asyncTask, db3, gcCodes, centerLocation, topLeftLocation, bottomRightLocation);
         }
 
@@ -213,7 +222,7 @@ public class GsakReader {
                 return packPoints;
             }
             if (count % reportStepSize == 0) {
-                asyncTask.myPublishProgress(count);
+                asyncTask.myPublishProgress(count, gcCodes.size());
             }
             final Point p = GsakReader.readGeocache(context, cacheWrapper.db, cacheWrapper.gcCode, false, null);
             if (p != null) {

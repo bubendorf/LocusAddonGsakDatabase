@@ -39,8 +39,8 @@ public abstract class GeocacheAsyncTask extends AsyncTask<Location, Integer, Exc
         // Empty
     }
 
-    public final void myPublishProgress(final int value) {
-        super.publishProgress(value);
+    public final void myPublishProgress(final int value, final int total) {
+        super.publishProgress(value, total);
     }
 
     protected void openDatabases(final Context context) {

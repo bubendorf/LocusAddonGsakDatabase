@@ -36,6 +36,7 @@
     <string name="pref_livemap_sum">Direktes laden der Caches auf die Karte (aktiviere in Locus: Einstellungen → Verschiedenes → Verbinde mit AddOns)</string>
     <string name="loading">Lädt</string>
     <string name="geocaches">Geocaches</string>
+    <string name="databases">Datenbanken</string>
     <string name="loading_dots">Lädt…</string>
     <string name="error">Fehler!</string>
     <string name="out_of_memory">Speicherplatz reicht nicht aus! Ändere den Filter um die Geocacheanzahl zu verringern!</string>

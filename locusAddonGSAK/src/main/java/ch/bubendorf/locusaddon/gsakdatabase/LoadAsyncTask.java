@@ -53,6 +53,8 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
 
     private final ProgressDialog progress;
 
+    private int step;
+
     public LoadAsyncTask(final LoadActivity activity) {
         this.activity = activity;
 
@@ -77,7 +79,13 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
 
     @Override
     public void onProgressUpdate(final Integer... values) {
-        progress.setMessage(activity.getString(R.string.loading) + " " + values[0] + " " + activity.getString(R.string.geocaches));
+        if (step == 1) {
+            progress.setMessage(activity.getString(R.string.loading) + " " + values[0] + " / " + values[1] + " " + activity.getString(R.string.databases));
+        } else if (step == 2) {
+            progress.setMessage(activity.getString(R.string.loading) + " " + values[0] + " / " + values[1] + " " + activity.getString(R.string.geocaches));
+        } else {
+            progress.setMessage("");
+        }
     }
 
     protected Exception doInBackground(final Location... locations) {
@@ -87,9 +95,13 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
             }
 
 //            myPublishProgress(0);
+            step = 1;
             final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(activity, this,
                     db, db2, db3, locations[0], null, null);
+
+            step = 2;
             packPoints = GsakReader.readGeocaches(activity, this, gcCodes);
+
             return null;
         } catch (final Exception e) {
             return e;
