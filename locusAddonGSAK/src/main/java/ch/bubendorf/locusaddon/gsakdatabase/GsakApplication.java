@@ -35,7 +35,7 @@ public class GsakApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-//        if (!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             ACRA.init(this, new CoreConfigurationBuilder()
                     //core configuration:
                     .withBuildConfigClass(BuildConfig.class)
@@ -68,7 +68,7 @@ public class GsakApplication extends Application {
                                     .build()
                     )
             );
-//        }
+        }
     }
 
     @Override
