@@ -2,12 +2,13 @@
 plugins {
     id "com.github.ben-manes.versions"
     // Usage: gradle dependencyUpdates  -Drevision=release
+
+    id 'com.android.application'
+    id "com.starter.easylauncher" version "5.0.1"
 }
 
-apply plugin: 'com.android.application'
-
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
 
     defaultConfig {
@@ -15,9 +16,9 @@ android {
         minSdkVersion 24
         targetSdkVersion 29 // Do not use another number without a very good reason!
         versionCode 33
-        versionName "3.4.0-${versionCode}"
-        //archivesBaseName = "LocusAddonGSAK-$versionName"
-        archivesBaseName = "LocusAddonGSAK-${versionName}-${targetSdkVersion.apiLevel}"
+        versionName "3.4.${versionCode}-" + getDate()
+//        archivesBaseName = "LocusAddonGSAK-${versionName}-${targetSdkVersion.apiLevel}"
+        archivesBaseName = "LocusAddonGSAK-${versionName}"
     }
 
     buildTypes {
@@ -34,13 +35,27 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     lint {
         abortOnError false
         checkReleaseBuilds false
     }
+}
+
+easylauncher {
+    buildTypes {
+        debug {
+            filters = [
+                    customRibbon(label: "Debug", ribbonColor: "#FF0000",textSizeRatio: 0.12, position: "topRight")
+            ]
+        }
+    }
+}
+
+static def getDate() {
+    return new Date().format('yyyyMMdd-HHmm')
 }
 
 def acraVersion = '5.9.5'
