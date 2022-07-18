@@ -62,7 +62,7 @@ public class GsakApplication extends Application {
                                     // defaults to false
                                     .withDropReportsOnTimeout(false)
                                     //defaults to false. Recommended if your backend supports it
-                                    .withCompress(false)
+                                    .withCompress(true)
                                     //defaults to all
                                     .withTlsProtocols(TLS.V1_3, TLS.V1_2)
                                     .build()

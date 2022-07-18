@@ -41,6 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import ch.bubendorf.locusaddon.gsakdatabase.DetailActivity;
 import ch.bubendorf.locusaddon.gsakdatabase.R;
@@ -181,9 +184,26 @@ public class GsakReader {
                                                  final SQLiteDatabase db, final SQLiteDatabase db2, final SQLiteDatabase db3,
                                                  final Location centerLocation, final Location topLeftLocation,
                                                  final Location bottomRightLocation) {
-        final Map<String, CacheWrapper> gcCodes = new HashMap<>(256);
+        final Map<String, CacheWrapper> gcCodes = new ConcurrentHashMap<>(256);
 
-        int count = 0;
+        final List<SQLiteDatabase> databases = new ArrayList<>();
+        if (db != null) {
+            databases.add(db);
+        }
+        if (db2 != null) {
+            databases.add(db2);
+        }
+        if (db3 != null) {
+            databases.add(db3);
+        }
+        AtomicInteger count = new AtomicInteger(0);
+        final int total = databases.size();
+        databases.stream().parallel().forEach(database -> {
+            GsakReader.loadGCCodes(context, asyncTask, database, gcCodes, centerLocation, topLeftLocation, bottomRightLocation);
+            asyncTask.myPublishProgress(count.incrementAndGet(), total);
+        });
+
+/*        int count = 0;
         final int total = (db != null ? 1 : 0) + (db2 != null ? 1 : 0) + (db3 != null ? 1 : 0);
         if (db != null && !asyncTask.isCancelled()) {
             asyncTask.myPublishProgress(++count, total);
@@ -196,7 +216,7 @@ public class GsakReader {
         if (db3 != null && !asyncTask.isCancelled()) {
             asyncTask.myPublishProgress(++count, total);
             GsakReader.loadGCCodes(context, asyncTask, db3, gcCodes, centerLocation, topLeftLocation, bottomRightLocation);
-        }
+        }*/
 
         final int limit = parseInt(getDefaultSharedPreferences(context).getString("limit", "100"));
 
