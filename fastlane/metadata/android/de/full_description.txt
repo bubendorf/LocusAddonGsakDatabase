@@ -1,0 +1,7 @@
+Kennst du GSAK?
+GSAK ist ein Geocache-Verwaltungsprogramm, mit dem du die Geocaches  bearbeiten, Notizen oder Wegpunkte hinzufügen oder Geocaches importieren / exportieren kannst.
+
+Dieses Add-On bietet eine Verbindung zwischen GSAK, in welchem die Geocaches gespeichert sind, und Locus, einer grossartigen Kartenanwendung für Android. Mit dem Add-On kannst du alle Geocaches anzeigen die in GSAK gespeichert sind. Und das alles Offline ohne Internetverbindung!
+
+Es ist ganz einfach: 
+Installiere das Add-On, kopiere bis zu drei GSAK Datenbanken auf das Smartphone, stelle die Pfade und die Filter richtig ein, führe Locus aus und importiere die Geocaches.

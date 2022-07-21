@@ -1,0 +1,1 @@
+Add-on for Locus map to import geocaches from GSAK databases
