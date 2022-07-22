@@ -16,7 +16,8 @@ android {
         minSdkVersion 24
         targetSdkVersion 29 // Do not use another number without a very good reason!
         versionCode 34
-        versionName "3.4.${versionCode}-" + getDate()
+        versionName "3.4.${versionCode}"
+//        versionName "3.4.${versionCode}-" + getDate()
 //        archivesBaseName = "LocusAddonGSAK-${versionName}-${targetSdkVersion.apiLevel}"
         archivesBaseName = "LocusAddonGSAK-${versionName}"
     }
