@@ -1,0 +1,6 @@
+- Move from Google play store to F-Droid
+- Works also with caches in the south or west
+- Better compatibility with Android 7
+- Faster loading of caches
+- More detailed progress info
+- Crash reports go directly to the developers
