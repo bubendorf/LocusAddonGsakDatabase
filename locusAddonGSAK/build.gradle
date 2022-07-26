@@ -4,7 +4,7 @@ plugins {
     // Usage: gradle dependencyUpdates  -Drevision=release
 
     id 'com.android.application'
-    id "com.starter.easylauncher" version "5.0.1"
+    id "com.starter.easylauncher" version "5.1.2"
 }
 
 android {
@@ -15,7 +15,7 @@ android {
         applicationId "ch.bubendorf.locusaddon.gsakdatabase"
         minSdkVersion 24
         targetSdkVersion 29 // Do not use another number without a very good reason!
-        versionCode 34
+        versionCode 36
         versionName "3.4.${versionCode}"
 //        versionName "3.4.${versionCode}-" + getDate()
 //        archivesBaseName = "LocusAddonGSAK-${versionName}-${targetSdkVersion.apiLevel}"

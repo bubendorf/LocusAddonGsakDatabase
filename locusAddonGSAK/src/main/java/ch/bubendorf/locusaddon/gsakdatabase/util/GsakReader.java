@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -62,6 +63,8 @@ import static java.lang.Integer.parseInt;
  * @author Markus Bubendorf <gsakforlocus@bubendorf.net>
  */
 public class GsakReader {
+
+    private static final String TAG = "GsakReader";
 
     public static SQLiteDatabase openDatabase(final Context context, final String dbId, final boolean ignorePrefs) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -257,6 +260,9 @@ public class GsakReader {
                                    @NonNull final Location centerLocation,
                                    @Nullable final Location topLeftLocation,
                                    @Nullable final Location bottomRightLocation) {
+        Log.d(TAG, "loadGCCodes(" + centerLocation + ", " + database.getPath() + ")");
+        final long startTime = System.currentTimeMillis();
+
         String sql = buildGCCodesSQL(context);
 
         double latFrom = -Double.MAX_VALUE;
@@ -286,15 +292,18 @@ public class GsakReader {
 
         /* Load GC codes */
         final Location loc = new Location();
+        Log.d(TAG, sql);
         final Cursor c = database.rawQuery(sql, null);
+        int count = 0;
         while (c.moveToNext()) {
+            count++;
             if (asyncTask.isCancelled()) {
                 c.close();
                 return;
             }
-            final String code = c.getString(c.getColumnIndex("Code"));
-            loc.setLatitude(c.getDouble(c.getColumnIndex("Latitude")));
-            loc.setLongitude(c.getDouble(c.getColumnIndex("Longitude")));
+            final String code = c.getString(c.getColumnIndexOrThrow("Code"));
+            loc.setLatitude(c.getDouble(c.getColumnIndexOrThrow("Latitude")));
+            loc.setLongitude(c.getDouble(c.getColumnIndexOrThrow("Longitude")));
             final CacheWrapper cacheWrapper = gcCodes.get(code);
             final float distance = loc.distanceTo(centerLocation);
             if (cacheWrapper == null) {
@@ -310,6 +319,8 @@ public class GsakReader {
             }
         }
         c.close();
+        final long duration = System.currentTimeMillis() - startTime;
+        Log.d(TAG, "loadGCCodes() Number of Caches = " + count + ", Duration = " + duration);
     }
 
     private static String buildGCCodesSQL(final Context context) {
@@ -317,7 +328,7 @@ public class GsakReader {
         final boolean considerWayPoints = sharedPreferences.getBoolean("consider_wps", true);
         final StringBuilder sql = new StringBuilder(256);
 
-        sql.append("SELECT c.Latitude, c.Longitude, c.Code ");
+        sql.append("SELECT c.Latitude as Latitude, c.Longitude as Longitude, c.Code as Code ");
         sql.append("FROM Caches c ");
         appendWhereClause(sharedPreferences, sql);
         sql.append(" AND (");
@@ -366,9 +377,10 @@ public class GsakReader {
             sql.append(" ) ");
         }
 
-        if (!sharedPreferences.getBoolean("own", false)) {
+        String nick = sharedPreferences.getString("nick", "");
+        if (!sharedPreferences.getBoolean("own", false) && nick.length() > 0) {
             sql.append(" AND c.PlacedBy != '");
-            sql.append(sharedPreferences.getString("nick", ""));
+            sql.append(nick);
             sql.append("'");
         }
 
@@ -392,7 +404,7 @@ public class GsakReader {
 
     @SuppressLint("Range")
     public static String getNonNullString(final Cursor cacheCursor, final String fieldName) {
-        String value = cacheCursor.getString(cacheCursor.getColumnIndex(fieldName));
+        String value = cacheCursor.getString(cacheCursor.getColumnIndexOrThrow(fieldName));
         return value == null ? "" : value;
     }
 
@@ -413,22 +425,22 @@ public class GsakReader {
         gcData.setName(getNonNullString(cacheCursor,"Name"));
         gcData.setOwner(getNonNullString(cacheCursor,"OwnerName"));
         gcData.setPlacedBy(getNonNullString(cacheCursor,"PlacedBy"));
-        gcData.setDifficulty(cacheCursor.getFloat(cacheCursor.getColumnIndex("Difficulty")));
-        gcData.setTerrain(cacheCursor.getFloat(cacheCursor.getColumnIndex("Terrain")));
+        gcData.setDifficulty(cacheCursor.getFloat(cacheCursor.getColumnIndexOrThrow("Difficulty")));
+        gcData.setTerrain(cacheCursor.getFloat(cacheCursor.getColumnIndexOrThrow("Terrain")));
         gcData.setCountry(getNonNullString(cacheCursor,"Country"));
         gcData.setState(getNonNullString(cacheCursor,"State"));
-        gcData.setContainer(Gsak.convertContainer(cacheCursor.getString(cacheCursor.getColumnIndex("Container"))));
-        gcData.setType(Gsak.convertCacheType(cacheCursor.getString(cacheCursor.getColumnIndex("CacheType"))));
-        gcData.setAvailable(Gsak.isAvailable(cacheCursor.getString(cacheCursor.getColumnIndex("Status"))));
-        gcData.setArchived(Gsak.isArchived(cacheCursor.getString(cacheCursor.getColumnIndex("Status"))));
-        gcData.setFound(Gsak.isFound(cacheCursor.getInt(cacheCursor.getColumnIndex("Found"))));
-        gcData.setPremiumOnly(Gsak.isPremium(cacheCursor.getInt(cacheCursor.getColumnIndex("IsPremium"))));
-        gcData.setComputed(Gsak.isCorrected(cacheCursor.getInt(cacheCursor.getColumnIndex("HasCorrected"))));
+        gcData.setContainer(Gsak.convertContainer(cacheCursor.getString(cacheCursor.getColumnIndexOrThrow("Container"))));
+        gcData.setType(Gsak.convertCacheType(cacheCursor.getString(cacheCursor.getColumnIndexOrThrow("CacheType"))));
+        gcData.setAvailable(Gsak.isAvailable(cacheCursor.getString(cacheCursor.getColumnIndexOrThrow("Status"))));
+        gcData.setArchived(Gsak.isArchived(cacheCursor.getString(cacheCursor.getColumnIndexOrThrow("Status"))));
+        gcData.setFound(Gsak.isFound(cacheCursor.getInt(cacheCursor.getColumnIndexOrThrow("Found"))));
+        gcData.setPremiumOnly(Gsak.isPremium(cacheCursor.getInt(cacheCursor.getColumnIndexOrThrow("IsPremium"))));
+        gcData.setComputed(Gsak.isCorrected(cacheCursor.getInt(cacheCursor.getColumnIndexOrThrow("HasCorrected"))));
 
-        gcData.setLatOriginal(cacheCursor.getDouble(cacheCursor.getColumnIndex("LatOriginal")));
-        gcData.setLonOriginal(cacheCursor.getDouble(cacheCursor.getColumnIndex("LonOriginal")));
+        gcData.setLatOriginal(cacheCursor.getDouble(cacheCursor.getColumnIndexOrThrow("LatOriginal")));
+        gcData.setLonOriginal(cacheCursor.getDouble(cacheCursor.getColumnIndexOrThrow("LonOriginal")));
 //        gcData.setCacheUrl();
-        gcData.setFavoritePoints(cacheCursor.getInt(cacheCursor.getColumnIndex("FavPoints")));
+        gcData.setFavoritePoints(cacheCursor.getInt(cacheCursor.getColumnIndexOrThrow("FavPoints")));
 //        gcData.setGcVoteNumOfVotes(cacheCursor.getInt(cacheCursor.getColumnIndex("??")));
 //        gcData.setGcVoteAverage(cacheCursor.getFloat(cacheCursor.getColumnIndex("??")));
 //        gcData.setGcVoteUserVote(cacheCursor.getFloat(cacheCursor.getColumnIndex("??")));
@@ -443,12 +455,12 @@ public class GsakReader {
             gcData.setNotes(getNonNullString(cacheCursor,"UserNote"));
             gcData.setEncodedHints(getNonNullString(cacheCursor,"Hints"));
             gcData.setDescriptions(getNonNullString(cacheCursor,"ShortDescription"),
-                    cacheCursor.getInt(cacheCursor.getColumnIndex("ShortHtm")) == 1,
+                    cacheCursor.getInt(cacheCursor.getColumnIndexOrThrow("ShortHtm")) == 1,
                     getNonNullString(cacheCursor,"LongDescription"),
-                    cacheCursor.getInt(cacheCursor.getColumnIndex("LongHtm")) == 1);
+                    cacheCursor.getInt(cacheCursor.getColumnIndexOrThrow("LongHtm")) == 1);
 
             // TB & GC
-            gcData.setTrackables(Gsak.parseTravelBug(cacheCursor.getString(cacheCursor.getColumnIndex("TravelBugs"))));
+            gcData.setTrackables(Gsak.parseTravelBug(cacheCursor.getString(cacheCursor.getColumnIndexOrThrow("TravelBugs"))));
         }
 
         /* Add waypoints to Geocache */
@@ -458,10 +470,10 @@ public class GsakReader {
         while (wpCursor.moveToNext()) {
 
             final GeocachingWaypoint waypoint = new GeocachingWaypoint();
-            waypoint.setLat(wpCursor.getDouble(wpCursor.getColumnIndex("cLat")));
-            waypoint.setLon(wpCursor.getDouble(wpCursor.getColumnIndex("cLon")));
+            waypoint.setLat(wpCursor.getDouble(wpCursor.getColumnIndexOrThrow("cLat")));
+            waypoint.setLon(wpCursor.getDouble(wpCursor.getColumnIndexOrThrow("cLon")));
             waypoint.setName(getNonNullString(wpCursor,"cName"));
-            waypoint.setType(Gsak.convertWaypointType(wpCursor.getString(wpCursor.getColumnIndex("cType"))));
+            waypoint.setType(Gsak.convertWaypointType(wpCursor.getString(wpCursor.getColumnIndexOrThrow("cType"))));
             waypoint.setDesc(getNonNullString(wpCursor, "cComment"));
             waypoint.setCode(getNonNullString(wpCursor,"cCode"));
 //            waypoint.setDescModified();
@@ -505,9 +517,9 @@ public class GsakReader {
             while (logsCursor.moveToNext()) {
                 final GeocachingLog pgdl = new GeocachingLog();
                 pgdl.setDate(getDate(logsCursor, "lDate"));
-                pgdl.setFinder(logsCursor.getString(logsCursor.getColumnIndex("lBy")));
-                pgdl.setLogText(logsCursor.getString(logsCursor.getColumnIndex("lText")));
-                pgdl.setType(Gsak.convertLogType(logsCursor.getString(logsCursor.getColumnIndex("lType"))));
+                pgdl.setFinder(logsCursor.getString(logsCursor.getColumnIndexOrThrow("lBy")));
+                pgdl.setLogText(logsCursor.getString(logsCursor.getColumnIndexOrThrow("lText")));
+                pgdl.setType(Gsak.convertLogType(logsCursor.getString(logsCursor.getColumnIndexOrThrow("lType"))));
                 pgdls.add(pgdl);
             }
             logsCursor.close();
@@ -578,7 +590,7 @@ public class GsakReader {
 
     @SuppressLint("Range")
     private static long getDate(final Cursor c, final String columnName) throws ParseException {
-        final String text = c.getString(c.getColumnIndex(columnName));
+        final String text = c.getString(c.getColumnIndexOrThrow(columnName));
         return getDate(text);
     }
 
