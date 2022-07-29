@@ -102,6 +102,7 @@ public class LocationReceiver extends BroadcastReceiver {
 
         if (!pref_use_db && !pref_use_db2 && !pref_use_db3) {
             if (System.currentTimeMillis() >= lastNoActiveDBComplain + 60 * 1000L) {
+                // Only show the info once every 60 seconds.
                 final String text = context.getResources().getString(R.string.no_db_activated);
                 Toast.makeText(context, text, Toast.LENGTH_LONG).show();
                 lastNoActiveDBComplain = System.currentTimeMillis();
@@ -116,6 +117,7 @@ public class LocationReceiver extends BroadcastReceiver {
     private void noPermission(final Context context, final UpdateContainer updateContainer) {
         //Log.d(TAG, "noPermission");
         if (System.currentTimeMillis() >= lastNoPermissionComplain + 60 * 1000L) {
+            // Only show the info once every 60 seconds
             Toast.makeText(context, context.getString(R.string.no_permission), Toast.LENGTH_LONG).show();
             lastNoPermissionComplain = System.currentTimeMillis();
         }

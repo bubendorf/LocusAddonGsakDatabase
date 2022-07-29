@@ -5,7 +5,6 @@
     <string name="pref_path">Speicherorteinstellungen</string>
     <string name="pref_db_title">Erste GSAK Datenbank</string>
     <string name="pref_db_sum">Speicherort der ersten GSAK Datenbank (*.db3 Datei)</string>
-    <string name="pref_db_pick_title">Wählen Sie die Datenbank Datei</string>
     <string name="pref_filter">Filtereinstellungen</string>
     <string name="pref_type_screen_title">Geocache Typen</string>
     <string name="pref_type_screen_sum">Gefilterte Typen</string>

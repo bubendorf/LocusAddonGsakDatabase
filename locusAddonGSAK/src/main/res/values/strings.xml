@@ -12,7 +12,6 @@
     <string name="pref_db_sum">Path to first GSAK file (*.db3 file)</string>
     <string name="pref_db2_sum">Path to second GSAK file (*.db3 file)</string>
     <string name="pref_db3_sum">Path to third GSAK file (*.db3 file)</string>
-    <string name="pref_db_pick_title">Pick database file</string>
     <string name="pref_filter">Filter settings</string>
     <string name="pref_type_screen_title">Geocache type</string>
     <string name="pref_type_screen_sum">Filter checked types</string>

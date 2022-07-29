@@ -5,7 +5,6 @@
     <string name="pref_path">Pad instellingen</string>
     <string name="pref_db_title">GSAK database pad</string>
     <string name="pref_db_sum">Pad naar database GSAK bestand (*.db3 bestand)</string>
-    <string name="pref_db_pick_title">Selecteer het database bestand</string>
     <string name="pref_filter">Filter </string>
     <string name="pref_type_screen_title">Geocache type</string>
     <string name="pref_type_screen_sum">Filter geselecteerde types</string>
