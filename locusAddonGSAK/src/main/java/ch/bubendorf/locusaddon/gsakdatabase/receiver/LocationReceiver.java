@@ -27,6 +27,7 @@ import androidx.preference.PreferenceManager;
 
 import ch.bubendorf.locusaddon.gsakdatabase.PermissionActivity;
 import ch.bubendorf.locusaddon.gsakdatabase.R;
+import ch.bubendorf.locusaddon.gsakdatabase.util.ToastUtil;
 import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.objects.LocusVersion;
@@ -104,7 +105,7 @@ public class LocationReceiver extends BroadcastReceiver {
             if (System.currentTimeMillis() >= lastNoActiveDBComplain + 60 * 1000L) {
                 // Only show the info once every 60 seconds.
                 final String text = context.getResources().getString(R.string.no_db_activated);
-                Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+                ToastUtil.show(context, text, 5);
                 lastNoActiveDBComplain = System.currentTimeMillis();
             }
         } else {
@@ -118,7 +119,7 @@ public class LocationReceiver extends BroadcastReceiver {
         //Log.d(TAG, "noPermission");
         if (System.currentTimeMillis() >= lastNoPermissionComplain + 60 * 1000L) {
             // Only show the info once every 60 seconds
-            Toast.makeText(context, context.getString(R.string.no_permission), Toast.LENGTH_LONG).show();
+            ToastUtil.show(context, context.getString(R.string.no_permission), 5);
             lastNoPermissionComplain = System.currentTimeMillis();
         }
     }

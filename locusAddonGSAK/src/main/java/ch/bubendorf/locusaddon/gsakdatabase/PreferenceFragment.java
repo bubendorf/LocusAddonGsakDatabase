@@ -16,6 +16,7 @@
 
 package ch.bubendorf.locusaddon.gsakdatabase;
 
+import static android.widget.Toast.LENGTH_LONG;
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
 import android.annotation.SuppressLint;
@@ -28,6 +29,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
@@ -57,6 +59,7 @@ import ch.bubendorf.locusaddon.gsakdatabase.lova.Lova;
 import ch.bubendorf.locusaddon.gsakdatabase.util.ColumnMetaData;
 import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
 import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
+import ch.bubendorf.locusaddon.gsakdatabase.util.ToastUtil;
 import locus.api.android.ActionFiles;
 
 public class PreferenceFragment extends PreferenceFragmentCompat
@@ -205,7 +208,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     }
 
     private void showError(final Exception e) {
-        Toast.makeText(requireActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        ToastUtil.show(requireActivity(), e.getLocalizedMessage(), 5);
     }
 
     private void populateColumnsPref(final Collection<ColumnMetaData> columnMetaDatas) {
@@ -283,7 +286,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (key.equals("logs_count")) {
             String value = sharedPreferences.getString(key, "20");
             if (value.equals("") || !value.matches("[0-9]+")) {
-                Toast.makeText(requireActivity(), getString(R.string.pref_logs_error), Toast.LENGTH_LONG).show();
+                ToastUtil.show(requireActivity(), getString(R.string.pref_logs_error), 5);
                 value = "20";
                 logsCount.setText(value);
             }
@@ -293,7 +296,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (key.equals("radius")) {
             String value = sharedPreferences.getString(key, "1");
             if (value.equals("") || !value.matches("[0-9]+") || value.equals("0") || value.equals("00")) {
-                Toast.makeText(requireActivity(), getString(R.string.pref_radius_error), Toast.LENGTH_LONG).show();
+                ToastUtil.show(requireActivity(), getString(R.string.pref_radius_error), 5);
                 value = "1";
                 radius.setText(value);
             }
@@ -303,7 +306,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         if (key.equals("limit")) {
             String value = sharedPreferences.getString(key, "0");
             if (value.equals("") || !value.matches("[0-9]+")) {
-                Toast.makeText(requireActivity(), getString(R.string.pref_limit_error), Toast.LENGTH_LONG).show();
+                ToastUtil.show(requireActivity(), getString(R.string.pref_limit_error), 5);
                 value = "100";
                 limit.setText(value);
             }

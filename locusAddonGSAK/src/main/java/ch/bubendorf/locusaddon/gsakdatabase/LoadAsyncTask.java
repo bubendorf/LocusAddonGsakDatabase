@@ -35,6 +35,7 @@ import java.util.List;
 import ch.bubendorf.locusaddon.gsakdatabase.util.CacheWrapper;
 import ch.bubendorf.locusaddon.gsakdatabase.util.GeocacheAsyncTask;
 import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
+import ch.bubendorf.locusaddon.gsakdatabase.util.ToastUtil;
 import locus.api.android.ActionDisplayPoints;
 import locus.api.android.ActionDisplayVarious;
 import locus.api.android.objects.LocusVersion;
@@ -156,13 +157,13 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
                 alertDialog.setPositiveButton(android.R.string.ok, (dialogInterface, arg1) -> dialogInterface.dismiss());
                 alertDialog.show();
             } catch (final RequiredVersionMissingException rvme) {
-                Toast.makeText(activity, "Error: " + rvme.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                ToastUtil.show(activity, "Error: " + rvme.getLocalizedMessage(), 5);
             } catch (final Exception e) {
-                Toast.makeText(activity, "Error: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                ToastUtil.show(activity, "Error: " + e.getLocalizedMessage(), 5);
                 Log.e("LoadAsyncTask", e.getMessage(), e);
             }
         } else {
-            Toast.makeText(activity, activity.getString(R.string.no_geocaches_loaded), Toast.LENGTH_LONG).show();
+            ToastUtil.show(activity, activity.getString(R.string.no_geocaches_loaded), 5);
         }
         activity.finish();
     }
@@ -171,7 +172,7 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
     protected void onCancelled() {
         super.onCancelled();
         progress.dismiss();
-        Toast.makeText(activity, R.string.canceled, Toast.LENGTH_LONG).show();
+        ToastUtil.show(activity, R.string.canceled, 5);
         activity.finish();
     }
 

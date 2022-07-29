@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
+import ch.bubendorf.locusaddon.gsakdatabase.util.ToastUtil;
 import locus.api.android.objects.LocusVersion;
 import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
@@ -63,21 +64,21 @@ public class LoadActivity extends Activity {
 
         String error = Gsak.checkDatabase(LoadActivity.this, "db");
         if (error != null) {
-            Toast.makeText(LoadActivity.this, error, Toast.LENGTH_LONG).show();
+            ToastUtil.show(LoadActivity.this, error, 5);
             finish();
             return;
         }
 
         error = Gsak.checkDatabase(LoadActivity.this, "db2");
         if (error != null) {
-            Toast.makeText(LoadActivity.this, error, Toast.LENGTH_LONG).show();
+            ToastUtil.show(LoadActivity.this, error, 5);
             finish();
             return;
         }
 
         error = Gsak.checkDatabase(LoadActivity.this, "db3");
         if (error != null) {
-            Toast.makeText(LoadActivity.this, error, Toast.LENGTH_LONG).show();
+            ToastUtil.show(LoadActivity.this, error, 5);
             finish();
             return;
         }
@@ -87,7 +88,7 @@ public class LoadActivity extends Activity {
         final boolean pref_use_db3 = sharedPreferences.getBoolean("pref_use_db3", false);
         if (!pref_use_db && !pref_use_db2 && !pref_use_db3) {
             final String text = getResources().getString(R.string.no_db_activated);
-            Toast.makeText(LoadActivity.this, text, Toast.LENGTH_LONG).show();
+            ToastUtil.show(LoadActivity.this, text, 5);
             finish();
             return;
         }
@@ -116,7 +117,7 @@ public class LoadActivity extends Activity {
                 loadAsyncTask.execute(point.getLocation());
             }
         } catch (final RequiredVersionMissingException rvme) {
-            Toast.makeText(LoadActivity.this, "Error: " + rvme.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            ToastUtil.show(LoadActivity.this, "Error: " + rvme.getLocalizedMessage(), 5);
         }
     }
 

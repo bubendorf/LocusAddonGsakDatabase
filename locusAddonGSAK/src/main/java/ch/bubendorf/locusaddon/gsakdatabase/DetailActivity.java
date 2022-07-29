@@ -30,6 +30,7 @@ import java.text.ParseException;
 
 import ch.bubendorf.locusaddon.gsakdatabase.util.Gsak;
 import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
+import ch.bubendorf.locusaddon.gsakdatabase.util.ToastUtil;
 import locus.api.android.utils.LocusUtils;
 import locus.api.objects.geoData.Point;
 
@@ -73,7 +74,7 @@ public class DetailActivity extends Activity {
                     setResult(Activity.RESULT_CANCELED);
                 }
             } catch (final Exception e) {
-                Toast.makeText(this, getText(R.string.unable_to_load_detail) + " " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                ToastUtil.show(this, getText(R.string.unable_to_load_detail) + " " + e.getLocalizedMessage(), 5);
             } finally {
                 finish();
             }

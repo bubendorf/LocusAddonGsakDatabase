@@ -26,6 +26,7 @@ import java.util.List;
 import ch.bubendorf.locusaddon.gsakdatabase.util.CacheWrapper;
 import ch.bubendorf.locusaddon.gsakdatabase.util.GeocacheAsyncTask;
 import ch.bubendorf.locusaddon.gsakdatabase.util.GsakReader;
+import ch.bubendorf.locusaddon.gsakdatabase.util.ToastUtil;
 import locus.api.android.ActionDisplayPoints;
 import locus.api.objects.extra.Location;
 
@@ -73,7 +74,7 @@ public class PointLoaderAsyncTask extends GeocacheAsyncTask {
             try {
                 ActionDisplayPoints.INSTANCE.sendPackSilent(context, packPoints, false);
             } catch (final Exception e) {
-                Toast.makeText(context, "Error: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                ToastUtil.show(context, "Error: " + e.getLocalizedMessage(), 5);
             }
         }
     }

@@ -28,6 +28,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 
+import ch.bubendorf.locusaddon.gsakdatabase.util.ToastUtil;
+
 /**
  *  @author Markus Bubendorf <gsakforlocus@bubendorf.net>
  */
@@ -54,7 +56,7 @@ public class MainActivity extends ComponentActivity {
                         // same time, respect the user's decision. Don't link to system
                         // settings in an effort to convince the user to change their
                         // decision.
-                        Toast.makeText(this, "So geht das aber nicht!", Toast.LENGTH_LONG).show();
+                        ToastUtil.show(this, "So geht das aber nicht!", 5);
                     }
                 });
 
@@ -67,7 +69,7 @@ public class MainActivity extends ComponentActivity {
             // permission for a specific feature to behave as expected. In this UI,
             // include a "cancel" or "no thanks" button that allows the user to
             // continue using your app without granting the permission.
-            Toast.makeText(this, "Ohne Erlaubnis geht es nicht!", Toast.LENGTH_LONG).show();
+            ToastUtil.show(this, "Ohne Erlaubnis geht es nicht!", 5);
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
         } else {
             // You can directly ask for the permission.
