@@ -79,7 +79,7 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
 
         openDatabases(activity);
 
-        //ACRA.getErrorReporter().handleException(new RuntimeException("ACRA TEST"));
+//        ACRA.getErrorReporter().handleException(new RuntimeException("ACRA TEST"));
         /*if (1 == 1) {
             throw new RuntimeException("ACRA Test");
         }*/

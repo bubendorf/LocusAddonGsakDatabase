@@ -15,7 +15,7 @@ android {
         applicationId "ch.bubendorf.locusaddon.gsakdatabase"
         minSdkVersion 24
         targetSdkVersion 29 // Do not use another number without a very good reason!
-        versionCode 36
+        versionCode 37
         versionName "3.4.${versionCode}"
 //        versionName "3.4.${versionCode}-" + getDate()
 //        archivesBaseName = "LocusAddonGSAK-${versionName}-${targetSdkVersion.apiLevel}"
@@ -68,6 +68,8 @@ dependencies {
     implementation 'com.github.HBiSoft:PickiT:2.0.5'
 
     implementation "ch.acra:acra-http:$acraVersion"
-    implementation "ch.acra:acra-toast:$acraVersion"
+//    implementation "ch.acra:acra-toast:$acraVersion"
+    implementation "ch.acra:acra-dialog:$acraVersion"
+    implementation "ch.acra:acra-limiter:$acraVersion"
 
 }

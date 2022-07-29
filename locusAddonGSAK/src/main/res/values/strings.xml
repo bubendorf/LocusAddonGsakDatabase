@@ -154,5 +154,8 @@
     <string name="column_UserNoteDate" translatable="false" tools:keep="@string/column_UserNoteDate">Date the last time the user note was updated</string>
     <string name="column_UserSort" translatable="false" tools:keep="@string/column_UserSort">User sort</string>
     <string name="column_Watch" translatable="false" tools:keep="@string/column_Watch">Cache is being watched</string>
-
+    <string name="acra_dialog_title">GSAK for Locus crashed</string>
+    <string name="acra_dialog_text">Something went wrong. Do you want to send a bug report to the developers?</string>
+    <string name="acra_dialog_yes">Yes</string>
+    <string name="acra_dialog_no">No</string>
 </resources>

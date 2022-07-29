@@ -314,7 +314,7 @@ public class Gsak {
             final MatchResult mr = m.toMatchResult();
             final GeocachingTrackable pgdtb = new GeocachingTrackable();
             pgdtb.setName(mr.group(1));
-            pgdtb.setSrcDetails("http://www.geocaching.com/track/details.aspx?tracker=" + mr.group(3));
+            pgdtb.setSrcDetails("https://www.geocaching.com/track/details.aspx?tracker=" + mr.group(3));
             pgdtbl.add(pgdtb);
         }
         return pgdtbl;

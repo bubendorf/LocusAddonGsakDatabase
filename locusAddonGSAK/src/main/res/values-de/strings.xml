@@ -66,4 +66,9 @@
     <string name="pref_type_corrected">Geocaches mit korrigierten Koordinaten immer laden</string>
     <string name="pref_center_title">Karte nach dem Import zentrieren</string>
     <string name="pref_center_sum">Zentrieren der Karte in Locus nach dem Import der Geocaches</string>
+    <string name="acra_dialog_title">GSAK für Locus crashed</string>
+    <string name="acra_dialog_text">Etwas ging schief. Die App ist abgestürzt. Willst du einen Absturzbericht an die Entwickler senden?</string>
+    <string name="acra_dialog_yes">Ja</string>
+    <string name="acra_dialog_no">Nein</string>
+
 </resources>
