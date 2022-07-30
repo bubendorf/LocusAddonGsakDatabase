@@ -1,4 +1,4 @@
-
+//noinspection SpellCheckingInspection
 plugins {
     id "com.github.ben-manes.versions"
     // Usage: gradle dependencyUpdates  -Drevision=release
@@ -8,12 +8,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion "33.0.0"
+    compileSdkVersion 32
+    buildToolsVersion "32.0.0"
 
     defaultConfig {
         applicationId "ch.bubendorf.locusaddon.gsakdatabase"
         minSdkVersion 24
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29 // Do not use another number without a very good reason!
         versionCode 37
         versionName "3.4.${versionCode}"
@@ -55,15 +56,16 @@ easylauncher {
     }
 }
 
-static def getDate() {
-    return new Date().format('yyyyMMdd-HHmm')
-}
+//static def getDate() {
+//    return new Date().format('yyyyMMdd-HHmm')
+//}
 
 def acraVersion = '5.9.5'
 
 dependencies {
     implementation 'com.asamm:locus-api-android:0.9.46'
-    implementation 'androidx.activity:activity:1.4.0' // Do not use 1.5.0 or newer. It will not work!
+    implementation 'androidx.activity:activity:1.5.1'
+    runtimeOnly 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1' // See https://www.reddit.com/r/androiddev/comments/vsvnjn/any_problems_with_the_new/
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'com.github.HBiSoft:PickiT:2.0.5'
 
@@ -71,5 +73,4 @@ dependencies {
 //    implementation "ch.acra:acra-toast:$acraVersion"
     implementation "ch.acra:acra-dialog:$acraVersion"
     implementation "ch.acra:acra-limiter:$acraVersion"
-
 }
