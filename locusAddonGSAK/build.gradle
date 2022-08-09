@@ -60,7 +60,7 @@ easylauncher {
 //    return new Date().format('yyyyMMdd-HHmm')
 //}
 
-def acraVersion = '5.9.5'
+def acraVersion = '5.9.6'
 
 dependencies {
     implementation 'com.asamm:locus-api-android:0.9.46'

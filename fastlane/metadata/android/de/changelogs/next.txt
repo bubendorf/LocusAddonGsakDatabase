@@ -1,0 +1,2 @@
+- Crash Reports werden nur noch nach Zustimmung verschickt
+- Aktualisierung auf die neusten Bibliotheken
