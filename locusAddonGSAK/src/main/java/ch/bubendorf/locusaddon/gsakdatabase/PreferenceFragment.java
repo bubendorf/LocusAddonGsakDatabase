@@ -22,6 +22,7 @@ import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -29,6 +30,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.Html;
 import android.text.Spanned;
@@ -52,8 +54,12 @@ import com.hbisoft.pickit.PickiTCallbacks;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import ch.bubendorf.locusaddon.gsakdatabase.lova.Lova;
 import ch.bubendorf.locusaddon.gsakdatabase.util.ColumnMetaData;
@@ -175,6 +181,22 @@ public class PreferenceFragment extends PreferenceFragmentCompat
             if (!own.isEnabled()) {
                 own.setSummary(Html.fromHtml(getString(R.string.pref_own_sum) + " <b>" + getString(R.string.pref_own_fill) + "</b>", 0));
             }
+
+            Preference backupSettingsPref = preferenceScreen.findPreference("backupSettings");
+            if (backupSettingsPref != null) {
+                backupSettingsPref.setOnPreferenceClickListener(pref -> {
+                    backupPreferences();
+                    return true;
+                });
+            }
+
+            Preference restoreSettingsPref = preferenceScreen.findPreference("restoreSettings");
+            if (restoreSettingsPref != null) {
+                restoreSettingsPref.setOnPreferenceClickListener(pref -> {
+                    restorePreferences();
+                    return true;
+                });
+            }
         }
     }
 
@@ -200,7 +222,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
 
         if ("pref_details".equals(rootKey)) {
             // We need the permission to access the file system. Check and ask for the permission if necessary
-            PermissionActivity.checkPermission(activity, () -> new Lova<>(GsakReader::getAllColumns)
+            ReadPermissionActivity.checkPermission(activity, () -> new Lova<>(GsakReader::getAllColumns)
                     .onSuccess(this::populateColumnsPref)
                     .onError(this::showError)
                     .execute(activity), false);
@@ -397,5 +419,73 @@ public class PreferenceFragment extends PreferenceFragmentCompat
     @Override
     public void PickiTonMultipleCompleteListener(ArrayList<String> paths, boolean wasSuccessful, String Reason) {
 
+    }
+
+    private void backupPreferences() {
+        // We need the permission to access the file system. Check and ask for the permission if necessary
+        WritePermissionActivity.checkPermission(getContext(), this::backupPreferencesWithPermission, null, null, false);
+    }
+
+    private void backupPreferencesWithPermission(final Context context, final Void voidData) {
+        final PreferenceScreen preferenceScreen = getPreferenceScreen();
+        final SharedPreferences sharedPreferences = preferenceScreen.getSharedPreferences();
+
+        Map<String, ?> map = sharedPreferences.getAll();
+
+        String data = "This is the data!";
+
+        if (isExternalStorageAvailable() && !isExternalStorageReadOnly()) {
+             String filename = "preferences.txt";
+             //String filepath = "GSAKForLocus";
+
+            try {
+                final File docPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                final File filePath = new File(docPath, "GSAKForLocus");
+                filePath.mkdirs();
+                final File externalFile = new File(filePath, filename);
+                final FileOutputStream fos = new FileOutputStream(externalFile);
+                final OutputStreamWriter writer = new OutputStreamWriter(fos);
+                writer.append("BlaBla");
+                writer.close();
+                fos.flush();
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void restorePreferences() {
+        // We need the permission to access the file system. Check and ask for the permission if necessary
+        WritePermissionActivity.checkPermission(getContext(), this::restorePreferencesWithPermission, null, null, false);
+    }
+
+    private void restorePreferencesWithPermission(final Context context, final Void voidData) {
+        if (isExternalStorageAvailable() && !isExternalStorageReadOnly()) {
+            String filename = "preferences.txt";
+            //String filepath = "GSAKForLocus";
+
+            try {
+                final File docPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                final File filePath = new File(docPath, "GSAKForLocus");
+                filePath.mkdirs();
+                final File externalFile = new File(filePath, filename);
+                if (externalFile.exists()) {
+                    // Read it
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static boolean isExternalStorageReadOnly() {
+        String extStorageState = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState);
+    }
+
+    private static boolean isExternalStorageAvailable() {
+        String extStorageState = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(extStorageState);
     }
 }

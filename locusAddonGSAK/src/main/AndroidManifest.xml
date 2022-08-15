@@ -25,6 +25,7 @@
         </activity>
 
         <activity android:name="LoadActivity"
+            android:exported="true"
             android:label="@string/load_from_gsak"
             android:theme="@style/dialog_theme"
             android:configChanges="orientation">
@@ -44,7 +45,13 @@
             android:configChanges="orientation" >
         </activity>
 
-        <activity android:name="PermissionActivity"
+        <activity android:name="ReadPermissionActivity"
+            android:exported="true"
+            android:theme="@style/dialog_theme"
+            android:configChanges="orientation" >
+        </activity>
+
+        <activity android:name="WritePermissionActivity"
             android:exported="true"
             android:theme="@style/dialog_theme"
             android:configChanges="orientation" >

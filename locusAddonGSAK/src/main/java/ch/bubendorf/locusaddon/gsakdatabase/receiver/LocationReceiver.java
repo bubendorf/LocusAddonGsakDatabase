@@ -27,6 +27,7 @@ import androidx.preference.PreferenceManager;
 
 import ch.bubendorf.locusaddon.gsakdatabase.PermissionActivity;
 import ch.bubendorf.locusaddon.gsakdatabase.R;
+import ch.bubendorf.locusaddon.gsakdatabase.ReadPermissionActivity;
 import ch.bubendorf.locusaddon.gsakdatabase.util.ToastUtil;
 import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
@@ -110,7 +111,7 @@ public class LocationReceiver extends BroadcastReceiver {
             }
         } else {
             // We need the permission to access the file system. Check and ask for the permission if necessary
-            PermissionActivity.checkPermission(context, this::goOn, this::noPermission, updateContainer, true);
+            ReadPermissionActivity.checkPermission(context, this::goOn, this::noPermission, updateContainer, true);
         }
         //Log.d(TAG, "update ende");
     }

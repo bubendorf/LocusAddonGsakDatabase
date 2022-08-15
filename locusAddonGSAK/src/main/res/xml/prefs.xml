@@ -272,4 +272,21 @@
             android:title="@string/pref_logs_title" />
     </PreferenceCategory>
 
+    <!-- <PreferenceCategory
+        android:title="Backup / Restore"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="backupSettings"
+            app:summary="Backup settings to memory card"
+            app:title="Backup Settings"></Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="restoreSettings"
+            app:summary="Restore settings from memory card"
+            app:title="Restore Settings"></Preference>
+    </PreferenceCategory> -->
+
 </PreferenceScreen>

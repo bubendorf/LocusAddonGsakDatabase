@@ -40,23 +40,25 @@ import ch.bubendorf.locusaddon.gsakdatabase.util.SimpleAlertDialog;
  *
  * @author Markus Bubendorf <gsakforlocus@bubendorf.net>
  */
-public class PermissionActivity extends ComponentActivity {
+public abstract class PermissionActivity extends ComponentActivity {
 
     //private static final String TAG = "PermissionActivity";
 
-    private final static String PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
+
 
     private static BiConsumer<Context, Object> biConsumer;
     private static Runnable runnable;
     private static Object data;
 
-    public static <T> void checkPermission(final Context context,
+    protected static <T> void checkPermission(final Context context,
+                                           @NonNull final String permissionName,
+                                          @NonNull final Class activityClass,
                                            @NonNull final BiConsumer<Context, T> successCallback,
                                            @Nullable final BiConsumer<Context, T> failureCallback,
                                            @Nullable final T data,
                                            final boolean ignoreOnNoPermission) {
         //Log.d(TAG, "checkPermission: BiConsumer, " + ignoreOnNoPermission);
-        if (ContextCompat.checkSelfPermission(context, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, permissionName) == PackageManager.PERMISSION_GRANTED) {
             // Everything OK ==> Go On
             //Log.d(TAG, "checkPermission: BiConsumer: Everything OK ==> Go On");
             successCallback.accept(context, data);
@@ -64,7 +66,7 @@ public class PermissionActivity extends ComponentActivity {
             //noinspection unchecked
             biConsumer = (BiConsumer<Context, Object>) successCallback;
             PermissionActivity.data = data;
-            final Intent intent = new Intent(context, PermissionActivity.class);
+            final Intent intent = new Intent(context, activityClass);
             //Log.d(TAG, "checkPermission: BiConsumer: Not granted ==> Start PermissionActivity");
             context.startActivity(intent);
         } else {
@@ -75,19 +77,25 @@ public class PermissionActivity extends ComponentActivity {
         }
     }
 
-    public static void checkPermission(final Context context, final Runnable callback, final boolean ignoreOnNoPermission) {
+    protected static void checkPermission(final Context context,
+                                          @NonNull final String permissionName,
+                                          @NonNull final Class activityClass,
+                                          @NonNull final Runnable callback,
+                                          final boolean ignoreOnNoPermission) {
         //Log.d(TAG, "checkPermission: Runnable, " + ignoreOnNoPermission);
-        if (ContextCompat.checkSelfPermission(context, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, permissionName) == PackageManager.PERMISSION_GRANTED) {
             // Everything OK ==> Go On
             //Log.d(TAG, "checkPermission: Runnable: Everything OK ==> Go On");
             callback.run();
         } else if (!ignoreOnNoPermission) {
             runnable = callback;
-            final Intent intent = new Intent(context, PermissionActivity.class);
+            final Intent intent = new Intent(context, activityClass);
             //Log.d(TAG, "checkPermission: Runnable: Not granted ==> Start PermissionActivity");
             context.startActivity(intent);
         }
     }
+
+    protected abstract String getPermissionName();
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -124,11 +132,11 @@ public class PermissionActivity extends ComponentActivity {
                     }
                 });
 
-        if (ContextCompat.checkSelfPermission(this, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, getPermissionName()) == PackageManager.PERMISSION_GRANTED) {
             // You can use the API that requires the permission.
             //Log.d(TAG, "checkPermission: Everything OK ==> Go On");
             goOn();
-        } else if (shouldShowRequestPermissionRationale(PERMISSION)) {
+        } else if (shouldShowRequestPermissionRationale(getPermissionName())) {
             // In an educational UI, explain to the user why your app requires this
             // permission for a specific feature to behave as expected. In this UI,
             // include a "cancel" or "no thanks" button that allows the user to
@@ -137,13 +145,13 @@ public class PermissionActivity extends ComponentActivity {
             SimpleAlertDialog.show(this, R.string.permission_needed_title,
                     R.string.permission_needed_text, () -> {
                         //Log.d(TAG, "checkPermission: Ask for permission");
-                        requestPermissionLauncher.launch(PERMISSION);
+                        requestPermissionLauncher.launch(getPermissionName());
                     }, null);
         } else {
             // You can directly ask for the permission.
             // The registered ActivityResultCallback gets the result of this request.
             //Log.d(TAG, "checkPermission: Ask for permission");
-            requestPermissionLauncher.launch(PERMISSION);
+            requestPermissionLauncher.launch(getPermissionName());
         }
     }
 
