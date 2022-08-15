@@ -341,7 +341,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat
         }
     }
     private Spanned editPreferenceSummary(final String value, final CharSequence summary) {
-        if (!value.equals("")) {
+        if (value != null && !value.equals("")) {
             return Html.fromHtml("<font color=\"#FF8000\"><b>(" + value + ")</b></font><br/> " + summary, 0);
         } else {
             return Html.fromHtml(summary.toString(), 0);
@@ -363,18 +363,18 @@ public class PreferenceFragment extends PreferenceFragmentCompat
                 if (requestCode == 0) {
                     editor.putString("db", filename);
                     dbPick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db_sum)));
-                    useDb.setChecked(filename.length() > 0);
-                    useDb.setEnabled(filename.length() > 0);
+                    useDb.setChecked(filename != null && filename.length() > 0);
+                    useDb.setEnabled(filename != null && filename.length() > 0);
                 } else if (requestCode == 1) {
                     editor.putString("db2", filename);
                     db2Pick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db2_sum)));
-                    useDb2.setChecked(filename.length() > 0);
-                    useDb2.setEnabled(filename.length() > 0);
+                    useDb2.setChecked(filename != null && filename.length() > 0);
+                    useDb2.setEnabled(filename != null && filename.length() > 0);
                 } else {
                     editor.putString("db3", filename);
                     db3Pick.setSummary(editPreferenceSummary(filename, getText(R.string.pref_db3_sum)));
-                    useDb3.setChecked(filename.length() > 0);
-                    useDb3.setEnabled(filename.length() > 0);
+                    useDb3.setChecked(filename != null && filename.length() > 0);
+                    useDb3.setEnabled(filename != null && filename.length() > 0);
                 }
                 editor.apply();
 
