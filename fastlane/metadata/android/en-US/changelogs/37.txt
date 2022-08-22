@@ -1,0 +1,4 @@
+- Will send crash reports only after confirmation
+- Update dependencies
+- Bug fixes
+
