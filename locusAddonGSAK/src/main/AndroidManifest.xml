@@ -51,11 +51,11 @@
             android:configChanges="orientation" >
         </activity>
 
-        <activity android:name="WritePermissionActivity"
+        <!-- <activity android:name="WritePermissionActivity"
             android:exported="true"
             android:theme="@style/dialog_theme"
             android:configChanges="orientation" >
-        </activity>
+        </activity> -->
 
         <receiver android:name=".receiver.LocationReceiver"
             android:exported="true">

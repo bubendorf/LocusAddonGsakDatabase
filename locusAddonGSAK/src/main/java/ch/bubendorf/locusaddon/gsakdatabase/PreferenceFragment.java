@@ -182,21 +182,21 @@ public class PreferenceFragment extends PreferenceFragmentCompat
                 own.setSummary(Html.fromHtml(getString(R.string.pref_own_sum) + " <b>" + getString(R.string.pref_own_fill) + "</b>", 0));
             }
 
-            Preference backupSettingsPref = preferenceScreen.findPreference("backupSettings");
+            /*Preference backupSettingsPref = preferenceScreen.findPreference("backupSettings");
             if (backupSettingsPref != null) {
                 backupSettingsPref.setOnPreferenceClickListener(pref -> {
                     backupPreferences();
                     return true;
                 });
-            }
+            }*/
 
-            Preference restoreSettingsPref = preferenceScreen.findPreference("restoreSettings");
+            /*Preference restoreSettingsPref = preferenceScreen.findPreference("restoreSettings");
             if (restoreSettingsPref != null) {
                 restoreSettingsPref.setOnPreferenceClickListener(pref -> {
                     restorePreferences();
                     return true;
                 });
-            }
+            }*/
         }
     }
 
@@ -421,12 +421,12 @@ public class PreferenceFragment extends PreferenceFragmentCompat
 
     }
 
-    private void backupPreferences() {
+    /*private void backupPreferences() {
         // We need the permission to access the file system. Check and ask for the permission if necessary
         WritePermissionActivity.checkPermission(getContext(), this::backupPreferencesWithPermission, null, null, false);
-    }
+    }*/
 
-    private void backupPreferencesWithPermission(final Context context, final Void voidData) {
+    /*private void backupPreferencesWithPermission(final Context context, final Void voidData) {
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         final SharedPreferences sharedPreferences = preferenceScreen.getSharedPreferences();
 
@@ -453,14 +453,14 @@ public class PreferenceFragment extends PreferenceFragmentCompat
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
-    private void restorePreferences() {
+    /* private void restorePreferences() {
         // We need the permission to access the file system. Check and ask for the permission if necessary
         WritePermissionActivity.checkPermission(getContext(), this::restorePreferencesWithPermission, null, null, false);
-    }
+    }*/
 
-    private void restorePreferencesWithPermission(final Context context, final Void voidData) {
+    /*private void restorePreferencesWithPermission(final Context context, final Void voidData) {
         if (isExternalStorageAvailable() && !isExternalStorageReadOnly()) {
             String filename = "preferences.txt";
             //String filepath = "GSAKForLocus";
@@ -477,15 +477,15 @@ public class PreferenceFragment extends PreferenceFragmentCompat
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
-    private static boolean isExternalStorageReadOnly() {
+    /* private static boolean isExternalStorageReadOnly() {
         String extStorageState = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState);
-    }
+    }*/
 
-    private static boolean isExternalStorageAvailable() {
+    /* private static boolean isExternalStorageAvailable() {
         String extStorageState = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(extStorageState);
-    }
+    }*/
 }
