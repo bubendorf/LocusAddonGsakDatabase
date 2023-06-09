@@ -1,0 +1,2 @@
+- Logs will show up again in Locus
+- Update dependencies
