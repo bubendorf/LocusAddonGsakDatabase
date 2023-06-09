@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
@@ -199,7 +200,7 @@ public class GsakReader {
         if (db3 != null) {
             databases.add(db3);
         }
-        AtomicInteger count = new AtomicInteger(0);
+        final AtomicInteger count = new AtomicInteger(0);
         final int total = databases.size();
         databases.stream().parallel().forEach(database -> {
             GsakReader.loadGCCodes(context, asyncTask, database, gcCodes, centerLocation, topLeftLocation, bottomRightLocation);
@@ -377,7 +378,7 @@ public class GsakReader {
             sql.append(" ) ");
         }
 
-        String nick = sharedPreferences.getString("nick", "");
+        final String nick = sharedPreferences.getString("nick", "");
         if (!sharedPreferences.getBoolean("own", false) && nick.length() > 0) {
             sql.append(" AND c.PlacedBy != '");
             sql.append(nick);
@@ -404,7 +405,7 @@ public class GsakReader {
 
     @SuppressLint("Range")
     public static String getNonNullString(final Cursor cacheCursor, final String fieldName) {
-        String value = cacheCursor.getString(cacheCursor.getColumnIndexOrThrow(fieldName));
+        final String value = cacheCursor.getString(cacheCursor.getColumnIndexOrThrow(fieldName));
         return value == null ? "" : value;
     }
 
@@ -452,7 +453,7 @@ public class GsakReader {
 
         if (withDetails) {
             // More!
-            gcData.setNotes(getNonNullString(cacheCursor,"UserNote"));
+            gcData.setNotesExternal(getNonNullString(cacheCursor,"UserNote"));
             gcData.setEncodedHints(getNonNullString(cacheCursor,"Hints"));
             gcData.setDescriptions(getNonNullString(cacheCursor,"ShortDescription"),
                     cacheCursor.getInt(cacheCursor.getColumnIndexOrThrow("ShortHtm")) == 1,
@@ -495,7 +496,7 @@ public class GsakReader {
                 final GeocachingLog logEntry = new GeocachingLog();
                 logEntry.setDate(System.currentTimeMillis());
                 logEntry.setFinder(context.getText(R.string.app_name).toString());
-                final StringBuilder sb = new StringBuilder();
+                final StringBuilder sb = new StringBuilder(64);
                 for (final ColumnMetaData column : columns) {
                     final String text = cacheCursor.getString(cacheCursor.getColumnIndex(column.getColumnName()));
                     if (text != null && text.length() > 0 /*&& !"0".equals(text)*/) {
@@ -507,10 +508,11 @@ public class GsakReader {
                 }
                 logEntry.setLogText(sb.toString());
                 logEntry.setType(GeocachingLog.CACHE_LOG_TYPE_UNKNOWN);
+                logEntry.setId(-254);
                 pgdls.add(logEntry);
             }
 
-            // Add logsCursor to Geocache
+              // Add logsCursor to Geocache
             final Cursor logsCursor = database.rawQuery("SELECT * FROM LogsAll WHERE lParent = ? ORDER BY lDate DESC LIMIT ?",
                     new String[]{gcData.getCacheID(), logLimit});
 
@@ -518,8 +520,19 @@ public class GsakReader {
                 final GeocachingLog pgdl = new GeocachingLog();
                 pgdl.setDate(getDate(logsCursor, "lDate"));
                 pgdl.setFinder(logsCursor.getString(logsCursor.getColumnIndexOrThrow("lBy")));
+
+                final int latIndex = logsCursor.getColumnIndexOrThrow("lLat");
+                if (!logsCursor.isNull(latIndex)) {
+                    pgdl.setCooLat(logsCursor.getDouble(latIndex));
+                }
+                final int lonIndex = logsCursor.getColumnIndexOrThrow("lLon");
+                if (!logsCursor.isNull(lonIndex)) {
+                    pgdl.setCooLon(logsCursor.getDouble(lonIndex));
+                }
+
                 pgdl.setLogText(logsCursor.getString(logsCursor.getColumnIndexOrThrow("lText")));
                 pgdl.setType(Gsak.convertLogType(logsCursor.getString(logsCursor.getColumnIndexOrThrow("lType"))));
+                pgdl.setId(logsCursor.getLong(logsCursor.getColumnIndexOrThrow("lLogId")));
                 pgdls.add(pgdl);
             }
             logsCursor.close();

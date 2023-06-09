@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,16 +43,11 @@ import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
  */
 public class LoadActivity extends Activity {
 
-    //    private static final String TAG = "LoadActivity";
     private Point point;
-    //private int numberOfInstalledLocus = 0;
-    //private LocusVersion locusVersion;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //numberOfInstalledLocus = LocusUtils.INSTANCE.getAvailableVersions(this).size()     ;
 
         // We need the permission to access the file system. Check and ask for the permission if necessary
         ReadPermissionActivity.checkPermission(this, this::goOn, null, null, false);
@@ -103,7 +97,6 @@ public class LoadActivity extends Activity {
                     public void onReceived(@NotNull final LocusVersion lv, @Nullable final Location gpsLocation, @Nullable final Location mapCenterlocation) {
                         if (mapCenterlocation != null) {
                             point = new Point("Map center", mapCenterlocation);
-//                            locusVersion = lv;
                         }
                     }
 
@@ -120,12 +113,4 @@ public class LoadActivity extends Activity {
             ToastUtil.show(LoadActivity.this, "Error: " + rvme.getLocalizedMessage(), 5);
         }
     }
-
-    //public LocusVersion getLocusVersion() {
-    //    return locusVersion;
-    //}
-
-    //public int getNumberOfInstalledLocus() {
-    //    return numberOfInstalledLocus;
-    //}
 }

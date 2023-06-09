@@ -102,12 +102,9 @@ public class LoadAsyncTask extends GeocacheAsyncTask implements DialogInterface.
             return null;
         }
 
-//            myPublishProgress(0);
         step = 1;
         final List<CacheWrapper> gcCodes = GsakReader.readGCCodes(activity, this,
                 db, db2, db3, locations[0], null, null);
-
-//        ACRA.getErrorReporter().handleException(new RuntimeException("ACRA doInBackground"));
 
         step = 2;
         try {

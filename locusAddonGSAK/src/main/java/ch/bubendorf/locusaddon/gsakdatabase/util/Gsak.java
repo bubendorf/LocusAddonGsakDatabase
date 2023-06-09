@@ -29,14 +29,12 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.bubendorf.locusaddon.gsakdatabase.R;
 import locus.api.objects.geocaching.GeocachingTrackable;
-import locus.api.objects.geocaching.GeocachingWaypoint;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 import static locus.api.objects.geocaching.GeocachingData.CACHE_SIZE_LARGE;
@@ -86,6 +84,7 @@ import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYP
 import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PARKING;
 import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
 import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_REFERENCE;
+import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_TRAILHEAD;
 import static locus.api.objects.geocaching.GeocachingWaypoint.CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
 
 /**
@@ -143,7 +142,7 @@ public class Gsak {
         final SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         if (sharedPreferences.getBoolean("pref_use_" + dbId, false)) {
             final String dbPath = sharedPreferences.getString(dbId, "");
-            if (dbPath != null) {
+            if (dbPath.length() > 0) {
                 final File fd = new File(dbPath);
                 if (!isReadableGsakDatabase(fd)) {
                     return context.getResources().getString(R.string.no_db_file) + "\n" + dbPath;
@@ -158,72 +157,42 @@ public class Gsak {
     }
 
     public static int convertContainer(final String size) {
-        switch (size) {
-            case "Small":
-                return CACHE_SIZE_SMALL;
-            case "Large":
-                return CACHE_SIZE_LARGE;
-            case "Micro":
-                return CACHE_SIZE_MICRO;
-            case "Other":
-                return CACHE_SIZE_OTHER;
-            case "Regular":
-                return CACHE_SIZE_REGULAR;
-            case "Not chosen":
-            case "Unknown":
-            default:
-                return CACHE_SIZE_NOT_CHOSEN;
-        }
+        return switch (size) {
+            case "Small" -> CACHE_SIZE_SMALL;
+            case "Large" -> CACHE_SIZE_LARGE;
+            case "Micro" -> CACHE_SIZE_MICRO;
+            case "Other" -> CACHE_SIZE_OTHER;
+            case "Regular" -> CACHE_SIZE_REGULAR;
+            case "Not chosen", "Unknown"-> CACHE_SIZE_NOT_CHOSEN;
+            default -> CACHE_SIZE_NOT_CHOSEN;
+        };
     }
 
     public static int convertCacheType(final String type) {
-        switch (type) {
-            case "C":
-                return CACHE_TYPE_CACHE_IN_TRASH_OUT;
-            case "R":
-                return CACHE_TYPE_EARTH;
-            case "E":
-                return CACHE_TYPE_EVENT;
-            case "B":
-                return CACHE_TYPE_LETTERBOX;
-            case "Q":
-                return CACHE_TYPE_LAB_CACHE;
-            case "Z":
-                return CACHE_TYPE_MEGA_EVENT;
-            case "J":
-                return CACHE_TYPE_GIGA_EVENT;
-            case "M":
-                return CACHE_TYPE_MULTI;
-            case "U":
-                return CACHE_TYPE_MYSTERY;
-            case "V":
-                return CACHE_TYPE_VIRTUAL;
-            case "W":
-                return CACHE_TYPE_WEBCAM;
-            case "I":
-                return CACHE_TYPE_WHERIGO;
-            case "A":
-                return CACHE_TYPE_PROJECT_APE;
-            case "L":
-                return CACHE_TYPE_LOCATIONLESS;
-            case "G":
-                return CACHE_TYPE_BENCHMARK;
-            case "H":
-                //return GeocachingData.CACHE_TYPE_GROUNDSPEAK;
-                return CACHE_TYPE_GC_HQ;
-            case "X":
-                return CACHE_TYPE_MAZE_EXHIBIT;
-            case "Y":
-                return CACHE_TYPE_WAYMARK;
-            case "F":
-                //return GeocachingData.CACHE_TYPE_LF_EVENT;
-                return CACHE_TYPE_COMMUNITY_CELEBRATION;
-            case "D":
-                return CACHE_TYPE_GC_HQ_BLOCK_PARTY;
-            case "T":
-            default:
-                return CACHE_TYPE_TRADITIONAL;
-        }
+        return switch (type) {
+            case "C" -> CACHE_TYPE_CACHE_IN_TRASH_OUT;
+            case "R" -> CACHE_TYPE_EARTH;
+            case "E" -> CACHE_TYPE_EVENT;
+            case "B" -> CACHE_TYPE_LETTERBOX;
+            case "Q" -> CACHE_TYPE_LAB_CACHE;
+            case "Z" -> CACHE_TYPE_MEGA_EVENT;
+            case "J" -> CACHE_TYPE_GIGA_EVENT;
+            case "M" -> CACHE_TYPE_MULTI;
+            case "U" -> CACHE_TYPE_MYSTERY;
+            case "V" -> CACHE_TYPE_VIRTUAL;
+            case "W" -> CACHE_TYPE_WEBCAM;
+            case "I" -> CACHE_TYPE_WHERIGO;
+            case "A" -> CACHE_TYPE_PROJECT_APE;
+            case "L" -> CACHE_TYPE_LOCATIONLESS;
+            case "G" -> CACHE_TYPE_BENCHMARK;
+            case "H" -> CACHE_TYPE_GC_HQ;
+            case "X" -> CACHE_TYPE_MAZE_EXHIBIT;
+            case "Y" -> CACHE_TYPE_WAYMARK;
+            case "F" -> CACHE_TYPE_COMMUNITY_CELEBRATION;
+            case "D" -> CACHE_TYPE_GC_HQ_BLOCK_PARTY;
+            case "T"-> CACHE_TYPE_TRADITIONAL;
+            default -> CACHE_TYPE_TRADITIONAL;
+        };
     }
 
     public static boolean isAvailable(final String status) {
@@ -243,63 +212,36 @@ public class Gsak {
     }
 
     public static String convertWaypointType(final String waypointType) {
-        switch (waypointType) {
-            case "Final Location":
-                return CACHE_WAYPOINT_TYPE_FINAL;
-            case "Parking Area":
-                return CACHE_WAYPOINT_TYPE_PARKING;
-            case "Question to Answer":
-            case "Virtual Stage":
-                //return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_QUESTION;
-                return CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
-            case "Stages of a Multicache":
-            case "Physical Stage":
-                //return GeocachingWaypoint.CACHE_WAYPOINT_TYPE_STAGES;
-                return CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
-            case "Trailhead":
-                return Objects.requireNonNull(GeocachingWaypoint.CACHE_WAYPOINT_TYPE_TRAILHEAD);
-            case "Original Coordinates":
-            case "Reference Point":
-            default:
-                return CACHE_WAYPOINT_TYPE_REFERENCE;
-        }
+        return switch (waypointType) {
+            case "Final Location" -> CACHE_WAYPOINT_TYPE_FINAL;
+            case "Parking Area" -> CACHE_WAYPOINT_TYPE_PARKING;
+            case "Question to Answer", "Virtual Stage" -> CACHE_WAYPOINT_TYPE_VIRTUAL_STAGE;
+            case "Stages of a Multicache", "Physical Stage" ->  CACHE_WAYPOINT_TYPE_PHYSICAL_STAGE;
+            case "Trailhead" -> CACHE_WAYPOINT_TYPE_TRAILHEAD;
+            case "Original Coordinates", "Reference Point"-> CACHE_WAYPOINT_TYPE_REFERENCE;
+            default ->  CACHE_WAYPOINT_TYPE_REFERENCE;
+        };
     }
 
     public static int convertLogType(final String logType) {
-        switch (logType) {
-            case "Announcement":
-                return CACHE_LOG_TYPE_ANNOUNCEMENT;
-            case "Attended":
-                return CACHE_LOG_TYPE_ATTENDED;
-            case "Didn't find it":
-                return CACHE_LOG_TYPE_NOT_FOUND;
-            case "Enable Listing":
-                return CACHE_LOG_TYPE_ENABLE_LISTING;
-            case "Found it":
-                return CACHE_LOG_TYPE_FOUND;
-            case "Needs Archived":
-                return CACHE_LOG_TYPE_NEEDS_ARCHIVED;
-            case "Needs Maintenance":
-                return CACHE_LOG_TYPE_NEEDS_MAINTENANCE;
-            case "Owner Maintenance":
-                return CACHE_LOG_TYPE_OWNER_MAINTENANCE;
-            case "Post Reviewer Note":
-                return CACHE_LOG_TYPE_POST_REVIEWER_NOTE;
-            case "Publish Listing":
-                return CACHE_LOG_TYPE_PUBLISH_LISTING;
-            case "Temporarily Disable Listing":
-                return CACHE_LOG_TYPE_TEMPORARILY_DISABLE_LISTING;
-            case "Update Coordinates":
-                return CACHE_LOG_TYPE_UPDATE_COORDINATES;
-            case "Webcam Photo Taken":
-                return CACHE_LOG_TYPE_WEBCAM_PHOTO_TAKEN;
-            case "Will Attend":
-                return CACHE_LOG_TYPE_WILL_ATTEND;
-            case "Write note":
-                return CACHE_LOG_TYPE_WRITE_NOTE;
-            default:
-                return CACHE_LOG_TYPE_UNKNOWN;
-        }
+        return switch (logType) {
+            case "Announcement" -> CACHE_LOG_TYPE_ANNOUNCEMENT;
+            case "Attended" -> CACHE_LOG_TYPE_ATTENDED;
+            case "Didn't find it" -> CACHE_LOG_TYPE_NOT_FOUND;
+            case "Enable Listing" -> CACHE_LOG_TYPE_ENABLE_LISTING;
+            case "Found it" -> CACHE_LOG_TYPE_FOUND;
+            case "Needs Archived" -> CACHE_LOG_TYPE_NEEDS_ARCHIVED;
+            case "Needs Maintenance" -> CACHE_LOG_TYPE_NEEDS_MAINTENANCE;
+            case "Owner Maintenance" -> CACHE_LOG_TYPE_OWNER_MAINTENANCE;
+            case "Post Reviewer Note" -> CACHE_LOG_TYPE_POST_REVIEWER_NOTE;
+            case "Publish Listing" -> CACHE_LOG_TYPE_PUBLISH_LISTING;
+            case "Temporarily Disable Listing" -> CACHE_LOG_TYPE_TEMPORARILY_DISABLE_LISTING;
+            case "Update Coordinates" -> CACHE_LOG_TYPE_UPDATE_COORDINATES;
+            case "Webcam Photo Taken" -> CACHE_LOG_TYPE_WEBCAM_PHOTO_TAKEN;
+            case "Will Attend" -> CACHE_LOG_TYPE_WILL_ATTEND;
+            case "Write note" -> CACHE_LOG_TYPE_WRITE_NOTE;
+            default -> CACHE_LOG_TYPE_UNKNOWN;
+        };
     }
 
     public static boolean isCorrected(final int correction) {

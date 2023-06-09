@@ -4,19 +4,20 @@ plugins {
     // Usage: gradle dependencyUpdates  -Drevision=release
 
     id 'com.android.application'
-    id "com.starter.easylauncher" version "5.1.2"
+    id "com.starter.easylauncher" version "6.2.0"
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     buildToolsVersion "32.0.0"
+    namespace 'ch.bubendorf.locusaddon.gsakdatabase'
 
     defaultConfig {
         applicationId "ch.bubendorf.locusaddon.gsakdatabase"
         minSdkVersion 24
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29 // Do not use another number without a very good reason!
-        versionCode 37
+        versionCode 38
         versionName "3.4.${versionCode}"
 //        versionName "3.4.${versionCode}-" + getDate()
 //        archivesBaseName = "LocusAddonGSAK-${versionName}-${targetSdkVersion.apiLevel}"
@@ -37,8 +38,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     lint {
         abortOnError false
@@ -60,11 +61,11 @@ easylauncher {
 //    return new Date().format('yyyyMMdd-HHmm')
 //}
 
-def acraVersion = '5.9.6'
+def acraVersion = '5.9.7'
 
 dependencies {
-    implementation 'com.asamm:locus-api-android:0.9.46'
-    implementation 'androidx.activity:activity:1.5.1'
+    implementation 'com.asamm:locus-api-android:0.9.50'
+    implementation 'androidx.activity:activity:1.6.1'
     runtimeOnly 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1' // See https://www.reddit.com/r/androiddev/comments/vsvnjn/any_problems_with_the_new/
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'com.github.HBiSoft:PickiT:2.0.5'
