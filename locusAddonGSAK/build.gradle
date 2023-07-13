@@ -61,12 +61,12 @@ easylauncher {
 //    return new Date().format('yyyyMMdd-HHmm')
 //}
 
-def acraVersion = '5.9.7'
+def acraVersion = '5.10.1'
 
 dependencies {
     implementation 'com.asamm:locus-api-android:0.9.50'
-    implementation 'androidx.activity:activity:1.6.1'
-    runtimeOnly 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1' // See https://www.reddit.com/r/androiddev/comments/vsvnjn/any_problems_with_the_new/
+    implementation 'androidx.activity:activity:1.7.2'
+    runtimeOnly 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1' // See https://www.reddit.com/r/androiddev/comments/vsvnjn/any_problems_with_the_new/
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'com.github.HBiSoft:PickiT:2.0.5'
 
