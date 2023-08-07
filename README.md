@@ -33,6 +33,15 @@ nastav správně cesty a spusť Locus. A jen naimportuj kešky.
 [![](http://i.imgur.com/GPT0L.png)](http://i.imgur.com/yquTP.png)
 [![](http://i.imgur.com/MGaZZ.png)](http://i.imgur.com/QRD46.png)
 
+## Download
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/ch.bubendorf.locusaddon.gsakdatabase/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=ch.bubendorf.locusaddon.gsakdatabase)
+
 ## Author
 
 * Radim -kuratkoo- Vaculik kuratkoo@gmail.com
